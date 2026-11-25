@@ -3,21 +3,35 @@ import {
   api,
   datasetChartHtmlUrl,
   downloadUrl,
+  process3dModelUrl,
   processUrl,
+  resolveApiUrl,
   type Dataset,
   type DatasetAnalysisResponse,
   type DatasetChartItem,
   type DatasetGroup,
   type DatasetResource,
   type DatasetResponse,
+  type JsonRecord,
   type MapIndicator,
   type PreviewResponse,
   type SummaryResponse,
   type WorkbookResponse,
 } from './api';
+import { AnalyticsSection } from './AnalyticsSection';
+import { IndicatorsSection } from './IndicatorsSection';
+import { VisualizationsSection } from './VisualizationsSection';
 
-type Section = 'catalog' | 'workbench';
+type Section = 'catalog' | 'workbench' | 'indicators' | 'analytics' | 'visualizations';
 type Notice = { kind: 'error' | 'success'; message: string };
+
+const SECTION_BREADCRUMBS: Record<Section, string> = {
+  catalog: 'CATÁLOGO DE DATOS',
+  workbench: 'PROCESAMIENTO',
+  indicators: 'INDICADORES SOCIOECONÓMICOS',
+  analytics: 'CIENCIA DE DATOS',
+  visualizations: 'VISUALIZACIONES Y 3D',
+};
 
 const emptyCatalog: DatasetResponse = { total: 0, inicio: 0, filas: 12, conjuntos: [] };
 const fallbackMapIndicators: MapIndicator[] = [{
@@ -92,6 +106,12 @@ function App() {
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
   const [analysis, setAnalysis] = useState<DatasetAnalysisResponse | null>(null);
   const [curatedVizUrl, setCuratedVizUrl] = useState('');
+  const [datastoreMode, setDatastoreMode] = useState<'search' | 'sql'>('search');
+  const [datastoreQuery, setDatastoreQuery] = useState('');
+  const [datastoreSqlText, setDatastoreSqlText] = useState('');
+  const [datastoreRows, setDatastoreRows] = useState<JsonRecord[] | null>(null);
+  const [datastoreColumns, setDatastoreColumns] = useState<string[]>([]);
+  const [datastoreTotal, setDatastoreTotal] = useState<number | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [busy, setBusy] = useState('');
   const detailRef = useRef<HTMLElement | null>(null);
@@ -100,6 +120,9 @@ function App() {
   const [mapIndicatorsLoading, setMapIndicatorsLoading] = useState(false);
   const [mapIndicatorsError, setMapIndicatorsError] = useState('');
   const [selectedMapIndicatorId, setSelectedMapIndicatorId] = useState(fallbackMapIndicators[0].id);
+  const [map3dStyle, setMap3dStyle] = useState<'multicolor' | 'negro' | 'calor'>('multicolor');
+  const [map3dBaseShape, setMap3dBaseShape] = useState<'silueta' | 'caja' | 'ninguna'>('silueta');
+  const [vizFocusIndicator, setVizFocusIndicator] = useState<string | undefined>(undefined);
   const [parquet, setParquet] = useState('');
   const [groupColumn, setGroupColumn] = useState('depto_ocu');
   const [filterColumn, setFilterColumn] = useState('');
@@ -237,6 +260,16 @@ function App() {
     }
   }, []);
 
+  const notify = useCallback((kind: 'error' | 'success', message: string) => {
+    setNotice({ kind, message });
+  }, []);
+
+  const openIndicatorInVisualizations = useCallback((indicatorCode: string) => {
+    setVizFocusIndicator(indicatorCode);
+    setSection('visualizations');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   const selectDataset = async (dataset: Dataset) => {
     setSelected(dataset);
     setResources(dataset.recursos || []);
@@ -244,6 +277,10 @@ function App() {
     setPreview(null);
     setAnalysis(null);
     setCuratedVizUrl('');
+    setDatastoreRows(null);
+    setDatastoreColumns([]);
+    setDatastoreTotal(null);
+    setDatastoreQuery('');
     setNotice(null);
     setBusy('resources');
 
@@ -258,10 +295,51 @@ function App() {
       if (fetched.length > 0) {
         const tabularFormats = new Set(['parquet', 'xlsx', 'csv', 'xls', 'zip']);
         const primary = fetched.find((item) => tabularFormats.has((item.formato || '').toLowerCase())) || fetched[0];
+        setDatastoreSqlText(`SELECT * FROM "${primary.id}" LIMIT 10`);
         await analyzeDatasetResource(dataset.id, { recursoId: primary.id });
       }
     } catch (error) {
       setNotice({ kind: 'error', message: `No se pudieron cargar los recursos. ${error instanceof Error ? error.message : ''}` });
+    } finally {
+      setBusy('');
+    }
+  };
+
+  const submitDatastoreQuery = async (event: FormEvent) => {
+    event.preventDefault();
+    const activeResourceId = selectedResourceId || resources[0]?.id || '';
+    if (!activeResourceId && datastoreMode === 'search') {
+      setNotice({ kind: 'error', message: 'Selecciona primero un recurso del conjunto para consultar su Datastore.' });
+      return;
+    }
+    setBusy('datastore');
+    setNotice(null);
+    try {
+      if (datastoreMode === 'search') {
+        const res = await api.datastoreSearch({
+          recurso_id: activeResourceId,
+          limite: 15,
+          desplazamiento: 0,
+          ...(datastoreQuery.trim() ? { consulta: datastoreQuery.trim() } : {}),
+        });
+        const cols = (res.campos || []).map((c) => c.id).filter(Boolean);
+        setDatastoreColumns(cols.length > 0 ? cols : Object.keys(res.registros[0] || {}));
+        setDatastoreRows(res.registros || []);
+        setDatastoreTotal(res.total);
+      } else {
+        const sql = datastoreSqlText.trim() || `SELECT * FROM "${activeResourceId}" LIMIT 10`;
+        const res = await api.datastoreSql(sql);
+        const cols = (res.campos || []).map((c) => c.id).filter(Boolean);
+        setDatastoreColumns(cols.length > 0 ? cols : Object.keys(res.registros[0] || {}));
+        setDatastoreRows(res.registros || []);
+        setDatastoreTotal(res.registros?.length ?? 0);
+      }
+    } catch (error) {
+      setDatastoreRows(null);
+      setNotice({
+        kind: 'error',
+        message: `El recurso no está indexado en Datastore CKAN o falló la consulta. ${error instanceof Error ? error.message : ''}`,
+      });
     } finally {
       setBusy('');
     }
@@ -440,6 +518,15 @@ function App() {
           <button className={section === 'workbench' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('workbench')}>
             <span className="nav-icon">▥</span><span>Procesamiento</span>
           </button>
+          <button className={section === 'indicators' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('indicators')}>
+            <span className="nav-icon">◈</span><span>Indicadores socioeconómicos</span>
+          </button>
+          <button className={section === 'analytics' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('analytics')}>
+            <span className="nav-icon">◎</span><span>Ciencia de datos</span>
+          </button>
+          <button className={section === 'visualizations' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('visualizations')}>
+            <span className="nav-icon">◩</span><span>Visualizaciones</span>
+          </button>
         </nav>
         <div className="sidebar-bottom">
           <div className="sidebar-note"><span className="note-icon">✳</span><div><strong>Datos para decidir</strong><p>Información estadística oficial de Guatemala.</p></div></div>
@@ -449,13 +536,13 @@ function App() {
 
       <main className="main-content">
         <header className="topbar">
-          <div className="breadcrumb"><span className="breadcrumb-brand">INE</span><span>/</span> {section === 'catalog' ? 'CATÁLOGO DE DATOS' : 'PROCESAMIENTO'}</div>
+          <div className="breadcrumb"><span className="breadcrumb-brand">INE</span><span>/</span> {SECTION_BREADCRUMBS[section]}</div>
         </header>
 
         <div className="page-wrap">
           {notice && <div className={`notice ${notice.kind}`} role="status"><span>{notice.kind === 'error' ? '!' : '✓'}</span><p>{notice.message}</p><button aria-label="Cerrar notificación" onClick={() => setNotice(null)}>×</button></div>}
 
-          {section === 'catalog' ? (
+          {section === 'catalog' && (
             <>
               <section className="page-heading">
                 <div><div className="eyebrow"><span className="eyebrow-line" /> DATOS ABIERTOS · INE GUATEMALA</div><h1>Explora los datos<br /><em>que mueven al país.</em></h1>
@@ -550,9 +637,99 @@ function App() {
                 )}
 
                 {preview && <PreviewTable preview={preview} />}
+
+                {resources.length > 0 && (
+                  <div className="datastore-box">
+                    <div className="datastore-box-head">
+                      <div>
+                        <div className="section-kicker">API CKAN DATASTORE</div>
+                        <strong>Consulta tabular en línea sin descarga completa</strong>
+                        <span>Recurso activo: <code>{selectedResourceId || resources[0]?.id}</code></span>
+                      </div>
+                      <div className="datastore-mode-switch">
+                        <button
+                          type="button"
+                          className={datastoreMode === 'search' ? 'button button-dark' : 'button button-outline'}
+                          onClick={() => setDatastoreMode('search')}
+                        >
+                          Filtro rápido
+                        </button>
+                        <button
+                          type="button"
+                          className={datastoreMode === 'sql' ? 'button button-dark' : 'button button-outline'}
+                          onClick={() => {
+                            const id = selectedResourceId || resources[0]?.id || '';
+                            if (!datastoreSqlText.includes(id)) {
+                              setDatastoreSqlText(`SELECT * FROM "${id}" LIMIT 10`);
+                            }
+                            setDatastoreMode('sql');
+                          }}
+                        >
+                          Consulta SQL
+                        </button>
+                      </div>
+                    </div>
+
+                    <form className="datastore-form" onSubmit={(e) => void submitDatastoreQuery(e)}>
+                      <div>
+                        <strong>{datastoreMode === 'search' ? 'Buscar texto en registros' : 'Sentencia SQL sobre recurso'}</strong>
+                        <span>{datastoreMode === 'search' ? 'Ejecuta datastore/consulta en CKAN.' : 'Ejecuta datastore/consulta-sql en CKAN.'}</span>
+                      </div>
+                      {datastoreMode === 'search' ? (
+                        <input
+                          value={datastoreQuery}
+                          onChange={(e) => setDatastoreQuery(e.target.value)}
+                          placeholder="Término opcional (dejar vacío para listar filas)..."
+                          aria-label="Texto de búsqueda en Datastore"
+                        />
+                      ) : (
+                        <input
+                          value={datastoreSqlText}
+                          onChange={(e) => setDatastoreSqlText(e.target.value)}
+                          placeholder='SELECT * FROM "<resource_id>" LIMIT 10'
+                          aria-label="Sentencia SQL para Datastore"
+                        />
+                      )}
+                      <button type="submit" className="button button-outline" disabled={busy === 'datastore'}>
+                        {busy === 'datastore' ? 'Consultando…' : 'Consultar'}
+                      </button>
+                    </form>
+
+                    {datastoreRows && (
+                      <div className="preview-wrap">
+                        <div className="preview-title">
+                          <div>
+                            <strong>Resultados Datastore CKAN</strong>
+                            <span>{datastoreRows.length} filas mostradas{datastoreTotal !== null ? ` de ${datastoreTotal.toLocaleString('es-GT')} totales` : ''}</span>
+                          </div>
+                          <span className="format-badge">DATASTORE</span>
+                        </div>
+                        {datastoreRows.length > 0 ? (
+                          <div className="table-scroll">
+                            <table>
+                              <thead>
+                                <tr>{datastoreColumns.map((col) => <th key={col}>{col}</th>)}</tr>
+                              </thead>
+                              <tbody>
+                                {datastoreRows.map((row, idx) => (
+                                  <tr key={idx}>
+                                    {datastoreColumns.map((col) => <td key={col}>{displayValue(row[col])}</td>)}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <div className="no-resources">No se encontraron registros para esta consulta en Datastore.</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
               </section>}
             </>
-          ) : (
+          )}
+          {section === 'workbench' && (
             <>
               <section className="page-heading workbench-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> HERRAMIENTAS DE ANÁLISIS</div><h1>De los datos a<br /><em>nuevas perspectivas.</em></h1><p className="intro">Procesa archivos, crea resúmenes y genera visualizaciones con los datos del INE.</p></div><div className="process-orbit"><div className="orbit-ring"><span>DATOS</span><b>→</b><span>HALLAZGOS</span></div><i>✳</i></div></section>
               <div className="workbench-tabs" role="tablist" aria-label="Herramientas de procesamiento">
@@ -588,23 +765,92 @@ function App() {
                   <div className="map-options">
                     <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-html', { esquema_color: 'YlOrRd', capa_base: 'Esri.WorldGrayCanvas' })}><span className="map-preview warm">▧</span><strong>Mapa coroplético</strong><small>{busy === 'map' ? 'Generando…' : 'Folium · mapa interactivo'}</small><span className="option-arrow">↗</span></button>
                     <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-plotly', { formato: 'html' })}><span className="map-preview cool">▧</span><strong>Mapa de análisis</strong><small>{busy === 'map' ? 'Generando…' : 'Plotly · panel interactivo'}</small><span className="option-arrow">↗</span></button>
-                    <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-3d-relieve', { estilo_color: 'multicolor', altura_max_m: '60000' })}><span className="map-preview terrain">▧</span><strong>Relieve 3D</strong><small>{busy === 'map' ? 'Generando…' : 'Deck.gl · visualización WebGL'}</small><span className="option-arrow">↗</span></button>
+                    <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-3d-relieve', { estilo_color: map3dStyle, altura_max_m: '60000' })}><span className="map-preview terrain">▧</span><strong>Relieve 3D</strong><small>{busy === 'map' ? 'Generando…' : 'Deck.gl · visualización WebGL'}</small><span className="option-arrow">↗</span></button>
                   </div>
+
+                  {selectedMapIndicator && (
+                    <div className="model-3d-download-bar">
+                      <div className="model-3d-download-info">
+                        <strong>Archivo 3D imprimible del mapa ({selectedMapIndicator.indicador})</strong>
+                        <span>Descarga la maqueta tridimensional extruida con el relieve del indicador actual en STL, OBJ o GLB.</span>
+                      </div>
+                      <div className="model-3d-download-controls">
+                        <select aria-label="Estilo de color 3D" value={map3dStyle} onChange={(e) => setMap3dStyle(e.target.value as 'multicolor' | 'negro' | 'calor')}>
+                          <option value="multicolor">Color por departamento</option>
+                          <option value="calor">Gradiente de calor</option>
+                          <option value="negro">Relieve negro</option>
+                        </select>
+                        <select aria-label="Forma base del modelo 3D" value={map3dBaseShape} onChange={(e) => setMap3dBaseShape(e.target.value as 'silueta' | 'caja' | 'ninguna')}>
+                          <option value="silueta">Base silueta</option>
+                          <option value="caja">Base rectangular</option>
+                          <option value="ninguna">Sin base</option>
+                        </select>
+                        <a
+                          className="button button-dark model-dl-btn"
+                          href={process3dModelUrl(selectedMapIndicator, 'stl', { estiloColor: map3dStyle, formaBase: map3dBaseShape })}
+                          download
+                        >
+                          ↓ Descargar .STL
+                        </a>
+                        <a
+                          className="button button-outline model-dl-btn"
+                          href={process3dModelUrl(selectedMapIndicator, 'obj', { estiloColor: map3dStyle, formaBase: map3dBaseShape })}
+                          download
+                        >
+                          ↓ Descargar .OBJ
+                        </a>
+                        <a
+                          className="button button-outline model-dl-btn"
+                          href={process3dModelUrl(selectedMapIndicator, 'glb', { estiloColor: map3dStyle, formaBase: map3dBaseShape })}
+                          download
+                        >
+                          ↓ .GLB
+                        </a>
+                        <a
+                          className="button button-outline model-dl-btn"
+                          href={process3dModelUrl(selectedMapIndicator, 'zip', { estiloColor: map3dStyle, formaBase: map3dBaseShape })}
+                          download
+                        >
+                          ↓ Pack STLs (.ZIP)
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
                   {busy === 'map' && <div className="map-loading"><span className="spinner" />Generando mapa con el backend…</div>}
-                  {mapUrl && <div className="map-frame-wrap"><div className="frame-toolbar"><span><i className="live-dot" /> VISTA GENERADA</span><a href={mapUrl} target="_blank" rel="noreferrer">Abrir en una pestaña ↗</a></div><iframe title="Mapa de datos de Guatemala" src={mapUrl} /></div>}
+                  {mapUrl && (
+                    <div className="map-frame-wrap">
+                      <div className="frame-toolbar">
+                        <span><i className="live-dot" /> VISTA GENERADA</span>
+                        <div className="toolbar-links-group">
+                          {selectedMapIndicator && (
+                            <>
+                              <a href={process3dModelUrl(selectedMapIndicator, 'stl', { estiloColor: map3dStyle, formaBase: map3dBaseShape })} download>Descargar .STL ↓</a>
+                              <a href={process3dModelUrl(selectedMapIndicator, 'obj', { estiloColor: map3dStyle, formaBase: map3dBaseShape })} download>Descargar .OBJ ↓</a>
+                            </>
+                          )}
+                          <a href={mapUrl} target="_blank" rel="noreferrer">Abrir en una pestaña ↗</a>
+                        </div>
+                      </div>
+                      <iframe title="Mapa de datos de Guatemala" src={mapUrl} />
+                    </div>
+                  )}
                 </section>}
                 {processTab === 'exports' && <section className="tool-card maps-card">
                   <div className="tool-card-head"><span className="tool-number coral">04</span><div><div className="section-kicker">EXPORTACIÓN AVANZADA</div><h2>Modelos y renders</h2></div></div>
                   <p>Descarga modelos 3D listos para impresión o genera un render de presentación.</p>
                   <div className="map-source export-dataset"><span>DATOS SELECCIONADOS EN MAPAS</span><strong>{selectedMapIndicator?.titulo_mapa || 'Selecciona primero un tema en la pestaña Mapas.'}</strong><small>Los modelos y renders usarán los datos y el año seleccionados.</small></div>
                   <div className="export-grid">
-                    <div className="export-option"><span className="export-symbol">◈</span><div><strong>Modelo 3D imprimible</strong><small>GLB para visor · STL, ZIP u OBJ</small></div><div className="export-actions"><button disabled={!selectedMapIndicator} onClick={() => createExport('modelo-3d-impresion', { formato: 'glb', estilo_color: 'multicolor', ancho_mm: '150', altura_max_mm: '60', forma_base: 'silueta' })}>GLB</button><button disabled={!selectedMapIndicator} onClick={() => createExport('modelo-3d-impresion', { formato: 'stl', estilo_color: 'negro', ancho_mm: '150', altura_max_mm: '60', forma_base: 'caja' })}>STL</button><button disabled={!selectedMapIndicator} onClick={() => createExport('modelo-3d-impresion', { formato: 'zip', estilo_color: 'multicolor', ancho_mm: '150', altura_max_mm: '60', forma_base: 'silueta' })}>ZIP</button></div></div>
+                    <div className="export-option"><span className="export-symbol">◈</span><div><strong>Modelo 3D imprimible</strong><small>GLB para visor · STL, OBJ o ZIP por departamento</small></div><div className="export-actions"><button disabled={!selectedMapIndicator} onClick={() => createExport('modelo-3d-impresion', { formato: 'glb', estilo_color: map3dStyle, ancho_mm: '150', altura_max_mm: '60', forma_base: map3dBaseShape })}>GLB</button><button disabled={!selectedMapIndicator} onClick={() => createExport('modelo-3d-impresion', { formato: 'stl', estilo_color: map3dStyle, ancho_mm: '150', altura_max_mm: '60', forma_base: map3dBaseShape })}>STL</button><button disabled={!selectedMapIndicator} onClick={() => createExport('modelo-3d-impresion', { formato: 'obj', estilo_color: map3dStyle, ancho_mm: '150', altura_max_mm: '60', forma_base: map3dBaseShape })}>OBJ</button><button disabled={!selectedMapIndicator} onClick={() => createExport('modelo-3d-impresion', { formato: 'zip', estilo_color: map3dStyle, ancho_mm: '150', altura_max_mm: '60', forma_base: map3dBaseShape })}>ZIP</button></div></div>
                     <div className="export-option"><span className="export-symbol coral">▧</span><div><strong>Render de presentación</strong><small>Imagen PNG generada con Blender</small></div><button className="button button-outline" disabled={!selectedMapIndicator} onClick={() => createExport('render-3d-blender', { ancho_px: '1280', alto_px: '720', estilo_color: 'multicolor' })}>Generar PNG ↗</button></div>
                   </div>
                 </section>}
               </div>
             </>
           )}
+          {section === 'indicators' && <IndicatorsSection onNotify={notify} onOpenVizForIndicator={openIndicatorInVisualizations} />}
+          {section === 'analytics' && <AnalyticsSection onNotify={notify} onOpenVizForIndicator={openIndicatorInVisualizations} />}
+          {section === 'visualizations' && <VisualizationsSection initialIndicator={vizFocusIndicator} onNotify={notify} />}
           <footer className="page-footer"><span>Instituto Nacional de Estadística · Guatemala</span><span>Información estadística oficial</span><a href="https://www.ine.gob.gt/" target="_blank" rel="noreferrer">ine.gob.gt ↗</a></footer>
         </div>
       </main>
@@ -755,16 +1001,19 @@ function DatasetAnalysisPanel({
             </div>
           </div>
           <div className="curated-links">
-            {analysis.visualizaciones_curadas.map((viz) => (
-              <button
-                key={viz.endpoint}
-                type="button"
-                className={curatedVizUrl === viz.endpoint ? 'button button-dark' : 'button button-outline'}
-                onClick={() => onSelectCuratedViz(curatedVizUrl === viz.endpoint ? '' : viz.endpoint)}
-              >
-                {viz.titulo}
-              </button>
-            ))}
+            {analysis.visualizaciones_curadas.map((viz) => {
+              const targetUrl = resolveApiUrl(viz.endpoint);
+              return (
+                <button
+                  key={viz.endpoint}
+                  type="button"
+                  className={curatedVizUrl === targetUrl ? 'button button-dark' : 'button button-outline'}
+                  onClick={() => onSelectCuratedViz(curatedVizUrl === targetUrl ? '' : targetUrl)}
+                >
+                  {viz.titulo}
+                </button>
+              );
+            })}
           </div>
           {curatedVizUrl && (
             <div className="map-frame-wrap">
