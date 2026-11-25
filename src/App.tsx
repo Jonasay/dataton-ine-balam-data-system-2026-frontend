@@ -16,14 +16,12 @@ import {
   type JsonRecord,
   type MapIndicator,
   type PreviewResponse,
-  type SummaryResponse,
-  type WorkbookResponse,
 } from './api';
 import { AnalyticsSection } from './AnalyticsSection';
 import { IndicatorsSection } from './IndicatorsSection';
 import { VisualizationsSection } from './VisualizationsSection';
 
-type Section = 'catalog' | 'workbench' | 'indicators' | 'analytics' | 'visualizations';
+type Section = 'catalog' | 'workbench' | 'indicators' | 'analytics' | 'visualizations' | 'team';
 type Notice = { kind: 'error' | 'success'; message: string };
 
 const SECTION_BREADCRUMBS: Record<Section, string> = {
@@ -32,7 +30,37 @@ const SECTION_BREADCRUMBS: Record<Section, string> = {
   indicators: 'INDICADORES SOCIOECONÓMICOS',
   analytics: 'CIENCIA DE DATOS',
   visualizations: 'VISUALIZACIONES Y 3D',
+  team: 'BALAM DATA SYSTEM',
 };
+
+const TEAM_PROFILES = [
+  {
+    title: 'Coordinación y análisis',
+    focus: 'Aterriza las preguntas del proyecto y organiza el trabajo del equipo.',
+    responsibilities: ['Definir preguntas útiles para la población', 'Organizar prioridades y entregas', 'Conectar los hallazgos con decisiones'],
+  },
+  {
+    title: 'Gestión e integración de datos',
+    focus: 'Prepara fuentes estadísticas y verifica que los datos sean consistentes.',
+    responsibilities: ['Localizar fuentes estadísticas confiables', 'Integrar y validar conjuntos de datos', 'Documentar indicadores y periodos'],
+  },
+  {
+    title: 'Desarrollo y experiencia de usuario',
+    focus: 'Construye una plataforma clara, accesible y adaptable a móviles.',
+    responsibilities: ['Diseñar recorridos simples de navegación', 'Desarrollar la experiencia web', 'Cuidar accesibilidad y diseño adaptable'],
+  },
+  {
+    title: 'Análisis y visualización territorial',
+    focus: 'Convierte indicadores en mapas y gráficas fáciles de interpretar.',
+    responsibilities: ['Analizar patrones territoriales', 'Crear mapas y visualizaciones', 'Comunicar resultados con contexto'],
+  },
+];
+
+const PLATFORM_EXAMPLES = [
+  { title: 'Explorar datos', description: 'Busca conjuntos estadísticos por tema o palabra clave.', icon: '⌕', target: 'catalog' as const },
+  { title: 'Comparar territorios', description: 'Consulta indicadores y conoce las diferencias entre departamentos.', icon: '◈', target: 'indicators' as const },
+  { title: 'Ver visualizaciones', description: 'Explora mapas, tendencias y gráficas interactivas.', icon: '◩', target: 'visualizations' as const },
+];
 
 const emptyCatalog: DatasetResponse = { total: 0, inicio: 0, filas: 12, conjuntos: [] };
 const fallbackMapIndicators: MapIndicator[] = [{
@@ -133,16 +161,16 @@ function App() {
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
   const [analysis, setAnalysis] = useState<DatasetAnalysisResponse | null>(null);
   const [curatedVizUrl, setCuratedVizUrl] = useState('');
-  const [datastoreMode, setDatastoreMode] = useState<'search' | 'sql'>('search');
   const [datastoreQuery, setDatastoreQuery] = useState('');
-  const [datastoreSqlText, setDatastoreSqlText] = useState('');
   const [datastoreRows, setDatastoreRows] = useState<JsonRecord[] | null>(null);
   const [datastoreColumns, setDatastoreColumns] = useState<string[]>([]);
   const [datastoreTotal, setDatastoreTotal] = useState<number | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [busy, setBusy] = useState('');
   const detailRef = useRef<HTMLElement | null>(null);
-  const [processTab, setProcessTab] = useState<'summary' | 'maps' | 'exports'>('summary');
+  const [processTab, setProcessTab] = useState<'maps' | 'exports'>('maps');
+  const [dataMenuOpen, setDataMenuOpen] = useState(true);
+  const [activeTeamProfile, setActiveTeamProfile] = useState(0);
   const [mapIndicators, setMapIndicators] = useState(fallbackMapIndicators);
   const [mapIndicatorsLoading, setMapIndicatorsLoading] = useState(false);
   const [mapIndicatorsError, setMapIndicatorsError] = useState('');
@@ -150,15 +178,6 @@ function App() {
   const [map3dStyle, setMap3dStyle] = useState<'multicolor' | 'negro' | 'calor'>('multicolor');
   const [map3dBaseShape, setMap3dBaseShape] = useState<'silueta' | 'caja' | 'ninguna'>('silueta');
   const [vizFocusIndicator, setVizFocusIndicator] = useState<string | undefined>(undefined);
-  const [parquet, setParquet] = useState('');
-  const [groupColumn, setGroupColumn] = useState('depto_ocu');
-  const [filterColumn, setFilterColumn] = useState('');
-  const [filterValue, setFilterValue] = useState('');
-  const [summary, setSummary] = useState<SummaryResponse | null>(null);
-  const [outputPath, setOutputPath] = useState('');
-  const [excelPath, setExcelPath] = useState('');
-  const [workbook, setWorkbook] = useState<WorkbookResponse | null>(null);
-  const [sheetId, setSheetId] = useState(1);
   const [mapUrl, setMapUrl] = useState('');
   const selectedMapIndicator = mapIndicators.find((indicator) => indicator.id === selectedMapIndicatorId);
   const mapThemes = useMemo(() => [...new Set(mapIndicators.map((indicator) => indicator.tema))], [mapIndicators]);
@@ -293,6 +312,7 @@ function App() {
 
   const openIndicatorInVisualizations = useCallback((indicatorCode: string) => {
     setVizFocusIndicator(indicatorCode);
+    setDataMenuOpen(true);
     setSection('visualizations');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -322,7 +342,6 @@ function App() {
       if (fetched.length > 0) {
         const tabularFormats = new Set(['parquet', 'xlsx', 'csv', 'xls', 'zip']);
         const primary = fetched.find((item) => tabularFormats.has((item.formato || '').toLowerCase())) || fetched[0];
-        setDatastoreSqlText(`SELECT * FROM "${primary.id}" LIMIT 10`);
         await analyzeDatasetResource(dataset.id, { recursoId: primary.id });
       }
     } catch (error) {
@@ -335,32 +354,23 @@ function App() {
   const submitDatastoreQuery = async (event: FormEvent) => {
     event.preventDefault();
     const activeResourceId = selectedResourceId || resources[0]?.id || '';
-    if (!activeResourceId && datastoreMode === 'search') {
+    if (!activeResourceId) {
       setNotice({ kind: 'error', message: 'Selecciona primero un recurso del conjunto para consultar su Datastore.' });
       return;
     }
     setBusy('datastore');
     setNotice(null);
     try {
-      if (datastoreMode === 'search') {
-        const res = await api.datastoreSearch({
-          recurso_id: activeResourceId,
-          limite: 15,
-          desplazamiento: 0,
-          ...(datastoreQuery.trim() ? { consulta: datastoreQuery.trim() } : {}),
-        });
-        const cols = (res.campos || []).map((c) => c.id).filter(Boolean);
-        setDatastoreColumns(cols.length > 0 ? cols : Object.keys(res.registros[0] || {}));
-        setDatastoreRows(res.registros || []);
-        setDatastoreTotal(res.total);
-      } else {
-        const sql = datastoreSqlText.trim() || `SELECT * FROM "${activeResourceId}" LIMIT 10`;
-        const res = await api.datastoreSql(sql);
-        const cols = (res.campos || []).map((c) => c.id).filter(Boolean);
-        setDatastoreColumns(cols.length > 0 ? cols : Object.keys(res.registros[0] || {}));
-        setDatastoreRows(res.registros || []);
-        setDatastoreTotal(res.registros?.length ?? 0);
-      }
+      const res = await api.datastoreSearch({
+        recurso_id: activeResourceId,
+        limite: 15,
+        desplazamiento: 0,
+        ...(datastoreQuery.trim() ? { consulta: datastoreQuery.trim() } : {}),
+      });
+      const cols = (res.campos || []).map((c) => c.id).filter(Boolean);
+      setDatastoreColumns(cols.length > 0 ? cols : Object.keys(res.registros[0] || {}));
+      setDatastoreRows(res.registros || []);
+      setDatastoreTotal(res.total);
     } catch (error) {
       setDatastoreRows(null);
       setNotice({
@@ -399,69 +409,6 @@ function App() {
       });
     } catch (error) {
       setNotice({ kind: 'error', message: `No se pudo verificar el recurso. ${error instanceof Error ? error.message : ''}` });
-    } finally {
-      setBusy('');
-    }
-  };
-
-  const inspectWorkbook = async () => {
-    if (!excelPath.trim()) {
-      setNotice({ kind: 'error', message: 'Selecciona un archivo Excel para inspeccionar sus hojas.' });
-      return;
-    }
-    setBusy('inspect');
-    setNotice(null);
-    try {
-      const result = await api.inspectWorkbook(excelPath.trim());
-      setWorkbook(result);
-      setSheetId(result.hoja_actual || 1);
-    } catch (error) {
-      setNotice({ kind: 'error', message: `No se pudo inspeccionar el Excel. ${error instanceof Error ? error.message : ''}` });
-    } finally {
-      setBusy('');
-    }
-  };
-
-  const submitSummary = async (event: FormEvent) => {
-    event.preventDefault();
-    setBusy('summary');
-    setNotice(null);
-    try {
-      const result = await api.summary({
-        ruta_parquet: parquet.trim(),
-        agrupar_por: groupColumn.trim(),
-        limite: 20,
-        ...(filterColumn.trim() && filterValue.trim()
-          ? { columna_filtro: filterColumn.trim(), valor_filtro: filterValue.trim() }
-          : {}),
-      });
-      setSummary(result);
-    } catch (error) {
-      setNotice({ kind: 'error', message: `No se pudo calcular el resumen. ${error instanceof Error ? error.message : ''}` });
-    } finally {
-      setBusy('');
-    }
-  };
-
-  const submitConversion = async (event: FormEvent) => {
-    event.preventDefault();
-    setBusy('convert');
-    setNotice(null);
-    try {
-      const result = await api.convert({
-        ruta_excel: excelPath.trim(),
-        hoja_id: sheetId,
-        ruta_salida_parquet: outputPath.trim(),
-        compresion: 'zstd',
-      });
-      if (typeof result.nombre_archivo !== 'string') {
-        throw new Error('El servicio no indicó el nombre del archivo convertido.');
-      }
-      const output = result.nombre_archivo;
-      setParquet(output);
-      setNotice({ kind: 'success', message: `Conversión completada: ${output}` });
-    } catch (error) {
-      setNotice({ kind: 'error', message: `No se pudo convertir el archivo. ${error instanceof Error ? error.message : ''}` });
     } finally {
       setBusy('');
     }
@@ -528,7 +475,6 @@ function App() {
   };
 
   const catalogPages = Math.ceil(catalog.total / (catalog.filas || 12));
-  const chartMax = useMemo(() => Math.max(1, ...(summary?.datos || []).map((row) => Number(row.conteo) || 0)), [summary]);
 
   return (
     <div className="app-shell">
@@ -539,20 +485,40 @@ function App() {
         </div>
         <div className="workspace-label">{t('sidebar.section')}</div>
         <nav className="side-nav" aria-label="Navegación principal">
-          <button className={section === 'catalog' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('catalog')}>
+          <button title={t('sidebar.explore')} aria-label={t('sidebar.explore')} className={section === 'catalog' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('catalog')}>
             <span className="nav-icon">⌕</span><span>{t('sidebar.explore')}</span>
           </button>
-          <button className={section === 'workbench' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('workbench')}>
+          <button title={t('sidebar.processing')} aria-label={t('sidebar.processing')} className={section === 'workbench' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('workbench')}>
             <span className="nav-icon">▥</span><span>{t('sidebar.processing')}</span>
           </button>
-          <button className={section === 'indicators' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('indicators')}>
-            <span className="nav-icon">◈</span><span>{t('sidebar.indicators')}</span>
-          </button>
-          <button className={section === 'analytics' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('analytics')}>
-            <span className="nav-icon">◎</span><span>{t('sidebar.data_science')}</span>
-          </button>
-          <button className={section === 'visualizations' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('visualizations')}>
-            <span className="nav-icon">◩</span><span>{t('sidebar.visualizations')}</span>
+          <div className="nav-group">
+            <button
+              type="button"
+              title="Datos y análisis"
+              aria-label="Datos y análisis"
+              aria-expanded={dataMenuOpen}
+              aria-controls="data-submenu"
+              className={`nav-item nav-group-trigger ${['indicators', 'analytics', 'visualizations'].includes(section) ? 'active' : ''}`}
+              onClick={() => setDataMenuOpen((open) => !open)}
+            >
+              <span className="nav-icon">▦</span><span>Datos y análisis</span><span className="nav-chevron">{dataMenuOpen ? '⌄' : '›'}</span>
+            </button>
+            {dataMenuOpen && (
+              <div id="data-submenu" className="nav-submenu" aria-label="Módulos de datos y análisis">
+                <button title={t('sidebar.indicators')} aria-label={t('sidebar.indicators')} className={section === 'indicators' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('indicators')}>
+                  <span className="nav-icon">◈</span><span>{t('sidebar.indicators')}</span>
+                </button>
+                <button title={t('sidebar.data_science')} aria-label={t('sidebar.data_science')} className={section === 'analytics' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('analytics')}>
+                  <span className="nav-icon">◎</span><span>{t('sidebar.data_science')}</span>
+                </button>
+                <button title={t('sidebar.visualizations')} aria-label={t('sidebar.visualizations')} className={section === 'visualizations' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('visualizations')}>
+                  <span className="nav-icon">◩</span><span>{t('sidebar.visualizations')}</span>
+                </button>
+              </div>
+            )}
+          </div>
+          <button title="Balam Data System" aria-label="Balam Data System" className={section === 'team' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('team')}>
+            <span className="nav-icon">B</span><span>Balam Data System</span>
           </button>
         </nav>
         <div className="sidebar-bottom">
@@ -692,12 +658,6 @@ function App() {
                     busy={busy}
                     curatedVizUrl={curatedVizUrl}
                     onSelectCuratedViz={(endpoint) => setCuratedVizUrl(endpoint)}
-                    onUseInWorkbench={() => {
-                      setParquet(analysis.ruta_parquet);
-                      if (analysis.agrupado_por) setGroupColumn(analysis.agrupado_por);
-                      setSection('workbench');
-                      setProcessTab('summary');
-                    }}
                     onReanalyze={(overrides) => void analyzeDatasetResource(selected.id, {
                       recursoId: analysis.recurso_id,
                       hojaId: overrides.hojaId ?? analysis.hoja_actual ?? 1,
@@ -714,56 +674,25 @@ function App() {
                   <div className="datastore-box">
                     <div className="datastore-box-head">
                       <div>
-                        <div className="section-kicker">API CKAN DATASTORE</div>
-                        <strong>Consulta tabular en línea sin descarga completa</strong>
-                        <span>Recurso activo: <code>{selectedResourceId || resources[0]?.id}</code></span>
-                      </div>
-                      <div className="datastore-mode-switch">
-                        <button
-                          type="button"
-                          className={datastoreMode === 'search' ? 'button button-dark' : 'button button-outline'}
-                          onClick={() => setDatastoreMode('search')}
-                        >
-                          Filtro rápido
-                        </button>
-                        <button
-                          type="button"
-                          className={datastoreMode === 'sql' ? 'button button-dark' : 'button button-outline'}
-                          onClick={() => {
-                            const id = selectedResourceId || resources[0]?.id || '';
-                            if (!datastoreSqlText.includes(id)) {
-                              setDatastoreSqlText(`SELECT * FROM "${id}" LIMIT 10`);
-                            }
-                            setDatastoreMode('sql');
-                          }}
-                        >
-                          Consulta SQL
-                        </button>
+                        <div className="section-kicker">CONSULTA DE REGISTROS</div>
+                        <strong>Busca información dentro del conjunto</strong>
+                        <span>Revisa registros en línea sin descargar el archivo completo.</span>
                       </div>
                     </div>
 
                     <form className="datastore-form" onSubmit={(e) => void submitDatastoreQuery(e)}>
                       <div>
-                        <strong>{datastoreMode === 'search' ? 'Buscar texto en registros' : 'Sentencia SQL sobre recurso'}</strong>
-                        <span>{datastoreMode === 'search' ? 'Ejecuta datastore/consulta en CKAN.' : 'Ejecuta datastore/consulta-sql en CKAN.'}</span>
+                        <strong>Buscar en los registros</strong>
+                        <span>Deja vacío para mostrar las primeras filas disponibles.</span>
                       </div>
-                      {datastoreMode === 'search' ? (
-                        <input
-                          value={datastoreQuery}
-                          onChange={(e) => setDatastoreQuery(e.target.value)}
-                          placeholder="Término opcional (dejar vacío para listar filas)..."
-                          aria-label="Texto de búsqueda en Datastore"
-                        />
-                      ) : (
-                        <input
-                          value={datastoreSqlText}
-                          onChange={(e) => setDatastoreSqlText(e.target.value)}
-                          placeholder='SELECT * FROM "<resource_id>" LIMIT 10'
-                          aria-label="Sentencia SQL para Datastore"
-                        />
-                      )}
+                      <input
+                        value={datastoreQuery}
+                        onChange={(e) => setDatastoreQuery(e.target.value)}
+                        placeholder="Escribe una palabra o un dato..."
+                        aria-label="Buscar en los registros"
+                      />
                       <button type="submit" className="button button-outline" disabled={busy === 'datastore'}>
-                        {busy === 'datastore' ? 'Consultando…' : 'Consultar'}
+                        {busy === 'datastore' ? 'Buscando…' : 'Buscar'}
                       </button>
                     </form>
 
@@ -771,7 +700,7 @@ function App() {
                       <div className="preview-wrap">
                         <div className="preview-title">
                           <div>
-                            <strong>Resultados Datastore CKAN</strong>
+                            <strong>Registros encontrados</strong>
                             <span>{datastoreRows.length} filas mostradas{datastoreTotal !== null ? ` de ${datastoreTotal.toLocaleString('es-GT')} totales` : ''}</span>
                           </div>
                           <span className="format-badge">DATASTORE</span>
@@ -803,27 +732,14 @@ function App() {
           )}
           {section === 'workbench' && (
             <>
-              <section className="page-heading workbench-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> HERRAMIENTAS DE ANÁLISIS</div><h1>De los datos a<br /><em>nuevas perspectivas.</em></h1><p className="intro">Procesa archivos, crea resúmenes y genera visualizaciones con los datos del INE.</p></div><div className="process-orbit"><div className="orbit-ring"><span>DATOS</span><b>→</b><span>HALLAZGOS</span></div><i>✳</i></div></section>
+              <section className="page-heading workbench-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> HERRAMIENTAS DE ANÁLISIS</div><h1>De los datos a<br /><em>nuevas perspectivas.</em></h1><p className="intro">Explora mapas y exporta visualizaciones con los datos del INE.</p></div><div className="process-orbit"><div className="orbit-ring"><span>DATOS</span><b>→</b><span>HALLAZGOS</span></div><i>✳</i></div></section>
               <div className="workbench-tabs" role="tablist" aria-label="Herramientas de procesamiento">
-                <button id="process-tab-summary" className={processTab === 'summary' ? 'active' : ''} type="button" role="tab" aria-selected={processTab === 'summary'} aria-controls="process-content" onClick={() => { setProcessTab('summary'); setMapUrl(''); }}>Resumen</button>
                 <button id="process-tab-maps" className={processTab === 'maps' ? 'active' : ''} type="button" role="tab" aria-selected={processTab === 'maps'} aria-controls="process-content" onClick={() => { setProcessTab('maps'); setMapUrl(''); }}>Mapas</button>
                 <button id="process-tab-exports" className={processTab === 'exports' ? 'active' : ''} type="button" role="tab" aria-selected={processTab === 'exports'} aria-controls="process-content" onClick={() => { setProcessTab('exports'); setMapUrl(''); }}>Exportaciones</button>
               </div>
               <div id="process-content" className="processing-content" role="tabpanel" aria-labelledby={`process-tab-${processTab}`} tabIndex={0}>
-                {processTab === 'summary' && <>
-                  <div className="file-path-card"><div className="file-path-icon">▧</div><div><strong>Parquet para resumen estadístico</strong><span>Usa aquí el archivo detallado que quieres agrupar.</span></div><input value={parquet} onChange={(event) => setParquet(event.target.value)} placeholder="Ej. movilidad/accidentes_fallecidos_lesionados_2024.parquet" aria-label="Ruta del archivo Parquet" /></div>
-                  <div className="workbench-grid">
-                    <section className="tool-card"><div className="tool-card-head"><span className="tool-number">01</span><div><div className="section-kicker">ANÁLISIS DE DATOS</div><h2>Resumen estadístico</h2></div></div><p>Agrupa y cuenta registros del conjunto seleccionado.</p>
-                      <form className="tool-form" onSubmit={(event) => void submitSummary(event)}><label>AGRUPAR POR<input required value={groupColumn} onChange={(event) => setGroupColumn(event.target.value)} placeholder="depto_ocu" /></label><div className="form-pair"><label>COLUMNA DE FILTRO<input value={filterColumn} onChange={(event) => setFilterColumn(event.target.value)} placeholder="año_ocu" /></label><label>VALOR<input value={filterValue} onChange={(event) => setFilterValue(event.target.value)} placeholder="2024" /></label></div><button className="button button-dark" disabled={busy === 'summary' || !parquet.trim()}>{busy === 'summary' ? 'Calculando…' : 'Generar resumen'} <span>→</span></button></form>
-                    </section>
-                    <section className="tool-card conversion-card"><div className="tool-card-head"><span className="tool-number coral">02</span><div><div className="section-kicker">PREPARACIÓN</div><h2>Convertir a Parquet</h2></div></div><p>Convierte una hoja de cálculo disponible para analizarla con mayor rapidez.</p>
-                      <form className="tool-form" onSubmit={(event) => void submitConversion(event)}><label>RUTA DEL ARCHIVO EXCEL<input required value={excelPath} onChange={(event) => { setExcelPath(event.target.value); setWorkbook(null); }} placeholder="carpeta/datos.xlsx" /></label><button type="button" className="button button-outline" disabled={!excelPath.trim() || busy === 'inspect'} onClick={() => void inspectWorkbook()}>{busy === 'inspect' ? 'Inspeccionando…' : 'Inspeccionar hojas'}</button>{workbook?.hojas?.length ? <label>HOJA DEL ARCHIVO<select value={sheetId} onChange={(event) => setSheetId(Number(event.target.value))}>{workbook.hojas.map((sheet, index) => <option key={`${sheet}-${index}`} value={index + 1}>{index + 1}. {sheet}</option>)}</select></label> : null}<label>NOMBRE DE SALIDA<input required value={outputPath} onChange={(event) => setOutputPath(event.target.value)} placeholder="resumen_datos.parquet" /></label><button className="button button-outline" disabled={busy === 'convert'}>{busy === 'convert' ? 'Convirtiendo…' : 'Convertir archivo'} <span>↗</span></button></form>
-                    </section>
-                  </div>
-                  {summary && <SummaryChart summary={summary} max={chartMax} />}
-                </>}
                 {processTab === 'maps' && <section className="tool-card maps-card">
-                  <div className="tool-card-head"><span className="tool-number">03</span><div><div className="section-kicker">VISUALIZACIÓN GEOGRÁFICA</div><h2>Mapas de Guatemala</h2></div></div>
+                  <div className="tool-card-head"><span className="tool-number">01</span><div><div className="section-kicker">VISUALIZACIÓN GEOGRÁFICA</div><h2>Mapas de Guatemala</h2></div></div>
                   <p>Genera mapas interactivos con datos estadísticos por departamento.</p>
                   <div className="map-source map-filters">
                     <div className="map-filters-grid">
@@ -909,7 +825,7 @@ function App() {
                   )}
                 </section>}
                 {processTab === 'exports' && <section className="tool-card maps-card">
-                  <div className="tool-card-head"><span className="tool-number coral">04</span><div><div className="section-kicker">EXPORTACIÓN AVANZADA</div><h2>Modelos y renders</h2></div></div>
+                  <div className="tool-card-head"><span className="tool-number coral">02</span><div><div className="section-kicker">EXPORTACIÓN AVANZADA</div><h2>Modelos y renders</h2></div></div>
                   <p>Descarga modelos 3D listos para impresión o genera un render de presentación.</p>
                   <div className="map-source export-dataset"><span>DATOS SELECCIONADOS EN MAPAS</span><strong>{selectedMapIndicator?.titulo_mapa || 'Selecciona primero un tema en la pestaña Mapas.'}</strong><small>Los modelos y renders usarán los datos y el año seleccionados.</small></div>
                   <div className="export-grid">
@@ -923,6 +839,82 @@ function App() {
           {section === 'indicators' && <IndicatorsSection onNotify={notify} onOpenVizForIndicator={openIndicatorInVisualizations} />}
           {section === 'analytics' && <AnalyticsSection onNotify={notify} onOpenVizForIndicator={openIndicatorInVisualizations} />}
           {section === 'visualizations' && <VisualizationsSection initialIndicator={vizFocusIndicator} onNotify={notify} />}
+          {section === 'team' && (
+            <>
+              <section className="page-heading team-page-heading">
+                <div>
+                  <div className="eyebrow"><span className="eyebrow-line" /> CONOCE AL EQUIPO</div>
+                  <h1>Balam Data<br /><em>System.</em></h1>
+                  <p className="intro">Somos un equipo de cuatro personas que impulsa una forma más clara y accesible de explorar los datos estadísticos de Guatemala.</p>
+                  <div className="team-hero-tags" aria-label="Enfoque del equipo">
+                    <span>4 integrantes</span><span>Datos abiertos</span><span>Guatemala</span>
+                  </div>
+                </div>
+                <div className="team-mark">
+                  <img src="/balam-data-systems.png" alt="Logo de Balam Data Systems" />
+                </div>
+              </section>
+
+              <section className="team-section">
+                <div className="section-title-row">
+                  <div><div className="section-kicker">UN EQUIPO MULTIDISCIPLINARIO</div><h2>Cuatro roles, un mismo propósito</h2></div>
+                </div>
+                <p className="team-note">Selecciona un perfil para conocer cómo aporta al proyecto. Los nombres se pueden personalizar.</p>
+                <div className="team-grid" role="group" aria-label="Perfiles del equipo Balam Data System">
+                  {TEAM_PROFILES.map((profile, index) => (
+                    <button
+                      type="button"
+                      className={activeTeamProfile === index ? 'team-card active' : 'team-card'}
+                      key={profile.title}
+                      aria-pressed={activeTeamProfile === index}
+                      onClick={() => setActiveTeamProfile(index)}
+                    >
+                      <span className="team-card-topline"><span className="team-card-number">0{index + 1}</span><span className="team-card-indicator" /></span>
+                      <span className="team-card-label">PERFIL DE EJEMPLO</span>
+                      <strong className="team-card-title">{profile.title}</strong>
+                      <span className="team-card-focus">{profile.focus}</span>
+                      <span className="team-card-action">{activeTeamProfile === index ? 'Perfil seleccionado' : 'Conocer su aporte'} <span aria-hidden="true">→</span></span>
+                    </button>
+                  ))}
+                </div>
+                <article className="team-profile-detail" key={TEAM_PROFILES[activeTeamProfile].title} aria-live="polite">
+                  <div className="team-profile-detail-heading">
+                    <span className="team-profile-detail-number">0{activeTeamProfile + 1}</span>
+                    <div><div className="section-kicker">APORTE AL PROYECTO</div><h3>{TEAM_PROFILES[activeTeamProfile].title}</h3></div>
+                  </div>
+                  <p>{TEAM_PROFILES[activeTeamProfile].focus}</p>
+                  <ul>
+                    {TEAM_PROFILES[activeTeamProfile].responsibilities.map((responsibility) => (
+                      <li key={responsibility}><span aria-hidden="true">✓</span>{responsibility}</li>
+                    ))}
+                  </ul>
+                </article>
+              </section>
+
+              <section className="team-section">
+                <div className="section-title-row">
+                  <div><div className="section-kicker">EXPLORA LA PLATAFORMA</div><h2>¿Qué quieres descubrir?</h2></div>
+                </div>
+                <div className="team-examples-grid">
+                  {PLATFORM_EXAMPLES.map((example) => (
+                    <button
+                      className="team-example-card"
+                      type="button"
+                      key={example.title}
+                      onClick={() => {
+                        if (example.target === 'indicators' || example.target === 'visualizations') setDataMenuOpen(true);
+                        setSection(example.target);
+                      }}
+                    >
+                      <span className="team-example-icon" aria-hidden="true">{example.icon}</span>
+                      <span className="team-example-copy"><strong>{example.title}</strong><span>{example.description}</span></span>
+                      <span className="team-example-arrow" aria-hidden="true">↗</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            </>
+          )}
           <footer className="page-footer"><span>Instituto Nacional de Estadística · Guatemala</span><span>Información estadística oficial</span><a href="https://www.ine.gob.gt/" target="_blank" rel="noreferrer">ine.gob.gt ↗</a></footer>
         </div>
       </main>
@@ -937,14 +929,12 @@ function DatasetAnalysisPanel({
   busy,
   curatedVizUrl,
   onSelectCuratedViz,
-  onUseInWorkbench,
   onReanalyze,
 }: {
   analysis: DatasetAnalysisResponse;
   busy: string;
   curatedVizUrl: string;
   onSelectCuratedViz: (endpoint: string) => void;
-  onUseInWorkbench: () => void;
   onReanalyze: (overrides: { hojaId?: number; agruparPor?: string; columnaValor?: string; regenerar?: boolean }) => void;
 }) {
   return (
@@ -970,9 +960,6 @@ function DatasetAnalysisPanel({
             onClick={() => onReanalyze({ regenerar: true })}
           >
             Reprocesar
-          </button>
-          <button type="button" className="button button-dark" onClick={onUseInWorkbench}>
-            Usar en Procesamiento →
           </button>
         </div>
       </div>
@@ -1172,6 +1159,8 @@ function DatasetAnalysisPanel({
 function DatasetChartCard({ chart, plotlyUrl }: { chart: DatasetChartItem; plotlyUrl: string }) {
   const maxVal = Math.max(1, ...chart.datos.map((d) => d.valor));
   const totalVal = Math.max(1e-9, chart.datos.reduce((acc, item) => acc + item.valor, 0));
+  const [zoom, setZoom] = useState(1);
+  const [chartVisible, setChartVisible] = useState(true);
 
   return (
     <article className="chart-card">
@@ -1181,99 +1170,129 @@ function DatasetChartCard({ chart, plotlyUrl }: { chart: DatasetChartItem; plotl
           <h3>{chart.titulo}</h3>
           <p>{chart.subtitulo}</p>
         </div>
-        <a href={plotlyUrl} target="_blank" rel="noreferrer" className="chart-expand-link" title="Abrir gráfica interactiva en Plotly">
-          Plotly ↗
-        </a>
+        <div className="chart-card-actions">
+          <div className="chart-zoom-controls" aria-label="Controles de tamaño de gráfica">
+            <button type="button" aria-label="Alejar gráfica" disabled={zoom <= 0.75} onClick={() => setZoom((current) => Math.max(0.75, Number((current - 0.25).toFixed(2))))}>−</button>
+            <span aria-live="polite">{Math.round(zoom * 100)}%</span>
+            <button type="button" aria-label="Acercar gráfica" disabled={zoom >= 2} onClick={() => setZoom((current) => Math.min(2, Number((current + 0.25).toFixed(2))))}>+</button>
+            <button type="button" onClick={() => setZoom(1)}>Restablecer</button>
+          </div>
+          <button type="button" className="chart-visibility-button" onClick={() => setChartVisible((visible) => !visible)}>
+            {chartVisible ? 'Ocultar gráfica' : 'Mostrar gráfica'}
+          </button>
+          <a href={plotlyUrl} target="_blank" rel="noreferrer" className="chart-expand-link" title="Abrir gráfica interactiva en otra pestaña">
+            Ampliar ↗
+          </a>
+        </div>
       </div>
 
-      {chart.tipo === 'donut' ? (
-        <div className="donut-layout">
-          <svg viewBox="0 0 120 120" className="donut-svg" role="img" aria-label={chart.titulo}>
-            <circle cx="60" cy="60" r="42" fill="none" stroke="#e9f1fa" strokeWidth="18" />
-            {(() => {
-              const radius = 42;
-              const circumference = 2 * Math.PI * radius;
-              let accumulated = 0;
-              return chart.datos.map((item, idx) => {
-                const fraction = item.valor / totalVal;
-                const dash = fraction * circumference;
-                const offset = -accumulated * circumference;
-                accumulated += fraction;
-                return (
-                  <circle
-                    key={item.etiqueta}
-                    cx="60"
-                    cy="60"
-                    r={radius}
-                    fill="none"
-                    stroke={CHART_PALETTE[idx % CHART_PALETTE.length]}
-                    strokeWidth="18"
-                    strokeDasharray={`${dash} ${circumference}`}
-                    strokeDashoffset={offset}
-                    transform="rotate(-90 60 60)"
-                  >
-                    <title>{`${item.etiqueta}: ${item.valor.toLocaleString('es-GT')} (${item.porcentaje}%)`}</title>
-                  </circle>
-                );
-              });
-            })()}
-          </svg>
-          <ul className="donut-legend">
-            {chart.datos.map((item, idx) => (
-              <li key={item.etiqueta}>
-                <i style={{ background: CHART_PALETTE[idx % CHART_PALETTE.length] }} />
-                <span>{item.etiqueta}</span>
-                <strong>{item.porcentaje}%</strong>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : chart.tipo === 'line' ? (
-        <div className="line-chart-wrap">
-          <svg viewBox="0 0 360 150" className="line-chart-svg" role="img" aria-label={chart.titulo}>
-            <line x1="20" y1="125" x2="345" y2="125" stroke="#d9e7f5" strokeWidth="1" />
-            {(() => {
-              const pts = chart.datos;
-              const width = 310;
-              const height = 95;
-              const step = pts.length > 1 ? width / (pts.length - 1) : 0;
-              const coords = pts.map((p, idx) => ({
-                x: 25 + idx * step,
-                y: 120 - (p.valor / maxVal) * height,
-                item: p,
-              }));
-              const polyline = coords.map((c) => `${c.x},${c.y}`).join(' ');
-              const area = `25,125 ${polyline} ${coords[coords.length - 1].x},125`;
-              return (
-                <>
-                  <polygon points={area} fill="rgba(0, 128, 255, 0.12)" />
-                  <polyline fill="none" stroke="#0068c8" strokeWidth="2.5" points={polyline} />
-                  {coords.map((c) => (
-                    <circle key={c.item.etiqueta} cx={c.x} cy={c.y} r="4" fill="#004080">
-                      <title>{`${c.item.etiqueta}: ${c.item.valor.toLocaleString('es-GT')}`}</title>
-                    </circle>
+      {chartVisible && (
+        <div className="chart-viewport" role="region" tabIndex={0} aria-label={`Gráfica desplazable: ${chart.titulo}`}>
+          <div className="chart-scaled-content" style={{ width: `${zoom * 100}%` }}>
+            {chart.tipo === 'donut' ? (
+              <div className="donut-layout">
+                <svg viewBox="0 0 120 120" className="donut-svg" role="img" aria-label={chart.titulo}>
+                  <circle cx="60" cy="60" r="42" fill="none" stroke="#e9f1fa" strokeWidth="18" />
+                  {(() => {
+                    const radius = 42;
+                    const circumference = 2 * Math.PI * radius;
+                    let accumulated = 0;
+                    return chart.datos.map((item, idx) => {
+                      const fraction = item.valor / totalVal;
+                      const dash = fraction * circumference;
+                      const offset = -accumulated * circumference;
+                      accumulated += fraction;
+                      return (
+                        <circle
+                          key={item.etiqueta}
+                          cx="60"
+                          cy="60"
+                          r={radius}
+                          fill="none"
+                          stroke={CHART_PALETTE[idx % CHART_PALETTE.length]}
+                          strokeWidth="18"
+                          strokeDasharray={`${dash} ${circumference}`}
+                          strokeDashoffset={offset}
+                          transform="rotate(-90 60 60)"
+                        >
+                          <title>{`${item.etiqueta}: ${item.valor.toLocaleString('es-GT')} (${item.porcentaje}%)`}</title>
+                        </circle>
+                      );
+                    });
+                  })()}
+                </svg>
+                <ul className="donut-legend">
+                  {chart.datos.map((item, idx) => (
+                    <li
+                      key={item.etiqueta}
+                      title={`${item.etiqueta}: ${item.valor.toLocaleString('es-GT')} ${chart.eje_y} (${item.porcentaje}%)`}
+                    >
+                      <i style={{ background: CHART_PALETTE[idx % CHART_PALETTE.length] }} />
+                      <span>{item.etiqueta}</span>
+                      <strong>{item.porcentaje}%</strong>
+                    </li>
                   ))}
-                </>
-              );
-            })()}
-          </svg>
-          <div className="line-chart-labels">
-            <span>{chart.datos[0]?.etiqueta}</span>
-            <span>{chart.datos[Math.floor(chart.datos.length / 2)]?.etiqueta}</span>
-            <span>{chart.datos[chart.datos.length - 1]?.etiqueta}</span>
-          </div>
-        </div>
-      ) : (
-        <div className="summary-bars">
-          {chart.datos.map((item) => (
-            <div className="bar-row" key={item.etiqueta}>
-              <span className="bar-label" title={item.etiqueta}>{item.etiqueta}</span>
-              <div className="bar-track">
-                <i style={{ width: `${Math.max(2, (item.valor / maxVal) * 100)}%` }} />
+                </ul>
               </div>
-              <strong>{item.valor.toLocaleString('es-GT')}</strong>
-            </div>
-          ))}
+            ) : chart.tipo === 'line' ? (
+              <div className="line-chart-wrap">
+                <svg viewBox="0 0 360 150" className="line-chart-svg" role="img" aria-label={chart.titulo}>
+                  <line x1="20" y1="125" x2="345" y2="125" stroke="#d9e7f5" strokeWidth="1" />
+                  {(() => {
+                    const pts = chart.datos;
+                    const width = 310;
+                    const height = 95;
+                    const step = pts.length > 1 ? width / (pts.length - 1) : 0;
+                    const coords = pts.map((p, idx) => ({
+                      x: 25 + idx * step,
+                      y: 120 - (p.valor / maxVal) * height,
+                      item: p,
+                    }));
+                    const polyline = coords.map((c) => `${c.x},${c.y}`).join(' ');
+                    const area = `25,125 ${polyline} ${coords[coords.length - 1].x},125`;
+                    return (
+                      <>
+                        <polygon points={area} fill="rgba(0, 128, 255, 0.12)" />
+                        <polyline fill="none" stroke="#0068c8" strokeWidth="2.5" points={polyline} />
+                        {coords.map((c) => (
+                          <circle
+                            key={c.item.etiqueta}
+                            cx={c.x}
+                            cy={c.y}
+                            r="4"
+                            fill="#004080"
+                          >
+                            <title>{`${c.item.etiqueta}: ${c.item.valor.toLocaleString('es-GT')} ${chart.eje_y}`}</title>
+                          </circle>
+                        ))}
+                      </>
+                    );
+                  })()}
+                </svg>
+                <div className="line-chart-labels">
+                  <span>{chart.datos[0]?.etiqueta}</span>
+                  <span>{chart.datos[Math.floor(chart.datos.length / 2)]?.etiqueta}</span>
+                  <span>{chart.datos[chart.datos.length - 1]?.etiqueta}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="summary-bars">
+                {chart.datos.map((item) => (
+                  <div
+                    className="bar-row chart-data-point"
+                    key={item.etiqueta}
+                    title={`${item.etiqueta}\n${chart.eje_y}: ${item.valor.toLocaleString('es-GT')}\nParticipación: ${item.porcentaje}%`}
+                  >
+                    <span className="bar-label">{item.etiqueta}</span>
+                    <div className="bar-track">
+                      <i style={{ width: `${Math.max(2, (item.valor / maxVal) * 100)}%` }} />
+                    </div>
+                    <strong>{item.valor.toLocaleString('es-GT')}</strong>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </article>
@@ -1282,10 +1301,6 @@ function DatasetChartCard({ chart, plotlyUrl }: { chart: DatasetChartItem; plotl
 
 function PreviewTable({ preview }: { preview: PreviewResponse }) {
   return <div className="preview-wrap"><div className="preview-title"><div><strong>Vista previa</strong><span>{preview.nombre || preview.dataset} · {preview.total_filas_muestra} filas de muestra</span></div>{preview.hojas?.length ? <span className="format-badge">{preview.hojas[preview.hoja_actual ? preview.hoja_actual - 1 : 0]}</span> : null}</div><div className="table-scroll"><table><thead><tr>{preview.columnas.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{preview.filas_muestra.map((row, index) => <tr key={index}>{preview.columnas.map((column) => <td key={column}>{displayValue(row[column])}</td>)}</tr>)}</tbody></table></div></div>;
-}
-
-function SummaryChart({ summary, max }: { summary: SummaryResponse; max: number }) {
-  return <section className="summary-result"><div className="summary-heading"><div><div className="section-kicker">RESULTADO DEL ANÁLISIS</div><h2>Registros por {summary.agrupado_por}</h2></div><span>{summary.total_grupos} grupos</span></div><div className="summary-bars">{summary.datos.map((row, index) => { const count = Number(row.conteo) || 0; return <div className="bar-row" key={`${displayValue(row[summary.agrupado_por])}-${index}`}><span className="bar-label">{displayValue(row[summary.agrupado_por])}</span><div className="bar-track"><i style={{ width: `${Math.max(1, (count / max) * 100)}%` }} /></div><strong>{count.toLocaleString('es-GT')}</strong></div>; })}</div></section>;
 }
 
 export default App;
