@@ -1,0 +1,135 @@
+{
+  "sidebar": {
+    "section": "CHAKUB'ÄL RE TZIJ",
+    "explore": "Rilik taq tzij",
+    "processing": "Uchakuxik tzij",
+    "indicators": "Retal k'aslemal xuquje' pwaqil",
+    "data_science": "No'jib'al chi rij tzij",
+    "visualizations": "Wachib'äl re tzij",
+    "card_title": "Tzij rech cha'onik",
+    "card_desc": "Qastzij tzij re ri tinamit Paxil Kayala' (Guatemala).",
+    "footer": "QASTZIJ TZIJ · GUATEMALA"
+  },
+  "header": {
+    "breadcrumb": "INE / CHOLAJIL RE TZIJ",
+    "lang_label": "Ch'ab'äl"
+  },
+  "hero": {
+    "tag": "JAQALIK TZIJ · INE GUATEMALA",
+    "title": "Chawila' ri taq tzij ri kkisilab'isaj ri tinamit.",
+    "subtitle": "Chariqa' ri qastzij molaj tzij xuquje' chakoj pa ri anik'oxik."
+  },
+  "search": {
+    "placeholder": "Chatzukuj jun na'oj, tzij o molaj tzij...",
+    "button": "Tzukuxik",
+    "area_label": "UWACH CHAK",
+    "all_areas": "Konojel ri uwach chak"
+  },
+  "repo": {
+    "tag": "K'OLB'ÄL TZIJ INE",
+    "title": "Molaj taq tzij",
+    "catalog_badge": "Cholajil INE",
+    "dataset_tag": "MOLAJ TZIJ",
+    "resource_singular": "chakub'äl",
+    "resource_plural": "chakub'äl",
+    "view_dataset": "Rilik molaj ↗"
+  },
+  "datasets": [
+    {
+      "id": "importaciones",
+      "title": "K'AMOWÄK PA CH'AQAP ULEW (IMPORTACIONES)",
+      "description": "Qastzij tzij chi rij ri jastaq che k'amom uloq pa najtinamit, ri okinaq pa ri nima'q taq k'olb'äl jukub' xuquje' xik'ach'ich' re ri tinamit, jachom pa uwach ri Sistema Arancelario Centroamericano -SAC-.",
+      "resources": 9,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "exportaciones",
+      "title": "TAQOWÄK PA CH'AQAP ULEW (EXPORTACIONES)",
+      "description": "Qastzij tzij chi rij ri elib'äl jastaq pa ri jalajoj taq k'olb'äl jukub' xuquje' xik'ach'ich' re ri tinamit, jachom pa uwach ri Sistema Arancelario Centroamericano (SAC).",
+      "resources": 10,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "destace-de-ganado",
+      "title": "Ut'oq'ixik awaj (DESTACE DE GANADO)",
+      "description": "Ri tzij k'o pa ri k'olb'äl awaj re ri tinamit (rech k'uxb'äl pa ri qa-tinamit) xuquje' ri rech k'ayb'äl pa najtinamit (exportación).",
+      "resources": 8,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "gestion-de-riesgos",
+      "title": "UCHAXIK K'ÄX XUQUJE' B'ANOW K'ÄX (GESTIÓN DE RIESGOS)",
+      "description": "We jun peraj ri' kuk'ut ri k'ulmatajik xuquje' k'äx pa ri tinamit, ri uq'atb'al chi ke ri winaq, ja, b'e/k'olb'äl xuquje' tiko'n rech junab' 2025, mulim pa INSIVUMEH, MAGA xuquje' SECONRED.",
+      "resources": 3,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "acceso-a-la-tierra",
+      "title": "RIK'IK ULEW (ACCESO A LA TIERRA)",
+      "description": "We jun peraj ri' kuk'ut tzij chi ke ri ja'l ri ke'to'ik rumal ri chak rech ulew, pa to'b'äl pwaq rech majb'äl, loq'b'äl xuquje' ya'b'äl ulew rech junab' 2025, mulim pa FONTIERRAS.",
+      "resources": 4,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "desechos-solidos",
+      "title": "K'ISIB'ÄL JASTAQ / MES (DESECHOS SÓLIDOS)",
+      "description": "We jun peraj ri' kuk'ut ri uq'atb'al ri k'aslemal xuquje' pwaqil chi rij ri uwach ulew rumal ri mes pa junab' 2025, mulim pa MUNIGUATE, AMSA xuquje' IGSS.",
+      "resources": 5,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "gestion-ambiental",
+      "title": "UCHAXIK UWACH ULEW (GESTIÓN AMBIENTAL)",
+      "description": "We jun peraj ri' kuk'ut ri chak re pwaqil xuquje' taqanik rech utzil re ri uwach ulew pa junab' 2025, mulim pa PNC, MP, MAGA xuquje' MINFIN.",
+      "resources": 10,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "clima-y-atmosfera",
+      "title": "KAJ XUQUJE' UJALAJOJ K'AT (CLIMA Y ATMÓSFERA)",
+      "description": "We jun peraj ri' kuk'ut tzij chi rij ri kaj xuquje' ri tew/kaq'iq' ri ketzukux pa ri k'olb'äl etabal kaj pa junab' 2025, mulim pa INSIVUMEH, ICC xuquje' AMSCLAE.",
+      "resources": 4,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "recursos-hidricos",
+      "title": "JÄ' RE RI TINAMIT (RECURSOS HÍDRICOS)",
+      "description": "We jun peraj ri' kuk'ut ri rilik ri jä' pa ronojel ri tinamit pa junab' 2025, mulim pa AMSA, INSIVUMEH, AMSCLAE xuquje' EMPAGUA.",
+      "resources": 8,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "ecosistemas",
+      "title": "K'ASLEMAL PA UWACH ULEW (ECOSISTEMAS)",
+      "description": "We jun peraj ri' kuk'ut tzij chi rij ri chak ri kkito' ri k'aslemal xuquje' utzil re ri uwach ulew pa junab' 2025, mulim pa INAB xuquje' CONAP.",
+      "resources": 8,
+      "date": "20/11/2026"
+    },
+    {
+      "id": "estadisticas-vitales-defunciones",
+      "title": "TZIJ RE K'ASLEMAL - KAMIK (DEFUNCIONES)",
+      "description": "Ri tzij re k'aslemal k'o pa ri tz'ib'anik chi rij alaxik, kamik, k'ulaxik xuquje' jachb'äl k'ulaxik, rech kil ri jalajoj b'anow chi rij ri winaq xuquje' ri chak re utzil k'aslemal.",
+      "resources": 9,
+      "date": "20/11/2026"
+    },
+    {
+      "id": "estadisticas-vitales-nacimientos",
+      "title": "TZIJ RE K'ASLEMAL - ALAXIK (NACIMIENTOS)",
+      "description": "Ri tzij re k'aslemal k'o pa ri tz'ib'anik chi rij alaxik, kamik, k'ulaxik xuquje' jachb'äl k'ulaxik, rech kil ri jalajoj b'anow chi rij ri winaq xuquje' ri chak re utzil k'aslemal.",
+      "resources": 9,
+      "date": "20/11/2026"
+    }
+  ],
+  "pagination": {
+    "showing": "K'utb'äl 1–12 rech 112",
+    "previous": "← Chi'nab'e",
+    "current_page": "1/10",
+    "next": "Chiwach →"
+  },
+  "footer": {
+    "organization": "Instituto Nacional de Estadística · Guatemala",
+    "tagline": "Qastzij tzij re ri tinamit",
+    "website_label": "ine.gob.gt ↗",
+    "website_url": "https://www.ine.gob.gt"
+  }
+}

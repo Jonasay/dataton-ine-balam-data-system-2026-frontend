@@ -1,0 +1,135 @@
+{
+  "sidebar": {
+    "section": "PLATAFORMA ESTADÍSTICA",
+    "explore": "Explorar datos",
+    "processing": "Procesamiento",
+    "indicators": "Indicadores socioeconómicos",
+    "data_science": "Ciencia de datos",
+    "visualizations": "Visualizaciones",
+    "card_title": "Datos para decidir",
+    "card_desc": "Información estadística oficial de Guatemala.",
+    "footer": "ESTADÍSTICA OFICIAL · GUATEMALA"
+  },
+  "header": {
+    "breadcrumb": "INE / CATÁLOGO DE DATOS",
+    "lang_label": "Idioma"
+  },
+  "hero": {
+    "tag": "DATOS ABIERTOS · INE GUATEMALA",
+    "title": "Explora los datos que mueven al país.",
+    "subtitle": "Encuentra conjuntos estadísticos oficiales y lleva la información a tu análisis."
+  },
+  "search": {
+    "placeholder": "Busca un tema, palabra clave o conjunto...",
+    "button": "Buscar",
+    "area_label": "ÁREA TEMÁTICA",
+    "all_areas": "Todas las áreas"
+  },
+  "repo": {
+    "tag": "REPOSITORIO INE",
+    "title": "Conjuntos de datos",
+    "catalog_badge": "Catálogo INE",
+    "dataset_tag": "DATASET",
+    "resource_singular": "recurso",
+    "resource_plural": "recursos",
+    "view_dataset": "Ver conjunto ↗"
+  },
+  "datasets": [
+    {
+      "id": "importaciones",
+      "title": "IMPORTACIONES",
+      "description": "Información estadística referente a la adquisición de mercancías en el exterior, la cual ha ingresado por los principales puertos y aeropuertos del país, clasificada en secciones del Sistema Arancelario Centroamericano -SAC-.",
+      "resources": 9,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "exportaciones",
+      "title": "EXPORTACIONES",
+      "description": "Información Estadística referida a la salida de mercancía por los diferentes puertos y aeropuertos del país, clasificada por secciones del Sistema Arancelario Centroamericano (SAC)",
+      "resources": 10,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "destace-de-ganado",
+      "title": "Destace de ganado",
+      "description": "La información estadística, pertenece a rastros de ganado municipal (destace de ganado para consumo interno) como privado (destace de ganado tipo exportación)",
+      "resources": 8,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "gestion-de-riesgos",
+      "title": "GESTIÓN DE RIESGOS",
+      "description": "El capítulo presenta eventos y emergencias registradas en el país, sus efectos en las personas, viviendas, infraestructura y cultivos. Los cuadros que se visualizan forman parte de la recolección de registros administrativos sobre Gestión de Riesgos y Atención de Desastres durante el año 2025, recopilada de las fuentes: INSIVUMEH, MAGA y SECONRED.",
+      "resources": 3,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "acceso-a-la-tierra",
+      "title": "ACCESO A LA TIERRA",
+      "description": "El capítulo presenta información sobre las familias beneficiadas mediante los programas de acceso a la tierra, a través de créditos para arrendamiento, créditos para la compra y la adjudicación de tierras. Los cuadros que se visualizan forman parte de la recolección de registros administrativos sobre Acceso a la Tierra durante el año 2025, recopilada de las fuentes: FONTIERRAS.",
+      "resources": 4,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "desechos-solidos",
+      "title": "DESECHOS SOLIDOS",
+      "description": "El capítulo presenta información sobre el impacto de fenómenos sociales y económicos sobre el ambiente debido a la generación de basura. Los cuadros que se visualizan forman parte de la recolección de registros administrativos sobre Desechos Sólidos durante el año 2025, recopilada de las fuentes: MUNIGUATE, AMSA e IGSS.",
+      "resources": 5,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "gestion-ambiental",
+      "title": "GESTIÓN AMBIENTAL",
+      "description": "El capítulo presenta las implementaciones económicas y socio legales que se hacen en beneficio del ambiente. Los cuadros que se visualizan forman parte de la recolección de registros administrativos sobre Gestión Ambiental durante el año 2025, recopilada de las fuentes: PNC, MP, MAGA y MINFIN.",
+      "resources": 10,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "clima-y-atmosfera",
+      "title": "CLIMA Y ATMÓSFERA",
+      "description": "El capítulo presenta información sobre las variables climáticas del país que se registran a través de estaciones meteorológicas y el monitoreo del aire. Los cuadros que se visualizan forman parte de la recolección de registros administrativos sobre Clima y Atmósfera durante el año 2025, recopilada de las fuentes INSIVUMEH, ICC y AMSCLAE.",
+      "resources": 4,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "recursos-hidricos",
+      "title": "RECURSOS HIDRICOS",
+      "description": "El capítulo presenta el monitoreo del recurso hídrico en el territorio nacional. Los cuadros que se visualizan forman parte de los resultados de la recolección de registros administrativos sobre Recursos Hídricos durante el año 2025, recopilada de las fuentes: AMSA, INSIVUMEH, AMSCLAE y EMPAGUA.",
+      "resources": 8,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "ecosistemas",
+      "title": "ECOSISTEMAS",
+      "description": "El capítulo presenta datos estadisticos de acciones y actividades que contribuyen al mejoramiento y sostenibilidad de los ecosistemas del país. Los cuadros que se visualizan forman parte de la recolección de registros administrativos sobre Ecosistemas durante el año 2025, recopilada de las fuentes: INAB y CONAP.",
+      "resources": 8,
+      "date": "20/11/2026"
+    },
+    {
+      "id": "estadisticas-vitales-defunciones",
+      "title": "ESTADÍSTICAS VITALES - DEFUNCIONES",
+      "description": "Las estadísticas vitales resultan de los registros administrativos de nacimientos, defunciones fetales y no fetales, matrimonios y divorcios, que permiten contar con información sobre los cambios en los patrones de mortalidad, fecundidad y nupcialidad, proporcionando una visión dinámica de la población, como complemento al enfoque estático que proveen los censos poblacionales. Estas son ampliamente utilizadas para el cálculo de indicadores demográficos de gran importancia para el sector salud.",
+      "resources": 9,
+      "date": "20/11/2026"
+    },
+    {
+      "id": "estadisticas-vitales-nacimientos",
+      "title": "ESTADÍSTICAS VITALES - NACIMIENTOS",
+      "description": "Las estadísticas vitales resultan de los registros administrativos de nacimientos, defunciones fetales y no fetales, matrimonios y divorcios, que permiten contar con información sobre los cambios en los patrones de mortalidad, fecundidad y nupcialidad, proporcionando una visión dinámica de la población, como complemento al enfoque estático que proveen los censos poblacionales. Estas son ampliamente utilizadas para el cálculo de indicadores demográficos de gran importancia para el sector salud.",
+      "resources": 9,
+      "date": "20/11/2026"
+    }
+  ],
+  "pagination": {
+    "showing": "Mostrando 1–12 de 112",
+    "previous": "← Anterior",
+    "current_page": "1/10",
+    "next": "Siguiente →"
+  },
+  "footer": {
+    "organization": "Instituto Nacional de Estadística · Guatemala",
+    "tagline": "Información estadística oficial",
+    "website_label": "ine.gob.gt ↗",
+    "website_url": "https://www.ine.gob.gt"
+  }
+}

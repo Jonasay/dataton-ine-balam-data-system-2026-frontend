@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { useTranslation } from './i18n/LanguageContext';
 import {
   api,
   datasetChartHtmlUrl,
@@ -91,7 +92,33 @@ function formatBytes(bytes?: number | null): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function translateOrFallback(t: (path: string) => string, path: string, fallback: string): string {
+  const translation = t(path);
+  return translation === path ? fallback : translation;
+}
+
+function translateDatasetField(
+  t: (path: string) => string,
+  datasetId: string,
+  datasetName: string,
+  field: 'title' | 'description',
+  fallback: string,
+): string {
+  const idPath = `datasets.${datasetId}.${field}`;
+  const translationById = t(idPath);
+  if (translationById !== idPath) return translationById;
+
+  const slug = datasetName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  return translateOrFallback(t, `datasets.${slug}.${field}`, fallback);
+}
+
 function App() {
+  const { lang, setLang, t } = useTranslation();
   const [section, setSection] = useState<Section>('catalog');
   const [catalog, setCatalog] = useState<DatasetResponse>(emptyCatalog);
   const [groups, setGroups] = useState<DatasetGroup[]>(fallbackGroups);
@@ -510,33 +537,56 @@ function App() {
           <div className="brand-mark"><img src="/ine.png" alt="Logo del INE" /></div>
           <div className="brand-name"><strong>Instituto Nacional<br />de Estadística</strong><span>GUATEMALA</span></div>
         </div>
-        <div className="workspace-label">PLATAFORMA ESTADÍSTICA</div>
+        <div className="workspace-label">{t('sidebar.section')}</div>
         <nav className="side-nav" aria-label="Navegación principal">
           <button className={section === 'catalog' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('catalog')}>
-            <span className="nav-icon">⌕</span><span>Explorar datos</span>
+            <span className="nav-icon">⌕</span><span>{t('sidebar.explore')}</span>
           </button>
           <button className={section === 'workbench' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('workbench')}>
-            <span className="nav-icon">▥</span><span>Procesamiento</span>
+            <span className="nav-icon">▥</span><span>{t('sidebar.processing')}</span>
           </button>
           <button className={section === 'indicators' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('indicators')}>
-            <span className="nav-icon">◈</span><span>Indicadores socioeconómicos</span>
+            <span className="nav-icon">◈</span><span>{t('sidebar.indicators')}</span>
           </button>
           <button className={section === 'analytics' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('analytics')}>
-            <span className="nav-icon">◎</span><span>Ciencia de datos</span>
+            <span className="nav-icon">◎</span><span>{t('sidebar.data_science')}</span>
           </button>
           <button className={section === 'visualizations' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('visualizations')}>
-            <span className="nav-icon">◩</span><span>Visualizaciones</span>
+            <span className="nav-icon">◩</span><span>{t('sidebar.visualizations')}</span>
           </button>
         </nav>
         <div className="sidebar-bottom">
-          <div className="sidebar-note"><span className="note-icon">✳</span><div><strong>Datos para decidir</strong><p>Información estadística oficial de Guatemala.</p></div></div>
-          <div className="sidebar-footer"><span>ESTADÍSTICA OFICIAL · GUATEMALA</span></div>
+          <div className="sidebar-note"><span className="note-icon">✳</span><div><strong>{t('sidebar.card_title')}</strong><p>{t('sidebar.card_desc')}</p></div></div>
+          <div className="sidebar-footer"><span>{t('sidebar.footer')}</span></div>
         </div>
       </aside>
 
       <main className="main-content">
         <header className="topbar">
-          <div className="breadcrumb"><span className="breadcrumb-brand">INE</span><span>/</span> {SECTION_BREADCRUMBS[section]}</div>
+          <div className="breadcrumb">
+            {section === 'catalog' ? t('header.breadcrumb') : <><span className="breadcrumb-brand">INE</span><span>/</span> {SECTION_BREADCRUMBS[section]}</>}
+          </div>
+          <select
+            value={lang}
+            onChange={(event) => {
+              const nextLang = event.target.value;
+              if (nextLang === 'es' || nextLang === 'quc') setLang(nextLang);
+            }}
+            aria-label={t('header.lang_label')}
+            style={{
+              padding: '4px 10px',
+              borderRadius: '6px',
+              border: '1px solid #cbd5e1',
+              backgroundColor: '#ffffff',
+              color: '#1e293b',
+              fontSize: '12px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            <option value="es">Español (ES)</option>
+            <option value="quc">K'iche' (QUC)</option>
+          </select>
         </header>
 
         <div className="page-wrap">
@@ -545,31 +595,53 @@ function App() {
           {section === 'catalog' && (
             <>
               <section className="page-heading">
-                <div><div className="eyebrow"><span className="eyebrow-line" /> DATOS ABIERTOS · INE GUATEMALA</div><h1>Explora los datos<br /><em>que mueven al país.</em></h1>
-                  <p className="intro">Encuentra conjuntos estadísticos oficiales y lleva la información a tu análisis.</p></div>
+                <div><div className="eyebrow"><span className="eyebrow-line" /> {t('hero.tag')}</div><h1>{t('hero.title')}</h1>
+                  <p className="intro">{t('hero.subtitle')}</p></div>
                 <div className="heading-stamp"><img src="/ine.png" alt="INE Guatemala" /><span>INSTITUTO NACIONAL<br />DE ESTADÍSTICA</span></div>
               </section>
 
               <section className="catalog-toolbar">
                 <form className="search-form" onSubmit={(event) => { event.preventDefault(); setSelected(null); void loadCatalog(0, search, group); }}>
                   <span className="search-icon">⌕</span>
-                  <input aria-label="Buscar conjuntos de datos" placeholder="Busca un tema, palabra clave o conjunto..." value={search} onChange={(event) => setSearch(event.target.value)} />
-                  <button className="button button-dark" type="submit" disabled={catalogLoading}>{catalogLoading ? 'Buscando…' : 'Buscar'}</button>
+                  <input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={search} onChange={(event) => setSearch(event.target.value)} />
+                  <button className="button button-dark" type="submit" disabled={catalogLoading}>{catalogLoading ? 'Buscando…' : t('search.button')}</button>
                 </form>
-                <label className="select-wrap"><span>ÁREA TEMÁTICA</span><select value={group} onChange={(event) => { setGroup(event.target.value); setSelected(null); void loadCatalog(0, search, event.target.value); }}><option value="">Todas las áreas</option>{groups.map((item) => <option key={item.id} value={item.nombre}>{item.titulo || item.nombre.replace(/-/g, ' ')}</option>)}</select><b>⌄</b></label>
+                <label className="select-wrap"><span>{t('search.area_label')}</span><select value={group} onChange={(event) => { setGroup(event.target.value); setSelected(null); void loadCatalog(0, search, event.target.value); }}><option value="">{t('search.all_areas')}</option>{groups.map((item) => <option key={item.id} value={item.nombre}>{item.titulo || item.nombre.replace(/-/g, ' ')}</option>)}</select><b>⌄</b></label>
               </section>
 
               <section className="catalog-section">
-                <div className="section-title-row"><div><div className="section-kicker">REPOSITORIO INE</div><h2>Conjuntos de datos <span className="result-count">{catalog.total.toLocaleString('es-GT')}</span></h2></div>                <div className="updated-note"><span className="live-dot" /> Catálogo INE</div></div>
+                <div className="section-title-row"><div><div className="section-kicker">{t('repo.tag')}</div><h2>{t('repo.title')} <span className="result-count">{catalog.total.toLocaleString('es-GT')}</span></h2></div>                <div className="updated-note"><span className="live-dot" /> {t('repo.catalog_badge')}</div></div>
                 {catalogLoading ? <div className="loading-state"><span className="spinner" />Cargando conjuntos de datos…</div> : catalogError ? <div className="empty-state"><span>!</span><strong>No pudimos cargar los conjuntos</strong><p>El servicio de datos no respondió. Comprueba tu conexión e inténtalo de nuevo.</p><button className="button button-outline" onClick={() => void loadCatalog(0, search, group)}>Reintentar</button></div> : catalog.conjuntos.length ? (
                   <>
-                    <div className="dataset-grid">{catalog.conjuntos.map((dataset, index) => <article className={`dataset-card ${selected?.id === dataset.id ? 'selected' : ''}`} key={dataset.id} style={{ animationDelay: `${index * 35}ms` }}>
-                      <div className="card-topline"><span className="dataset-type"><i /> DATASET</span><span className="dataset-date">{formatDate(dataset.modificado)}</span></div>
-                      <button className="dataset-title" onClick={() => void selectDataset(dataset)}>{dataset.nombre}</button>
-                      <p className="dataset-description">{dataset.descripcion || 'Conjunto de datos estadísticos publicado por el Instituto Nacional de Estadística.'}</p>
-                      <div className="card-footer"><span>{dataset.recursos_total ?? dataset.recursos?.length ?? 0} recursos</span><button aria-label={`Ver recursos de ${dataset.nombre}`} onClick={() => void selectDataset(dataset)}>Ver conjunto <span>↗</span></button></div>
-                    </article>)}</div>
-                    <div className="pagination"><span>Mostrando {catalog.conjuntos.length ? offset + 1 : 0}–{Math.min(offset + catalog.filas, catalog.total)} de {catalog.total.toLocaleString('es-GT')}</span><div><button disabled={offset <= 0 || catalogLoading} onClick={() => { setSelected(null); void loadCatalog(Math.max(0, offset - catalog.filas), search, group); }}>← Anterior</button><span className="page-number">{catalogPages ? Math.floor(offset / catalog.filas) + 1 : 0}<i>/</i>{catalogPages}</span><button disabled={offset + catalog.filas >= catalog.total || catalogLoading} onClick={() => { setSelected(null); void loadCatalog(offset + catalog.filas, search, group); }}>Siguiente →</button></div></div>
+                    <div className="dataset-grid">{catalog.conjuntos.map((dataset, index) => {
+                      const title = translateDatasetField(
+                        t,
+                        dataset.id,
+                        dataset.nombre,
+                        'title',
+                        dataset.nombre,
+                      );
+                      const description = translateDatasetField(
+                        t,
+                        dataset.id,
+                        dataset.nombre,
+                        'description',
+                        dataset.descripcion || 'Conjunto de datos estadísticos publicado por el Instituto Nacional de Estadística.',
+                      );
+                      const resourceCount = dataset.recursos_total ?? dataset.recursos?.length ?? 0;
+                      return (
+                        <article className={`dataset-card ${selected?.id === dataset.id ? 'selected' : ''}`} key={dataset.id} style={{ animationDelay: `${index * 35}ms` }}>
+                          <div className="card-topline"><span className="dataset-type"><i /> {t('repo.dataset_tag')}</span><span className="dataset-date">{formatDate(dataset.modificado)}</span></div>
+                          <button className="dataset-title" onClick={() => void selectDataset(dataset)}>{title}</button>
+                          <p className="dataset-description">{description}</p>
+                          <div className="card-footer">
+                            <span>{resourceCount} {t(resourceCount === 1 ? 'repo.resource_singular' : 'repo.resource_plural')}</span>
+                            <button aria-label={`${t('repo.view_dataset')}: ${title}`} onClick={() => void selectDataset(dataset)}>{t('repo.view_dataset')}</button>
+                          </div>
+                        </article>
+                      );
+                    })}</div>
+                    <div className="pagination"><span>Mostrando {catalog.conjuntos.length ? offset + 1 : 0}–{Math.min(offset + catalog.filas, catalog.total)} de {catalog.total.toLocaleString('es-GT')}</span><div><button disabled={offset <= 0 || catalogLoading} onClick={() => { setSelected(null); void loadCatalog(Math.max(0, offset - catalog.filas), search, group); }}>{t('pagination.previous')}</button><span className="page-number">{catalogPages ? Math.floor(offset / catalog.filas) + 1 : 0}<i>/</i>{catalogPages}</span><button disabled={offset + catalog.filas >= catalog.total || catalogLoading} onClick={() => { setSelected(null); void loadCatalog(offset + catalog.filas, search, group); }}>{t('pagination.next')}</button></div></div>
                   </>
                 ) : <div className="empty-state"><span>⌕</span><strong>No encontramos conjuntos</strong><p>Prueba con otros términos o cambia el área temática.</p><button className="button button-outline" onClick={() => { setSearch(''); setGroup(''); void loadCatalog(0, '', ''); }}>Limpiar filtros</button></div>}
               </section>
