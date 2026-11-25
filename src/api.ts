@@ -126,35 +126,6 @@ export interface DatastoreSearchResponse {
   desplazamiento: number;
 }
 
-export interface DatastoreSqlResponse {
-  campos: DatastoreField[];
-  registros: JsonRecord[];
-}
-
-export interface SummaryResponse {
-  archivo: string;
-  agrupado_por: string;
-  total_grupos: number;
-  datos: Array<Record<string, string | number | null>>;
-}
-
-interface SummaryApiResponse {
-  archivo?: string;
-  agrupado_por?: string;
-  total_grupos?: number;
-  datos?: Array<Record<string, string | number | null>>;
-  total_registros_retornados?: number;
-  filas?: Array<Record<string, string | number | null>>;
-}
-
-export interface WorkbookResponse {
-  hojas?: string[];
-  hoja_actual?: number;
-  columnas?: string[];
-  filas_muestra?: JsonRecord[];
-  total_filas_muestra?: number;
-}
-
 export interface MapIndicator {
   id: string;
   tema: string;
@@ -560,40 +531,10 @@ export const api = {
       body: JSON.stringify(payload),
     });
   },
-  datastoreSql(sql: string) {
-    return request<DatastoreSqlResponse>('/ine/datastore/consulta-sql', {
-      method: 'POST',
-      body: JSON.stringify({ sql }),
-    });
-  },
   checkResource(slug: string, resourceId: string) {
     return request<{ cambio_remoto: boolean; ultima_modificacion_remota?: string }>(
       `/ine/${encodeURIComponent(slug)}/verificar-cambio/${encodeURIComponent(resourceId)}`,
     );
-  },
-  inspectWorkbook(path: string) {
-    const params = new URLSearchParams({ ruta_excel: path, limite: '10' });
-    return request<WorkbookResponse>(`/proceso/hojas-excel?${params}`);
-  },
-  convert(payload: JsonRecord) {
-    return request<JsonRecord>('/proceso/convertir', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    });
-  },
-  summary(payload: JsonRecord) {
-    return request<SummaryApiResponse>('/proceso/resumen', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    }).then((result) => {
-      const datos = result.datos || result.filas || [];
-      return {
-        archivo: result.archivo || String(payload.ruta_parquet || ''),
-        agrupado_por: result.agrupado_por || String(payload.agrupar_por || ''),
-        total_grupos: result.total_grupos ?? result.total_registros_retornados ?? datos.length,
-        datos,
-      };
-    });
   },
   analyzeDataset(
     slug: string,

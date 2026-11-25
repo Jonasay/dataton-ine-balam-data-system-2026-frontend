@@ -73,6 +73,7 @@ export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: Indicator
   const [selectedDept, setSelectedDept] = useState<DepartmentDetailItem | null>(null);
   const [deptDetailLoading, setDeptDetailLoading] = useState(false);
   const [showRadarFrame, setShowRadarFrame] = useState(false);
+  const [radarZoom, setRadarZoom] = useState(0.7);
 
   // Estado para indicadores municipales (340 municipios)
   const [muniDepto, setMuniDepto] = useState<string>('');
@@ -376,21 +377,48 @@ export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: Indicator
               </div>
 
               {showRadarFrame && (
-                <div className="map-frame-wrap viz-frame-compact">
+                <div className="map-frame-wrap viz-frame-compact viz-frame-radar">
                   <div className="frame-toolbar">
                     <span><i className="live-dot" /> PERFIL RADAR COMPARATIVO VS GUATEMALA</span>
-                    <a
-                      href={visualizationUrl('/visualizaciones/perfil/radar', { depto_codigo: selectedDept.depto_codigo, comparar_con: 1 })}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Abrir en pestaña ↗
-                    </a>
+                    <div className="radar-toolbar-actions">
+                      <div className="radar-zoom-controls" role="group" aria-label="Controles de zoom del radar">
+                        <button
+                          type="button"
+                          aria-label="Alejar radar"
+                          title="Alejar"
+                          disabled={radarZoom <= 0.6}
+                          onClick={() => setRadarZoom((zoom) => Math.max(0.6, Number((zoom - 0.2).toFixed(2))))}
+                        >
+                          −
+                        </button>
+                        <span aria-live="polite">{Math.round(radarZoom * 100)}%</span>
+                        <button
+                          type="button"
+                          aria-label="Acercar radar"
+                          title="Acercar"
+                          disabled={radarZoom >= 1.6}
+                          onClick={() => setRadarZoom((zoom) => Math.min(1.6, Number((zoom + 0.2).toFixed(2))))}
+                        >
+                          +
+                        </button>
+                        <button type="button" onClick={() => setRadarZoom(0.7)}>Restablecer</button>
+                      </div>
+                      <a
+                        href={visualizationUrl('/visualizaciones/perfil/radar', { depto_codigo: selectedDept.depto_codigo, comparar_con: 1 })}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Abrir en pestaña ↗
+                      </a>
+                    </div>
                   </div>
-                  <iframe
-                    title={`Perfil radar de ${selectedDept.depto_nombre}`}
-                    src={visualizationUrl('/visualizaciones/perfil/radar', { depto_codigo: selectedDept.depto_codigo, comparar_con: 1 })}
-                  />
+                  <div className="radar-zoom-viewport" style={{ height: `${680 * radarZoom}px` }}>
+                    <iframe
+                      title={`Perfil radar de ${selectedDept.depto_nombre}`}
+                      src={visualizationUrl('/visualizaciones/perfil/radar', { depto_codigo: selectedDept.depto_codigo, comparar_con: 1 })}
+                      style={{ width: `${radarZoom * 100}%`, height: `${680 * radarZoom}px` }}
+                    />
+                  </div>
                 </div>
               )}
 
