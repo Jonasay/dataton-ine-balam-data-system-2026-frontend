@@ -1,5 +1,7 @@
-export const API_BASE = '/api/v1';
+const rawApiBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
+export const API_BASE = (rawApiBase || '/api/v1').replace(/\/+$/, '');
 const BACKEND_REQUEST_TIMEOUT_MS = 70_000;
+const DATASET_ANALYSIS_TIMEOUT_MS = 120_000;
 
 export type JsonRecord = Record<string, unknown>;
 
@@ -10,6 +12,67 @@ export interface DatasetResource {
   url?: string;
   modificado?: string;
   last_modified?: string;
+  descargado_local?: boolean;
+  tamano_bytes?: number | null;
+  ruta_local?: string | null;
+  cambio_remoto?: boolean;
+  parquet_disponible?: boolean;
+  ruta_parquet?: string | null;
+}
+
+export interface DatasetChartPoint {
+  etiqueta: string;
+  valor: number;
+  porcentaje: number;
+}
+
+export interface DatasetChartItem {
+  id: string;
+  titulo: string;
+  subtitulo: string;
+  tipo: string;
+  eje_x: string;
+  eje_y: string;
+  datos: DatasetChartPoint[];
+}
+
+export interface DatasetColumnStat {
+  columna: string;
+  conteo: number;
+  minimo?: number | null;
+  maximo?: number | null;
+  promedio?: number | null;
+  mediana?: number | null;
+  suma?: number | null;
+}
+
+export interface CuratedVisualizationLink {
+  titulo: string;
+  endpoint: string;
+}
+
+export interface DatasetAnalysisResponse {
+  dataset: string;
+  recurso_id: string;
+  nombre_recurso: string;
+  formato: string;
+  ya_estaba_descargado: boolean;
+  ya_estaba_procesado: boolean;
+  ruta_parquet: string;
+  hojas: string[];
+  hoja_actual?: number | null;
+  total_filas: number;
+  total_columnas: number;
+  completitud_pct: number;
+  columnas: string[];
+  columnas_numericas: string[];
+  columnas_categoricas: string[];
+  agrupado_por?: string | null;
+  metrica_activa?: string | null;
+  estadisticas_numericas: DatasetColumnStat[];
+  graficas: DatasetChartItem[];
+  visualizaciones_curadas: CuratedVisualizationLink[];
+  filas_muestra: JsonRecord[];
 }
 
 export interface Dataset {
@@ -79,10 +142,14 @@ export interface MapIndicator {
   indicador: string;
   periodo: number | string;
   ruta_parquet: string;
+  columna_codigo_parquet?: string;
+  columna_valor?: string;
+  unidad?: string;
   titulo_mapa: string;
 }
 
 export interface MapIndicatorsResponse {
+  total?: number;
   indicadores: MapIndicator[];
 }
 
@@ -104,8 +171,15 @@ async function request<T>(path: string, init?: RequestInit, timeoutMs?: number):
       const body = await response.text();
       let message = body;
       try {
-        const parsed = JSON.parse(body) as { detail?: string; message?: string };
-        message = parsed.detail || parsed.message || body;
+        const parsed = JSON.parse(body) as {
+          detail?: string | Array<{ msg?: string }>;
+          message?: string;
+        };
+        if (Array.isArray(parsed.detail)) {
+          message = parsed.detail.map((item) => item.msg || JSON.stringify(item)).join('; ');
+        } else {
+          message = parsed.detail || parsed.message || body;
+        }
       } catch {
         // Keep the response body when the API returns a non-JSON error.
       }
@@ -126,6 +200,9 @@ async function request<T>(path: string, init?: RequestInit, timeoutMs?: number):
 export const api = {
   datasets(params: URLSearchParams) {
     return request<DatasetResponse>(`/ine/conjuntos?${params.toString()}`, undefined, BACKEND_REQUEST_TIMEOUT_MS);
+  },
+  groups() {
+    return request<{ total?: number; grupos: DatasetGroup[] }>('/ine/grupos', undefined, BACKEND_REQUEST_TIMEOUT_MS);
   },
   resources(slug: string) {
     return request<{ recursos: DatasetResource[] }>(`/ine/${encodeURIComponent(slug)}/recursos`, undefined, BACKEND_REQUEST_TIMEOUT_MS);
@@ -167,7 +244,50 @@ export const api = {
       };
     });
   },
+  analyzeDataset(
+    slug: string,
+    opts: {
+      recursoId?: string;
+      hojaId?: number;
+      agruparPor?: string;
+      columnaValor?: string;
+      forzarDescarga?: boolean;
+      regenerar?: boolean;
+    } = {},
+  ) {
+    const params = new URLSearchParams({ limite_muestra: '25' });
+    if (opts.recursoId) params.set('recurso_id', opts.recursoId);
+    if (opts.hojaId && opts.hojaId >= 1) params.set('hoja_id', String(opts.hojaId));
+    if (opts.agruparPor) params.set('agrupar_por', opts.agruparPor);
+    if (opts.columnaValor) params.set('columna_valor', opts.columnaValor);
+    if (opts.forzarDescarga) params.set('forzar_descarga', 'true');
+    if (opts.regenerar) params.set('regenerar', 'true');
+    return request<DatasetAnalysisResponse>(
+      `/proceso/dataset/${encodeURIComponent(slug)}/analizar?${params.toString()}`,
+      undefined,
+      DATASET_ANALYSIS_TIMEOUT_MS,
+    );
+  },
 };
+
+export function datasetChartHtmlUrl(
+  slug: string,
+  opts: {
+    recursoId?: string;
+    hojaId?: number;
+    agruparPor?: string;
+    columnaValor?: string;
+    indiceGrafica?: number;
+  } = {},
+) {
+  const params = new URLSearchParams();
+  if (opts.recursoId) params.set('recurso_id', opts.recursoId);
+  if (opts.hojaId && opts.hojaId >= 1) params.set('hoja_id', String(opts.hojaId));
+  if (opts.agruparPor) params.set('agrupar_por', opts.agruparPor);
+  if (opts.columnaValor) params.set('columna_valor', opts.columnaValor);
+  if (opts.indiceGrafica !== undefined) params.set('indice_grafica', String(opts.indiceGrafica));
+  return `${API_BASE}/proceso/dataset/${encodeURIComponent(slug)}/grafica?${params.toString()}`;
+}
 
 export function downloadUrl(slug: string, resourceId: string) {
   return `${API_BASE}/ine/${encodeURIComponent(slug)}/descargar/${encodeURIComponent(resourceId)}`;

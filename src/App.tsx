@@ -1,9 +1,12 @@
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import {
   api,
+  datasetChartHtmlUrl,
   downloadUrl,
   processUrl,
   type Dataset,
+  type DatasetAnalysisResponse,
+  type DatasetChartItem,
   type DatasetGroup,
   type DatasetResource,
   type DatasetResponse,
@@ -18,12 +21,15 @@ type Notice = { kind: 'error' | 'success'; message: string };
 
 const emptyCatalog: DatasetResponse = { total: 0, inicio: 0, filas: 12, conjuntos: [] };
 const fallbackMapIndicators: MapIndicator[] = [{
-  id: 'accidentes-2025',
-  tema: 'Accidentes',
-  indicador: 'Casos de accidentes de tránsito',
-  periodo: 2025,
-  ruta_parquet: 'resumen_accidentes_2025.parquet',
-  titulo_mapa: 'Casos de accidentes de tránsito por departamento · 2025',
+  id: 'tasa_victimas_viales_por_100k-2024',
+  tema: 'Movilidad',
+  indicador: 'Tasa de víctimas en accidentes de tránsito PNC por 100k hab.',
+  periodo: 2024,
+  ruta_parquet: 'indicadores/indicadores_consolidados_departamentales_2024.parquet',
+  columna_codigo_parquet: 'depto_codigo',
+  columna_valor: 'tasa_victimas_viales_por_100k',
+  unidad: 'Víctimas / 100k hab',
+  titulo_mapa: 'Tasa de víctimas en accidentes de tránsito PNC por 100k hab. por departamento · 2024',
 }];
 
 const fallbackGroups: DatasetGroup[] = [
@@ -64,10 +70,17 @@ function displayValue(value: unknown): string {
   return String(value);
 }
 
+function formatBytes(bytes?: number | null): string {
+  if (!bytes || bytes <= 0) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 function App() {
   const [section, setSection] = useState<Section>('catalog');
   const [catalog, setCatalog] = useState<DatasetResponse>(emptyCatalog);
-  const groups = fallbackGroups;
+  const [groups, setGroups] = useState<DatasetGroup[]>(fallbackGroups);
   const [search, setSearch] = useState('');
   const [group, setGroup] = useState('');
   const [offset, setOffset] = useState(0);
@@ -75,9 +88,13 @@ function App() {
   const [catalogError, setCatalogError] = useState(false);
   const [selected, setSelected] = useState<Dataset | null>(null);
   const [resources, setResources] = useState<DatasetResource[]>([]);
+  const [selectedResourceId, setSelectedResourceId] = useState('');
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
+  const [analysis, setAnalysis] = useState<DatasetAnalysisResponse | null>(null);
+  const [curatedVizUrl, setCuratedVizUrl] = useState('');
   const [notice, setNotice] = useState<Notice | null>(null);
   const [busy, setBusy] = useState('');
+  const detailRef = useRef<HTMLElement | null>(null);
   const [processTab, setProcessTab] = useState<'summary' | 'maps' | 'exports'>('summary');
   const [mapIndicators, setMapIndicators] = useState(fallbackMapIndicators);
   const [mapIndicatorsLoading, setMapIndicatorsLoading] = useState(false);
@@ -152,14 +169,14 @@ function App() {
       console.error('No se pudieron cargar los indicadores para mapas:', error);
       setMapIndicators(fallbackMapIndicators);
       setSelectedMapIndicatorId(fallbackMapIndicators[0].id);
-      setMapIndicatorsError('Por ahora solo está disponible el mapa de accidentes de 2025. El backend debe publicar los demás temas y periodos.');
+      setMapIndicatorsError('No se pudo cargar el catálogo completo de mapas desde el backend; mostrando indicador de respaldo.');
     } finally {
       setMapIndicatorsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-  void loadCatalog(0, '', '');
+    void loadCatalog(0, '', '');
   }, [loadCatalog]);
 
   useEffect(() => {
@@ -167,18 +184,82 @@ function App() {
   }, [loadMapIndicators]);
 
   useEffect(() => {
+    let active = true;
+    api.groups()
+      .then((response) => {
+        if (active && Array.isArray(response.grupos) && response.grupos.length > 0) {
+          setGroups(response.grupos);
+        }
+      })
+      .catch(() => {
+        // Conserva los grupos temáticos base si el servicio CKAN no responde.
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!mapUrl.startsWith('blob:')) return;
     return () => URL.revokeObjectURL(mapUrl);
   }, [mapUrl]);
 
+  const analyzeDatasetResource = useCallback(async (
+    slug: string,
+    opts: {
+      recursoId?: string;
+      hojaId?: number;
+      agruparPor?: string;
+      columnaValor?: string;
+      forzarDescarga?: boolean;
+      regenerar?: boolean;
+    } = {},
+  ) => {
+    setBusy(`analyze:${opts.recursoId || 'auto'}`);
+    setNotice(null);
+    setCuratedVizUrl('');
+    try {
+      const result = await api.analyzeDataset(slug, opts);
+      setAnalysis(result);
+      setSelectedResourceId(result.recurso_id);
+      // Refresca el estado local del recurso en la lista tras verificar o descargar.
+      const refreshed = await api.resources(slug).catch(() => null);
+      if (refreshed?.recursos) {
+        setResources(refreshed.recursos);
+      }
+    } catch (error) {
+      setNotice({
+        kind: 'error',
+        message: `No se pudo procesar el recurso para graficar. ${error instanceof Error ? error.message : ''}`,
+      });
+    } finally {
+      setBusy('');
+    }
+  }, []);
+
   const selectDataset = async (dataset: Dataset) => {
     setSelected(dataset);
-    setResources([]);
+    setResources(dataset.recursos || []);
+    setSelectedResourceId('');
     setPreview(null);
+    setAnalysis(null);
+    setCuratedVizUrl('');
+    setNotice(null);
     setBusy('resources');
+
+    window.requestAnimationFrame(() => {
+      detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
     try {
       const response = await api.resources(dataset.id);
-      setResources(response.recursos || []);
+      const fetched = response.recursos || [];
+      setResources(fetched);
+      if (fetched.length > 0) {
+        const tabularFormats = new Set(['parquet', 'xlsx', 'csv', 'xls', 'zip']);
+        const primary = fetched.find((item) => tabularFormats.has((item.formato || '').toLowerCase())) || fetched[0];
+        await analyzeDatasetResource(dataset.id, { recursoId: primary.id });
+      }
     } catch (error) {
       setNotice({ kind: 'error', message: `No se pudieron cargar los recursos. ${error instanceof Error ? error.message : ''}` });
     } finally {
@@ -290,8 +371,8 @@ function App() {
       ruta_parquet: selectedMapIndicator.ruta_parquet,
       ruta_geo: 'geo/departamentos_gt.geojson',
       columna_codigo_geo: 'COD_COLUMNA',
-      columna_codigo_parquet: 'cod',
-      columna_valor: 'valor',
+      columna_codigo_parquet: selectedMapIndicator.columna_codigo_parquet || 'cod',
+      columna_valor: selectedMapIndicator.columna_valor || 'valor',
       columna_nombre: 'nombre',
       titulo_estadistica: selectedMapIndicator.titulo_mapa,
       ...extra,
@@ -333,8 +414,8 @@ function App() {
       ruta_parquet: selectedMapIndicator.ruta_parquet,
       ruta_geo: 'geo/departamentos_gt.geojson',
       columna_codigo_geo: 'COD_COLUMNA',
-      columna_codigo_parquet: 'cod',
-      columna_valor: 'valor',
+      columna_codigo_parquet: selectedMapIndicator.columna_codigo_parquet || 'cod',
+      columna_valor: selectedMapIndicator.columna_valor || 'valor',
       columna_nombre: 'nombre',
       ...extra,
     });
@@ -406,11 +487,68 @@ function App() {
                 ) : <div className="empty-state"><span>⌕</span><strong>No encontramos conjuntos</strong><p>Prueba con otros términos o cambia el área temática.</p><button className="button button-outline" onClick={() => { setSearch(''); setGroup(''); void loadCatalog(0, '', ''); }}>Limpiar filtros</button></div>}
               </section>
 
-              {selected && <section className="detail-panel">
-                <div className="detail-heading"><div><div className="section-kicker">DETALLE DEL CONJUNTO</div><h2>{selected.nombre}</h2><p>{selected.descripcion || 'Explora los archivos y revisa una vista previa de sus datos.'}</p></div><button className="icon-button" aria-label="Cerrar detalle" onClick={() => setSelected(null)}>×</button></div>
-                <div className="resource-list"><div className="resource-list-heading"><span>RECURSO</span><span>FORMATO</span><span>MODIFICADO</span><span>ACCIONES</span></div>
-                  {busy === 'resources' ? <div className="inline-loading"><span className="spinner" />Cargando recursos…</div> : resources.length ? resources.map((resource) => <div className="resource-row" key={resource.id}><div className="resource-name"><span className="file-icon">▤</span><strong>{resource.nombre}</strong></div><span className="format-badge">{resource.formato || 'Archivo'}</span><span className="resource-date">{formatDate(resource.modificado || resource.last_modified)}</span><div className="resource-actions"><button onClick={() => void loadPreview(resource.id)} disabled={busy.startsWith('preview')}>{busy === `preview:${resource.id}` ? 'Cargando…' : 'Vista previa'}</button><button onClick={() => void verifyResource(resource)} disabled={busy.startsWith('verify')}>{busy === `verify:${resource.id}` ? 'Verificando…' : 'Verificar'}</button><a href={downloadUrl(selected.id, resource.id)} className="download-link" title="Descargar recurso">↓</a></div></div>) : <div className="no-resources">Este conjunto no tiene recursos disponibles.</div>}
+              {selected && <section className="detail-panel" ref={detailRef}>
+                <div className="detail-heading"><div><div className="section-kicker">DETALLE DEL CONJUNTO</div><h2>{selected.nombre}</h2><p>{selected.descripcion || 'Verifica el estado local de cada recurso, procesa a Parquet y explora sus gráficas.'}</p></div><button className="icon-button" aria-label="Cerrar detalle" onClick={() => setSelected(null)}>×</button></div>
+                <div className="resource-list"><div className="resource-list-heading"><span>RECURSO</span><span>FORMATO Y ESTADO</span><span>MODIFICADO</span><span>ACCIONES</span></div>
+                  {busy === 'resources' && resources.length === 0 ? <div className="inline-loading"><span className="spinner" />Verificando recursos del conjunto…</div> : resources.length ? resources.map((resource) => {
+                    const isActive = selectedResourceId === resource.id;
+                    const sizeLabel = formatBytes(resource.tamano_bytes);
+                    return (
+                      <div className={`resource-row ${isActive ? 'active-resource' : ''}`} key={resource.id}>
+                        <div className="resource-name"><span className="file-icon">▤</span><strong>{resource.nombre}</strong></div>
+                        <div className="resource-badges">
+                          <span className="format-badge">{resource.formato || 'Archivo'}</span>
+                          <span className={`status-chip ${resource.descargado_local ? 'local' : 'remote'}`}>
+                            {resource.descargado_local ? `✓ En disco${sizeLabel ? ` · ${sizeLabel}` : ''}` : '☁ Remoto'}
+                          </span>
+                          {resource.parquet_disponible ? <span className="status-chip processed">✦ Procesado</span> : null}
+                        </div>
+                        <span className="resource-date">{formatDate(resource.modificado || resource.last_modified)}</span>
+                        <div className="resource-actions">
+                          <button
+                            className={isActive ? 'action-primary active' : 'action-primary'}
+                            onClick={() => void analyzeDatasetResource(selected.id, { recursoId: resource.id })}
+                            disabled={busy.startsWith('analyze')}
+                          >
+                            {busy === `analyze:${resource.id}` ? 'Procesando…' : 'Ver gráficas'}
+                          </button>
+                          <button onClick={() => void loadPreview(resource.id)} disabled={busy.startsWith('preview')}>{busy === `preview:${resource.id}` ? 'Cargando…' : 'Vista previa'}</button>
+                          <button onClick={() => void verifyResource(resource)} disabled={busy.startsWith('verify')}>{busy === `verify:${resource.id}` ? 'Verificando…' : 'Verificar'}</button>
+                          <a href={downloadUrl(selected.id, resource.id)} className="download-link" title={resource.descargado_local ? 'Descargar desde caché local' : 'Descargar recurso'}>↓</a>
+                        </div>
+                      </div>
+                    );
+                  }) : <div className="no-resources">Este conjunto no tiene recursos disponibles.</div>}
                 </div>
+
+                {busy.startsWith('analyze') && (
+                  <div className="inline-loading analysis-loading">
+                    <span className="spinner" />Verificando descarga en disco, procesando Parquet y generando gráficas…
+                  </div>
+                )}
+
+                {analysis && (
+                  <DatasetAnalysisPanel
+                    analysis={analysis}
+                    busy={busy}
+                    curatedVizUrl={curatedVizUrl}
+                    onSelectCuratedViz={(endpoint) => setCuratedVizUrl(endpoint)}
+                    onUseInWorkbench={() => {
+                      setParquet(analysis.ruta_parquet);
+                      if (analysis.agrupado_por) setGroupColumn(analysis.agrupado_por);
+                      setSection('workbench');
+                      setProcessTab('summary');
+                    }}
+                    onReanalyze={(overrides) => void analyzeDatasetResource(selected.id, {
+                      recursoId: analysis.recurso_id,
+                      hojaId: overrides.hojaId ?? analysis.hoja_actual ?? 1,
+                      agruparPor: overrides.agruparPor ?? analysis.agrupado_por ?? undefined,
+                      columnaValor: overrides.columnaValor !== undefined ? overrides.columnaValor : (analysis.metrica_activa ?? undefined),
+                      regenerar: overrides.regenerar,
+                    })}
+                  />
+                )}
+
                 {preview && <PreviewTable preview={preview} />}
               </section>}
             </>
@@ -424,10 +562,10 @@ function App() {
               </div>
               <div id="process-content" className="processing-content" role="tabpanel" aria-labelledby={`process-tab-${processTab}`} tabIndex={0}>
                 {processTab === 'summary' && <>
-                  <div className="file-path-card"><div className="file-path-icon">▧</div><div><strong>Parquet para resumen estadístico</strong><span>Usa aquí el archivo detallado que quieres agrupar.</span></div><input value={parquet} onChange={(event) => setParquet(event.target.value)} placeholder="Ej. accidentes_vehiculos_2025.parquet" aria-label="Ruta del archivo Parquet" /></div>
+                  <div className="file-path-card"><div className="file-path-icon">▧</div><div><strong>Parquet para resumen estadístico</strong><span>Usa aquí el archivo detallado que quieres agrupar.</span></div><input value={parquet} onChange={(event) => setParquet(event.target.value)} placeholder="Ej. movilidad/accidentes_fallecidos_lesionados_2024.parquet" aria-label="Ruta del archivo Parquet" /></div>
                   <div className="workbench-grid">
                     <section className="tool-card"><div className="tool-card-head"><span className="tool-number">01</span><div><div className="section-kicker">ANÁLISIS DE DATOS</div><h2>Resumen estadístico</h2></div></div><p>Agrupa y cuenta registros del conjunto seleccionado.</p>
-                      <form className="tool-form" onSubmit={(event) => void submitSummary(event)}><label>AGRUPAR POR<input required value={groupColumn} onChange={(event) => setGroupColumn(event.target.value)} placeholder="depto_ocu" /></label><div className="form-pair"><label>COLUMNA DE FILTRO<input value={filterColumn} onChange={(event) => setFilterColumn(event.target.value)} placeholder="ano_ocu" /></label><label>VALOR<input value={filterValue} onChange={(event) => setFilterValue(event.target.value)} placeholder="2025" /></label></div><button className="button button-dark" disabled={busy === 'summary' || !parquet.trim()}>{busy === 'summary' ? 'Calculando…' : 'Generar resumen'} <span>→</span></button></form>
+                      <form className="tool-form" onSubmit={(event) => void submitSummary(event)}><label>AGRUPAR POR<input required value={groupColumn} onChange={(event) => setGroupColumn(event.target.value)} placeholder="depto_ocu" /></label><div className="form-pair"><label>COLUMNA DE FILTRO<input value={filterColumn} onChange={(event) => setFilterColumn(event.target.value)} placeholder="año_ocu" /></label><label>VALOR<input value={filterValue} onChange={(event) => setFilterValue(event.target.value)} placeholder="2024" /></label></div><button className="button button-dark" disabled={busy === 'summary' || !parquet.trim()}>{busy === 'summary' ? 'Calculando…' : 'Generar resumen'} <span>→</span></button></form>
                     </section>
                     <section className="tool-card conversion-card"><div className="tool-card-head"><span className="tool-number coral">02</span><div><div className="section-kicker">PREPARACIÓN</div><h2>Convertir a Parquet</h2></div></div><p>Convierte una hoja de cálculo disponible para analizarla con mayor rapidez.</p>
                       <form className="tool-form" onSubmit={(event) => void submitConversion(event)}><label>RUTA DEL ARCHIVO EXCEL<input required value={excelPath} onChange={(event) => { setExcelPath(event.target.value); setWorkbook(null); }} placeholder="carpeta/datos.xlsx" /></label><button type="button" className="button button-outline" disabled={!excelPath.trim() || busy === 'inspect'} onClick={() => void inspectWorkbook()}>{busy === 'inspect' ? 'Inspeccionando…' : 'Inspeccionar hojas'}</button>{workbook?.hojas?.length ? <label>HOJA DEL ARCHIVO<select value={sheetId} onChange={(event) => setSheetId(Number(event.target.value))}>{workbook.hojas.map((sheet, index) => <option key={`${sheet}-${index}`} value={index + 1}>{index + 1}. {sheet}</option>)}</select></label> : null}<label>NOMBRE DE SALIDA<input required value={outputPath} onChange={(event) => setOutputPath(event.target.value)} placeholder="resumen_datos.parquet" /></label><button className="button button-outline" disabled={busy === 'convert'}>{busy === 'convert' ? 'Convirtiendo…' : 'Convertir archivo'} <span>↗</span></button></form>
@@ -444,7 +582,7 @@ function App() {
                       <label><span>INDICADOR</span><select aria-label="Indicador del mapa" value={selectedMapMetric} onChange={(event) => { const next = mapIndicatorsForTheme.find((indicator) => indicator.indicador === event.target.value); setSelectedMapIndicatorId(next?.id || ''); setMapUrl(''); }} disabled={mapIndicatorsLoading || mapIndicatorNames.length === 0}><option value="">Selecciona un indicador</option>{mapIndicatorNames.map((indicator) => <option key={indicator} value={indicator}>{indicator}</option>)}</select></label>
                       <label><span>AÑO</span><select aria-label="Año del mapa" value={selectedMapIndicator ? String(selectedMapIndicator.periodo) : ''} onChange={(event) => { const next = mapIndicatorsForTheme.find((indicator) => indicator.indicador === selectedMapMetric && String(indicator.periodo) === event.target.value); setSelectedMapIndicatorId(next?.id || ''); setMapUrl(''); }} disabled={mapIndicatorsLoading || mapPeriods.length === 0}><option value="">Selecciona un año</option>{mapPeriods.map((period) => <option key={period} value={period}>{period}</option>)}</select></label>
                     </div>
-                    <small>El mapa mostrará el número de casos por departamento para el año elegido.</small>
+                    <small>{selectedMapIndicator ? `${selectedMapIndicator.titulo_mapa}${selectedMapIndicator.unidad ? ` · Unidad: ${selectedMapIndicator.unidad}` : ''}` : 'El mapa mostrará los valores por departamento para el año elegido.'}</small>
                   </div>
                   {mapIndicatorsError && <div className="map-indicator-warning" role="status"><span>{mapIndicatorsError}</span><button type="button" onClick={() => void loadMapIndicators()} disabled={mapIndicatorsLoading}>{mapIndicatorsLoading ? 'Cargando…' : 'Reintentar'}</button></div>}
                   <div className="map-options">
@@ -471,6 +609,353 @@ function App() {
         </div>
       </main>
     </div>
+  );
+}
+
+const CHART_PALETTE = ['#004080', '#0068c8', '#267fdb', '#4ca1ff', '#1f6250', '#ca7057', '#6c7a89', '#88a8c7'];
+
+function DatasetAnalysisPanel({
+  analysis,
+  busy,
+  curatedVizUrl,
+  onSelectCuratedViz,
+  onUseInWorkbench,
+  onReanalyze,
+}: {
+  analysis: DatasetAnalysisResponse;
+  busy: string;
+  curatedVizUrl: string;
+  onSelectCuratedViz: (endpoint: string) => void;
+  onUseInWorkbench: () => void;
+  onReanalyze: (overrides: { hojaId?: number; agruparPor?: string; columnaValor?: string; regenerar?: boolean }) => void;
+}) {
+  return (
+    <div className="analysis-panel">
+      <div className="analysis-status-bar">
+        <div className="analysis-status-badges">
+          <span className={`status-chip ${analysis.ya_estaba_descargado ? 'local' : 'downloaded'}`}>
+            {analysis.ya_estaba_descargado
+              ? '✓ Verificado en disco (sin volver a descargar)'
+              : '↓ Descargado por primera vez y guardado en caché'}
+          </span>
+          <span className={`status-chip ${analysis.ya_estaba_procesado ? 'processed' : 'fresh'}`}>
+            {analysis.ya_estaba_procesado
+              ? '⚡ Parquet reutilizado de caché'
+              : '⚙ Procesado y convertido a Parquet'}
+          </span>
+        </div>
+        <div className="analysis-toolbar-actions">
+          <button
+            type="button"
+            className="button button-outline"
+            disabled={busy.startsWith('analyze')}
+            onClick={() => onReanalyze({ regenerar: true })}
+          >
+            Reprocesar
+          </button>
+          <button type="button" className="button button-dark" onClick={onUseInWorkbench}>
+            Usar en Procesamiento →
+          </button>
+        </div>
+      </div>
+
+      <div className="analysis-kpis">
+        <div className="kpi-card">
+          <span>REGISTROS PROCESADOS</span>
+          <strong>{analysis.total_filas.toLocaleString('es-GT')}</strong>
+        </div>
+        <div className="kpi-card">
+          <span>COLUMNAS</span>
+          <strong>{analysis.total_columnas}</strong>
+        </div>
+        <div className="kpi-card">
+          <span>COMPLETITUD</span>
+          <strong>{analysis.completitud_pct}%</strong>
+        </div>
+        <div className="kpi-card kpi-path">
+          <span>PARQUET PROCESADO</span>
+          <strong title={analysis.ruta_parquet}>{analysis.ruta_parquet}</strong>
+        </div>
+      </div>
+
+      {(analysis.hojas.length > 1 || analysis.columnas_categoricas.length > 0) && (
+        <div className="analysis-controls">
+          {analysis.hojas.length > 1 && (
+            <label>
+              <span>HOJA DEL LIBRO</span>
+              <select
+                value={analysis.hoja_actual || 1}
+                disabled={busy.startsWith('analyze')}
+                onChange={(event) => onReanalyze({ hojaId: Number(event.target.value), agruparPor: '', columnaValor: '' })}
+              >
+                {analysis.hojas.map((sheet, index) => (
+                  <option key={`${sheet}-${index}`} value={index + 1}>
+                    {index + 1}. {sheet}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {analysis.columnas_categoricas.length > 0 && (
+            <label>
+              <span>AGRUPAR GRÁFICAS POR</span>
+              <select
+                value={analysis.agrupado_por || ''}
+                disabled={busy.startsWith('analyze')}
+                onChange={(event) => onReanalyze({ agruparPor: event.target.value })}
+              >
+                {analysis.columnas_categoricas.map((col) => (
+                  <option key={col} value={col}>{col}</option>
+                ))}
+              </select>
+            </label>
+          )}
+          {analysis.columnas_numericas.length > 0 && (
+            <label>
+              <span>MÉTRICA A GRAFICAR</span>
+              <select
+                value={analysis.metrica_activa || ''}
+                disabled={busy.startsWith('analyze')}
+                onChange={(event) => onReanalyze({ columnaValor: event.target.value })}
+              >
+                <option value="">Conteo de registros</option>
+                {analysis.columnas_numericas.map((col) => (
+                  <option key={col} value={col}>Suma de {col}</option>
+                ))}
+              </select>
+            </label>
+          )}
+        </div>
+      )}
+
+      {analysis.graficas.length > 0 && (
+        <div className="charts-grid">
+          {analysis.graficas.map((chart, index) => (
+            <DatasetChartCard
+              key={chart.id}
+              chart={chart}
+              plotlyUrl={datasetChartHtmlUrl(analysis.dataset, {
+                recursoId: analysis.recurso_id,
+                hojaId: analysis.hoja_actual || 1,
+                agruparPor: analysis.agrupado_por || undefined,
+                columnaValor: analysis.metrica_activa || undefined,
+                indiceGrafica: index,
+              })}
+            />
+          ))}
+        </div>
+      )}
+
+      {analysis.visualizaciones_curadas.length > 0 && (
+        <div className="curated-viz-box">
+          <div className="curated-viz-head">
+            <div>
+              <div className="section-kicker">ANALÍTICA AVANZADA INE</div>
+              <strong>Visualizaciones interactivas del sistema para este conjunto</strong>
+            </div>
+          </div>
+          <div className="curated-links">
+            {analysis.visualizaciones_curadas.map((viz) => (
+              <button
+                key={viz.endpoint}
+                type="button"
+                className={curatedVizUrl === viz.endpoint ? 'button button-dark' : 'button button-outline'}
+                onClick={() => onSelectCuratedViz(curatedVizUrl === viz.endpoint ? '' : viz.endpoint)}
+              >
+                {viz.titulo}
+              </button>
+            ))}
+          </div>
+          {curatedVizUrl && (
+            <div className="map-frame-wrap">
+              <div className="frame-toolbar">
+                <span><i className="live-dot" /> VISUALIZACIÓN INTERACTIVA INE</span>
+                <a href={curatedVizUrl} target="_blank" rel="noreferrer">Abrir en pestaña ↗</a>
+              </div>
+              <iframe title="Visualización interactiva INE" src={curatedVizUrl} />
+            </div>
+          )}
+        </div>
+      )}
+
+      {analysis.estadisticas_numericas.length > 0 && (
+        <div className="preview-wrap">
+          <div className="preview-title">
+            <div>
+              <strong>Resumen estadístico de variables numéricas</strong>
+              <span>{analysis.estadisticas_numericas.length} variables cuantitativas procesadas</span>
+            </div>
+          </div>
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Registros</th>
+                  <th>Mínimo</th>
+                  <th>Promedio</th>
+                  <th>Mediana</th>
+                  <th>Máximo</th>
+                  <th>Suma total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {analysis.estadisticas_numericas.map((stat) => (
+                  <tr key={stat.columna}>
+                    <td><strong>{stat.columna}</strong></td>
+                    <td>{stat.conteo.toLocaleString('es-GT')}</td>
+                    <td>{displayValue(stat.minimo)}</td>
+                    <td>{displayValue(stat.promedio)}</td>
+                    <td>{displayValue(stat.mediana)}</td>
+                    <td>{displayValue(stat.maximo)}</td>
+                    <td>{displayValue(stat.suma)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {analysis.filas_muestra.length > 0 && (
+        <div className="preview-wrap">
+          <div className="preview-title">
+            <div>
+              <strong>Datos procesados ({analysis.nombre_recurso})</strong>
+              <span>Muestra de {analysis.filas_muestra.length} de {analysis.total_filas.toLocaleString('es-GT')} filas en Parquet</span>
+            </div>
+            <span className="format-badge">PARQUET</span>
+          </div>
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  {analysis.columnas.map((col) => <th key={col}>{col}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {analysis.filas_muestra.map((row, idx) => (
+                  <tr key={idx}>
+                    {analysis.columnas.map((col) => <td key={col}>{displayValue(row[col])}</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DatasetChartCard({ chart, plotlyUrl }: { chart: DatasetChartItem; plotlyUrl: string }) {
+  const maxVal = Math.max(1, ...chart.datos.map((d) => d.valor));
+  const totalVal = Math.max(1e-9, chart.datos.reduce((acc, item) => acc + item.valor, 0));
+
+  return (
+    <article className="chart-card">
+      <div className="chart-card-head">
+        <div>
+          <div className="section-kicker">{chart.eje_y.toUpperCase()}</div>
+          <h3>{chart.titulo}</h3>
+          <p>{chart.subtitulo}</p>
+        </div>
+        <a href={plotlyUrl} target="_blank" rel="noreferrer" className="chart-expand-link" title="Abrir gráfica interactiva en Plotly">
+          Plotly ↗
+        </a>
+      </div>
+
+      {chart.tipo === 'donut' ? (
+        <div className="donut-layout">
+          <svg viewBox="0 0 120 120" className="donut-svg" role="img" aria-label={chart.titulo}>
+            <circle cx="60" cy="60" r="42" fill="none" stroke="#e9f1fa" strokeWidth="18" />
+            {(() => {
+              const radius = 42;
+              const circumference = 2 * Math.PI * radius;
+              let accumulated = 0;
+              return chart.datos.map((item, idx) => {
+                const fraction = item.valor / totalVal;
+                const dash = fraction * circumference;
+                const offset = -accumulated * circumference;
+                accumulated += fraction;
+                return (
+                  <circle
+                    key={item.etiqueta}
+                    cx="60"
+                    cy="60"
+                    r={radius}
+                    fill="none"
+                    stroke={CHART_PALETTE[idx % CHART_PALETTE.length]}
+                    strokeWidth="18"
+                    strokeDasharray={`${dash} ${circumference}`}
+                    strokeDashoffset={offset}
+                    transform="rotate(-90 60 60)"
+                  >
+                    <title>{`${item.etiqueta}: ${item.valor.toLocaleString('es-GT')} (${item.porcentaje}%)`}</title>
+                  </circle>
+                );
+              });
+            })()}
+          </svg>
+          <ul className="donut-legend">
+            {chart.datos.map((item, idx) => (
+              <li key={item.etiqueta}>
+                <i style={{ background: CHART_PALETTE[idx % CHART_PALETTE.length] }} />
+                <span>{item.etiqueta}</span>
+                <strong>{item.porcentaje}%</strong>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : chart.tipo === 'line' ? (
+        <div className="line-chart-wrap">
+          <svg viewBox="0 0 360 150" className="line-chart-svg" role="img" aria-label={chart.titulo}>
+            <line x1="20" y1="125" x2="345" y2="125" stroke="#d9e7f5" strokeWidth="1" />
+            {(() => {
+              const pts = chart.datos;
+              const width = 310;
+              const height = 95;
+              const step = pts.length > 1 ? width / (pts.length - 1) : 0;
+              const coords = pts.map((p, idx) => ({
+                x: 25 + idx * step,
+                y: 120 - (p.valor / maxVal) * height,
+                item: p,
+              }));
+              const polyline = coords.map((c) => `${c.x},${c.y}`).join(' ');
+              const area = `25,125 ${polyline} ${coords[coords.length - 1].x},125`;
+              return (
+                <>
+                  <polygon points={area} fill="rgba(0, 128, 255, 0.12)" />
+                  <polyline fill="none" stroke="#0068c8" strokeWidth="2.5" points={polyline} />
+                  {coords.map((c) => (
+                    <circle key={c.item.etiqueta} cx={c.x} cy={c.y} r="4" fill="#004080">
+                      <title>{`${c.item.etiqueta}: ${c.item.valor.toLocaleString('es-GT')}`}</title>
+                    </circle>
+                  ))}
+                </>
+              );
+            })()}
+          </svg>
+          <div className="line-chart-labels">
+            <span>{chart.datos[0]?.etiqueta}</span>
+            <span>{chart.datos[Math.floor(chart.datos.length / 2)]?.etiqueta}</span>
+            <span>{chart.datos[chart.datos.length - 1]?.etiqueta}</span>
+          </div>
+        </div>
+      ) : (
+        <div className="summary-bars">
+          {chart.datos.map((item) => (
+            <div className="bar-row" key={item.etiqueta}>
+              <span className="bar-label" title={item.etiqueta}>{item.etiqueta}</span>
+              <div className="bar-track">
+                <i style={{ width: `${Math.max(2, (item.valor / maxVal) * 100)}%` }} />
+              </div>
+              <strong>{item.valor.toLocaleString('es-GT')}</strong>
+            </div>
+          ))}
+        </div>
+      )}
+    </article>
   );
 }
 
