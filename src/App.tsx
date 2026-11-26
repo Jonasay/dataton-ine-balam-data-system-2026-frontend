@@ -16,15 +16,17 @@ import {
   type MapIndicator,
   type PreviewResponse,
 } from './api';
+import { AISearchSection } from './AISearchSection';
 import { AnalyticsSection } from './AnalyticsSection';
 import { IndicatorsSection } from './IndicatorsSection';
 import { VisualizationsSection } from './VisualizationsSection';
 
-type Section = 'catalog' | 'workbench' | 'indicators' | 'analytics' | 'visualizations' | 'team';
+type Section = 'catalog' | 'ai-search' | 'workbench' | 'indicators' | 'analytics' | 'visualizations' | 'team';
 type Notice = { kind: 'error' | 'success'; message: string };
 
 const SECTION_BREADCRUMBS: Record<Section, string> = {
   catalog: 'CATÁLOGO DE DATOS',
+  'ai-search': 'CONSULTA INTELIGENTE CON IA',
   workbench: 'PROCESAMIENTO',
   indicators: 'INDICADORES SOCIOECONÓMICOS',
   analytics: 'CIENCIA DE DATOS',
@@ -461,6 +463,9 @@ function App() {
           <button title="Explorar datos" aria-label="Explorar datos" className={section === 'catalog' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('catalog')}>
             <span className="nav-icon">⌕</span><span>Explorar datos</span>
           </button>
+          <button title="Consulta con IA" aria-label="Consulta con IA" className={section === 'ai-search' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('ai-search')}>
+            <span className="nav-icon">✦</span><span>Consulta con IA</span>
+          </button>
           <button title="Procesamiento" aria-label="Procesamiento" className={section === 'workbench' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('workbench')}>
             <span className="nav-icon">▥</span><span>Procesamiento</span>
           </button>
@@ -503,6 +508,14 @@ function App() {
       <main className="main-content">
         <header className="topbar">
           <div className="breadcrumb"><span className="breadcrumb-brand">INE</span><span>/</span> {SECTION_BREADCRUMBS[section]}</div>
+          <button
+            type="button"
+            className={section === 'ai-search' ? 'topbar-ai-btn active' : 'topbar-ai-btn'}
+            onClick={() => setSection('ai-search')}
+          >
+            <span aria-hidden="true">✦</span>
+            <span>Preguntar con IA</span>
+          </button>
         </header>
 
         <div className="page-wrap">
@@ -764,6 +777,7 @@ function App() {
               </div>
             </>
           )}
+          {section === 'ai-search' && <AISearchSection onNotify={notify} />}
           {section === 'indicators' && <IndicatorsSection onNotify={notify} onOpenVizForIndicator={openIndicatorInVisualizations} />}
           {section === 'analytics' && <AnalyticsSection onNotify={notify} onOpenVizForIndicator={openIndicatorInVisualizations} />}
           {section === 'visualizations' && <VisualizationsSection initialIndicator={vizFocusIndicator} onNotify={notify} />}

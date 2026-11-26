@@ -409,6 +409,12 @@ export interface VisualizationCatalogResponse {
   visualizaciones: VisualizationMetadataItem[];
 }
 
+export interface AISearchResponse {
+  mensaje: string;
+  datos: JsonRecord[];
+  visualizacion_url: string | null;
+}
+
 export const SEGEPLAN_REGIONS = [
   { id: 1, nombre: 'I · Metropolitana' },
   { id: 2, nombre: 'II · Norte' },
@@ -635,6 +641,16 @@ export const api = {
   },
   visualizationsCatalog() {
     return request<VisualizationCatalogResponse>('/visualizaciones/catalogo');
+  },
+  aiSearch(consulta: string) {
+    return request<AISearchResponse>(
+      '/busqueda-ia',
+      {
+        method: 'POST',
+        body: JSON.stringify({ consulta }),
+      },
+      BACKEND_REQUEST_TIMEOUT_MS,
+    );
   },
 };
 
