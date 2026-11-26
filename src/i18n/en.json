@@ -1,0 +1,841 @@
+{
+  "sidebar": {
+    "section": "STATISTICAL PLATFORM",
+    "explore": "Explore data",
+    "processing": "Processing",
+    "data_and_analysis": "Data & analysis",
+    "indicators": "Socioeconomic indicators",
+    "data_science": "Data science",
+    "visualizations": "Visualizations",
+    "team_brand": "Balam Data System",
+    "card_title": "Data to decide",
+    "card_desc": "Official statistical information of Guatemala.",
+    "footer": "OFFICIAL STATISTICS · GUATEMALA"
+  },
+  "header": {
+    "breadcrumb_catalog": "INE / DATA CATALOG",
+    "breadcrumb_processing": "INE / PROCESSING",
+    "breadcrumb_indicators": "INE / SOCIOECONOMIC INDICATORS",
+    "breadcrumb_data_science": "INE / DATA SCIENCE",
+    "breadcrumb_visualizations": "INE / VISUALIZATIONS & 3D",
+    "breadcrumb_team": "INE / BALAM DATA SYSTEM",
+    "lang_label": "Language"
+  },
+  "hero": {
+    "tag": "OPEN DATA · INE GUATEMALA",
+    "title": "Explore the data that moves the country.",
+    "subtitle": "Find official statistical datasets and bring information into your analysis."
+  },
+  "search": {
+    "placeholder": "Search a topic, keyword, or dataset...",
+    "button": "Search",
+    "area_label": "THEMATIC AREA",
+    "all_areas": "All areas"
+  },
+  "repo": {
+    "tag": "INE REPOSITORY",
+    "title": "Datasets",
+    "catalog_badge": "INE Catalog",
+    "dataset_tag": "DATASET",
+    "resource_singular": "resource",
+    "resource_plural": "resources",
+    "view_dataset": "View dataset ↗"
+  },
+  "datasets": [
+    {
+      "id": "importaciones",
+      "title": "IMPORTS",
+      "description": "Statistical information regarding the acquisition of goods abroad that have entered through the country's main ports and airports, classified into sections of the Central American Tariff System (SAC).",
+      "resources": 9,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "exportaciones",
+      "title": "EXPORTS",
+      "description": "Statistical information regarding the departure of goods through the different ports and airports of the country, classified by sections of the Central American Tariff System (SAC).",
+      "resources": 10,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "destace-de-ganado",
+      "title": "Livestock Slaughter",
+      "description": "Statistical information belonging to both municipal slaughterhouses (slaughter for domestic consumption) and private slaughterhouses (export-type livestock slaughter).",
+      "resources": 8,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "gestion-de-riesgos",
+      "title": "RISK MANAGEMENT",
+      "description": "This chapter presents events and emergencies recorded in the country, along with their effects on people, housing, infrastructure, and crops. The displayed tables are part of the collection of administrative records on Risk Management and Disaster Response during 2025, compiled from the sources: INSIVUMEH, MAGA, and SECONRED.",
+      "resources": 3,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "acceso-a-la-tierra",
+      "title": "ACCESS TO LAND",
+      "description": "This chapter presents information on families benefited through land access programs, via leasing credits, purchase credits, and land adjudication. The displayed tables are part of the collection of administrative records on Access to Land during 2025, compiled from the source: FONTIERRAS.",
+      "resources": 4,
+      "date": "25/11/2026"
+    },
+    {
+      "id": "desechos-solidos",
+      "title": "SOLID WASTE",
+      "description": "This chapter presents information on the impact of social and economic phenomena on the environment due to waste generation. The displayed tables are part of the collection of administrative records on Solid Waste during 2025, compiled from the sources: MUNIGUATE, AMSA, and IGSS.",
+      "resources": 5,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "gestion-ambiental",
+      "title": "ENVIRONMENTAL MANAGEMENT",
+      "description": "This chapter presents the economic and socio-legal implementations carried out for the benefit of the environment. The displayed tables are part of the collection of administrative records on Environmental Management during 2025, compiled from the sources: PNC, MP, MAGA, and MINFIN.",
+      "resources": 10,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "clima-y-atmosfera",
+      "title": "CLIMATE AND ATMOSPHERE",
+      "description": "This chapter presents information on the country's climatic variables recorded through meteorological stations and air monitoring. The displayed tables are part of the collection of administrative records on Climate and Atmosphere during 2025, compiled from the sources: INSIVUMEH, ICC, and AMSCLAE.",
+      "resources": 4,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "recursos-hidricos",
+      "title": "WATER RESOURCES",
+      "description": "This chapter presents the monitoring of water resources across the national territory. The displayed tables are part of the results from the collection of administrative records on Water Resources during 2025, compiled from the sources: AMSA, INSIVUMEH, AMSCLAE, and EMPAGUA.",
+      "resources": 8,
+      "date": "24/11/2026"
+    },
+    {
+      "id": "ecosistemas",
+      "title": "ECOSYSTEMS",
+      "description": "This chapter presents statistical data on actions and activities that contribute to the improvement and sustainability of the country's ecosystems. The displayed tables are part of the collection of administrative records on Ecosystems during 2025, compiled from the sources: INAB and CONAP.",
+      "resources": 8,
+      "date": "20/11/2026"
+    },
+    {
+      "id": "estadisticas-vitales-defunciones",
+      "title": "VITAL STATISTICS - DEATHS",
+      "description": "Vital statistics result from administrative records of births, fetal and non-fetal deaths, marriages, and divorces, providing information on changes in mortality, fertility, and nuptiality patterns, offering a dynamic view of the population as a complement to the static approach provided by population censuses. These are widely used for calculating demographic indicators of great importance for the health sector.",
+      "resources": 9,
+      "date": "20/11/2026"
+    },
+    {
+      "id": "estadisticas-vitales-nacimientos",
+      "title": "VITAL STATISTICS - BIRTHS",
+      "description": "Vital statistics result from administrative records of births, fetal and non-fetal deaths, marriages, and divorces, providing information on changes in mortality, fertility, and nuptiality patterns, offering a dynamic view of the population as a complement to the static approach provided by population censuses. These are widely used for calculating demographic indicators of great importance for the health sector.",
+      "resources": 9,
+      "date": "20/11/2026"
+    },
+    {
+      "id": "base-anual-2025-incautaciones-pnc-diprona",
+      "title": "ANNUAL DATABASE 2025 SEIZURES PNC DIPRONA",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 1,
+      "date": "12/11/2026"
+    },
+    {
+      "id": "educacion-superior-docentes",
+      "title": "HIGHER EDUCATION - FACULTY",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 3,
+      "date": "9/11/2026"
+    },
+    {
+      "id": "costos-ca-urbana-rural-cba-urbana-rural",
+      "title": "Urban and Rural Expanded Basket (CA) and Basic Food Basket (CBA) Costs",
+      "description": "Costs of the different products that make up the Expanded Basket and the Basic Food Basket for both Urban and Rural areas.",
+      "resources": 6,
+      "date": "9/11/2026"
+    },
+    {
+      "id": "ipc-base-anual-2024-100",
+      "title": "CPI Annual Base 2024=100.00",
+      "description": "Consumer Price Index by Product Year 2024=100.00",
+      "resources": 11,
+      "date": "3/11/2026"
+    },
+    {
+      "id": "establecimientos-educacion-formal",
+      "title": "FORMAL EDUCATION ESTABLISHMENTS",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 5,
+      "date": "3/11/2026"
+    },
+    {
+      "id": "educacion-formal-2025",
+      "title": "FORMAL EDUCATION 2025",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 23,
+      "date": "3/11/2026"
+    },
+    {
+      "id": "educacion-superior-matriculados",
+      "title": "HIGHER EDUCATION - ENROLLED STUDENTS",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 4,
+      "date": "3/11/2026"
+    },
+    {
+      "id": "educacion-superior-graduados",
+      "title": "HIGHER EDUCATION - GRADUATES",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 5,
+      "date": "28/10/2026"
+    },
+    {
+      "id": "violencia-contra-la-mujer-2025",
+      "title": "VIOLENCE AGAINST WOMEN 2025",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 23,
+      "date": "22/10/2026"
+    },
+    {
+      "id": "indice-precios-materiales-construccion-ipmc",
+      "title": "CONSTRUCTION MATERIALS PRICE INDEX (IPMC)",
+      "description": "The National Institute of Statistics (INE) presents the historical series of the Construction Materials Price Indices (IPMC). The IPMC measures the monthly price variation of the eighty-nine (89) materials and services that make up the representative basket of inputs used in construction activity, using December 2018 = 100.0 as the base month.",
+      "resources": 17,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "faltas-judiciales",
+      "title": "JUDICIAL MISDEMEANORS",
+      "description": "In Guatemala, judicial misdemeanors are described in the Guatemalan Penal Code and are subject to sanctions and penalties by the corresponding authorities. Likewise, a judicial misdemeanor is a minor infraction that does not constitute a crime, and therefore is punished with lighter sanctions.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "bibliotecas-y-centros-de-documentacion",
+      "title": "LIBRARIES AND DOCUMENTATION CENTERS",
+      "description": "The Libraries and Documentation Centers publication contains information on the characteristics, materials, staff working in each of them, and users who visit these information centers. The information is collected through form 199 B by the departmental delegations of the INE.",
+      "resources": 10,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "accidentes-de-transito-vehiculos-involucrados",
+      "title": "TRAFFIC ACCIDENTS - VEHICLES INVOLVED",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "accidentes-de-transito-hechos",
+      "title": "TRAFFIC ACCIDENTS - INCIDENTS",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "accidentes-de-transito-fallecidos-y-lesionados",
+      "title": "TRAFFIC ACCIDENTS - FATALITIES AND INJURIES",
+      "description": "#Injured Victims: People who suffer scrapes, bruises, dislocations, or fractures in traffic accidents as a result of a collision, pedestrian hit, crash, etc. #Deceased Victims: People who die due to the severity of injuries caused by a traffic accident such as rollover, collision, pedestrian hit, crash, etc.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-agraviados-mp",
+      "title": "CRIMINAL OFFENSES - INJURED PARTIES (MP)",
+      "description": "Criminal offense statistics include information related to incidents, victims, defendants, and sentences of crimes committed in the Republic of Guatemala. Data related to forensic medical examinations performed by virtue or suspicion of a criminal act are also included.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-servicio-medico-necropsias-inacif",
+      "title": "CRIMINAL OFFENSES - FORENSIC AUTOPSIES (INACIF)",
+      "description": "Criminal offense statistics include information related to incidents, victims, defendants, and sentences of crimes committed in the Republic of Guatemala. Data related to forensic medical examinations performed by virtue or suspicion of a criminal act are also included.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-servicio-medico-legal-inacif",
+      "title": "CRIMINAL OFFENSES - LEGAL MEDICAL SERVICE (INACIF)",
+      "description": "Criminal offense statistics include information related to incidents, victims, defendants, and sentences of crimes committed in the Republic of Guatemala. Data related to forensic medical examinations performed by virtue or suspicion of a criminal act are also included.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-servicio-medico-exhumaciones-inacif",
+      "title": "CRIMINAL OFFENSES - FORENSIC EXHUMATIONS (INACIF)",
+      "description": "Criminal offense statistics include information related to incidents, victims, defendants, and sentences of crimes committed in the Republic of Guatemala. Data related to forensic medical examinations performed by virtue or suspicion of a criminal act are also included.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-victimas-pnc",
+      "title": "CRIMINAL OFFENSES - VICTIMS (PNC)",
+      "description": "Criminal offense statistics include information related to incidents, victims, defendants, and sentences of crimes committed in the Republic of Guatemala. Data related to forensic medical examinations performed by virtue or suspicion of a criminal act are also included.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-detenidos-pnc",
+      "title": "CRIMINAL OFFENSES - DETAINEES (PNC)",
+      "description": "Criminal offense statistics include information related to incidents, victims, defendants, and sentences of crimes committed in the Republic of Guatemala. Data related to forensic medical examinations performed by virtue or suspicion of a criminal act are also included.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-sentencias-oj",
+      "title": "CRIMINAL OFFENSES - SENTENCES (OJ)",
+      "description": "Criminal offense statistics include information related to incidents, victims, defendants, and sentences of crimes committed in the Republic of Guatemala. Data related to forensic medical examinations performed by virtue or suspicion of a criminal act are also included.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-sindicados-mp",
+      "title": "CRIMINAL OFFENSES - DEFENDANTS (MP)",
+      "description": "Criminal offense statistics include information related to incidents, victims, defendants, and sentences of crimes committed in the Republic of Guatemala. Data related to forensic medical examinations performed by virtue or suspicion of a criminal act are also included.",
+      "resources": 9,
+      "date": "12/03/2026"
+    },
+    {
+      "id": "enigh-2021-2022",
+      "title": "ENIGH 2021 - 2022 (HOUSEHOLD INCOME AND EXPENDITURE SURVEY)",
+      "description": "Databases of the National Survey of Household Income and Expenditure (ENIGH).",
+      "resources": 15,
+      "date": "12/03/2026"
+    },
+    {
+      "id": "hoja-balance-alimentos-hba-2024",
+      "title": "Food Balance Sheet (HBA) 2024 Update",
+      "description": "The National Institute of Statistics (INE) makes available to users the Food Balance Sheet (HBA), which provides information related to the supply and utilization of the most important foods that make up the consumption pattern of the Guatemalan population, as well as food availability for human consumption or apparent consumption. This new series incorporates the latest methodological innovations developed by the Food and Agriculture Organization of the United Nations (FAO).",
+      "resources": 6,
+      "date": "2/03/2026"
+    },
+    {
+      "id": "directorio-nacional-estadistico-empresas-dinese",
+      "title": "NATIONAL STATISTICAL DIRECTORY OF ENTERPRISES (DINESE)",
+      "description": "The National Statistical Directory of Enterprises (DINESE) offers updated information on companies in the country and allows observing economic variables related to them to identify existing economic sectors.",
+      "resources": 4,
+      "date": "8/01/2026"
+    },
+    {
+      "id": "ecosistemas-2024",
+      "title": "3. Ecosystems 2024",
+      "description": "Actions carried out for the protection of Guatemala's forests.",
+      "resources": 9,
+      "date": "7/01/2026"
+    },
+    {
+      "id": "acceso-a-la-tierra-2024",
+      "title": "8. Access to Land 2024",
+      "description": "Reflects investment actions to facilitate access to land through leasing credits and land purchase credits, as well as actions regarding legal certainty of land tenure.",
+      "resources": 2,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "gestion-de-riesgo-y-atencion-a-desastres-2024",
+      "title": "6. Risk Management and Disaster Response 2024",
+      "description": "Reflects the economic and social consequences caused by events associated with natural phenomena.",
+      "resources": 3,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "recurso-energetico-y-minero-2024",
+      "title": "7. Energy and Mining Resources 2024",
+      "description": "Presents the availability, generation, and international transaction of energy at the country level.",
+      "resources": 8,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "desechos-solidos-2024",
+      "title": "5. Solid Waste 2024",
+      "description": "Presents the magnitude of the influence of social phenomena on the environment regarding waste generation.",
+      "resources": 3,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "gestion-ambiental-2024",
+      "title": "4. Environmental Management 2024",
+      "description": "Presents the economic and socio-legal actions carried out for the benefit of the environment.",
+      "resources": 8,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "clima-y-atmosfera-2024",
+      "title": "2. Climate and Atmosphere 2024",
+      "description": "Reflects the impact received by the environment regarding climate change and global warming conditions.",
+      "resources": 4,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "recursos-hidricos-2024",
+      "title": "1. Water Resources 2024",
+      "description": "Shows the availability and quality of water resources.",
+      "resources": 11,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "gestion-de-riesgo-y-atencion-a-desastres-2023",
+      "title": "6. Risk Management and Disaster Response 2023",
+      "description": "Reflects the economic and social consequences caused by events associated with natural phenomena.",
+      "resources": 6,
+      "date": "7/11/2025"
+    },
+    {
+      "id": "construcciones-particulares",
+      "title": "Private Constructions",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 5,
+      "date": "7/11/2025"
+    },
+    {
+      "id": "educacion-formal-2024",
+      "title": "FORMAL EDUCATION 2024",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 23,
+      "date": "30/10/2025"
+    },
+    {
+      "id": "educacion-formal-2023",
+      "title": "FORMAL EDUCATION 2023",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 23,
+      "date": "6/10/2025"
+    },
+    {
+      "id": "estadisticas-vitales-defunciones-fetales",
+      "title": "VITAL STATISTICS - FETAL DEATHS",
+      "description": "Vital statistics result from administrative records of births, fetal and non-fetal deaths, marriages, and divorces, providing information on changes in mortality, fertility, and nuptiality patterns, offering a dynamic view of the population as a complement to the static approach provided by population censuses. These are widely used for calculating demographic indicators of great importance for the health sector.",
+      "resources": 8,
+      "date": "6/10/2025"
+    },
+    {
+      "id": "estadisticas-hospitalarias-servicios-internos",
+      "title": "HOSPITAL STATISTICS - INPATIENT SERVICES",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 8,
+      "date": "6/10/2025"
+    },
+    {
+      "id": "estadisticas-hospitalarias-servicios-externos",
+      "title": "HOSPITAL STATISTICS - OUTPATIENT SERVICES",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 11,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "extranjeros-atendidos",
+      "title": "Foreign Nationals Assisted",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "extranjeros-inadmitidos",
+      "title": "Foreign Nationals Denied Entry",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "extranjeros-expulsados",
+      "title": "Foreign Nationals Expelled",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "flujo-migratorio-ano-2024",
+      "title": "Migration Flow Year 2024",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "retornados-ano-2024",
+      "title": "Returnees Year 2024",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "retornados-ano-2023",
+      "title": "Returnees Year 2023",
+      "description": "Statistical dataset published by the National Institute of Statistics (INE).",
+      "resources": 4,
+      "date": "26/08/2025"
+    },
+    {
+      "id": "estadisticas-vitales-matrimonios",
+      "title": "VITAL STATISTICS - MARRIAGES",
+      "description": "Vital statistics result from administrative records of births, fetal and non-fetal deaths, marriages, and divorces, providing information on changes in mortality, fertility, and nuptiality patterns, offering a dynamic view of the population as a complement to the static approach provided by population censuses. These are widely used for calculating demographic indicators of great importance for the health sector.",
+      "resources": 8,
+      "date": "26/08/2025"
+    },
+    {
+      "id": "estadisticas-vitales-divorcios",
+      "title": "VITAL STATISTICS - DIVORCES",
+      "description": "Vital statistics result from administrative records of births, fetal and non-fetal deaths, marriages, and divorces, providing information on changes in mortality, fertility, and nuptiality patterns, offering a dynamic view of the population as a complement to the static approach provided by population censuses. These are widely used for calculating demographic indicators of great importance for the health sector.",
+      "resources": 8,
+      "date": "26/08/2025"
+    },
+    {
+      "id": "diccionario-de-datos-vcm",
+      "title": "VAW Data Dictionary (Violence Against Women)",
+      "description": "Data dictionaries for the Violence Against Women databases.",
+      "resources": 23,
+      "date": "26/08/2025"
+    },
+    {
+      "id": "violencia-contra-la-mujer-2024",
+      "title": "VIOLENCE AGAINST WOMEN 2024",
+      "description": "**Data dictionary** [here](https://datos.ine.gob.gt/dataset/diccionario-de-datos-vcm). The Law Against Femicide and Other Forms of Violence Against Women covers the following offenses: Femicide, Economic Violence, and Violence Against Women (Manifestations: Physical, sexual, or psychological violence).",
+      "resources": 24,
+      "date": "2/07/2025"
+    },
+    {
+      "id": "violencia-intrafamiliar",
+      "title": "DOMESTIC VIOLENCE",
+      "description": "In Guatemala, according to Article 1 of the Law to Prevent, Punish, and Eradicate Domestic Violence (Decree No. 97-96), this type of violence is defined as any direct or indirect action causing physical, sexual, psychological, or patrimonial harm or suffering, publicly or privately, to a member of the family group regardless of gender, affecting men, women, children, and the elderly.",
+      "resources": 7,
+      "date": "11/06/2025"
+    },
+    {
+      "id": "censo-2018-lugares-poblados",
+      "title": "2018 CENSUS - POPULATED PLACES",
+      "description": "Census data aggregated at the populated place (locality) level.",
+      "resources": 29,
+      "date": "7/05/2025"
+    },
+    {
+      "id": "indicadores-ipc-base-diciembre-2010-100",
+      "title": "CPI Indicators Base December 2010=100.00",
+      "description": "Consumer Price Index Indicators Base December 2010=100.0",
+      "resources": 7,
+      "date": "7/05/2025"
+    },
+    {
+      "id": "ipc-por-producto-base-diciembre-2023-100",
+      "title": "CPI by Product Base December 2023 = 100.00",
+      "description": "Consumer Price Index by Product",
+      "resources": 1,
+      "date": "7/05/2025"
+    },
+    {
+      "id": "ipc-por-gasto-basico-base-diciembre-2010-100",
+      "title": "CPI by Basic Expenditure Base December 2010=100.00",
+      "description": "Consumer Price Index by Basic Expenditure",
+      "resources": 13,
+      "date": "7/05/2025"
+    },
+    {
+      "id": "indicadores-ipc-base-diciembre-2023-100",
+      "title": "CPI Indicators Base December 2023=100.00",
+      "description": "Consumer Price Index Indicators for the December 2023=100.0 base",
+      "resources": 7,
+      "date": "5/02/2025"
+    },
+    {
+      "id": "acceso-a-la-tierra-2023",
+      "title": "9. Access to Land 2023",
+      "description": "Reflects investment actions to facilitate access to land through leasing credits and land purchase credits, as well as actions regarding legal certainty of land tenure.",
+      "resources": 6,
+      "date": "3/02/2025"
+    },
+    {
+      "id": "recursos-hidricos-2023",
+      "title": "1. Water Resources 2023",
+      "description": "Shows the availability and quality of water resources.",
+      "resources": 14,
+      "date": "4/12/2024"
+    },
+    {
+      "id": "desechos-solidos-2023",
+      "title": "5. Solid Waste 2023",
+      "description": "Presents the magnitude of the influence of social phenomena on the environment regarding waste generation.",
+      "resources": 4,
+      "date": "2/10/2026"
+    }
+  ],
+  "processing": {
+    "error_banner": "We could not load the datasets. The data service did not respond; please try again in a few moments.",
+    "hero_tag": "ANALYSIS TOOLS",
+    "hero_title": "From data to new perspectives.",
+    "hero_subtitle": "Explore maps and export visualizations using INE data.",
+    "tabs": {
+      "maps": "Maps",
+      "exports": "Exports"
+    },
+    "maps_section": {
+      "step": "01",
+      "tag": "GEOGRAPHIC VISUALIZATION",
+      "title": "Maps of Guatemala",
+      "subtitle": "Generate interactive maps with statistical data by department.",
+      "topic_label": "TOPIC",
+      "topic_placeholder": "Select a topic",
+      "indicator_label": "INDICATOR",
+      "indicator_placeholder": "Select an indicator",
+      "year_label": "YEAR",
+      "year_placeholder": "Select a year",
+      "helper_text": "The map will display values by department for the selected year."
+    },
+    "map_cards": {
+      "choropleth": {
+        "title": "Choropleth map",
+        "meta": "Folium · interactive map"
+      },
+      "analysis": {
+        "title": "Analysis map",
+        "meta": "Plotly · interactive dashboard"
+      },
+      "relief3d": {
+        "title": "3D Relief",
+        "meta": "Deck.gl · WebGL visualization"
+      }
+    }
+  },
+  "indicators": {
+    "error_banner": "Could not load departmental indicators. Departmental indicator matrix not found; please run the pipeline.",
+    "loading": "Searching…",
+    "loading_departments": "Loading departmental indicators…",
+    "view_3d_map": "View on 3D map →",
+    "view_sheet": "View sheet",
+    "hero_tag": "OFFICIAL SYSTEM · SOCIOECONOMIC INDICATORS",
+    "hero_title": "Socioeconomic indicators.",
+    "hero_subtitle": "Consult standardized rates across all 22 departments, the breakdown of 340 municipalities, and the catalog of methodological sheets.",
+    "badge_title": "CONSOLIDATED BASE",
+    "badge_subtitle": "2024 · GUATEMALA",
+    "tabs": {
+      "departmental": "Departmental (22)",
+      "municipal": "Municipal (340)",
+      "methodological": "Methodological sheets"
+    },
+    "filters": {
+      "segeplan_label": "SEGEPLAN REGION",
+      "segeplan_all": "All regions (8)",
+      "order_label": "SORT BY INDICATOR",
+      "order_official": "Official code (01–22)",
+      "direction_label": "DIRECTION",
+      "direction_desc": "Highest to lowest",
+      "direction_asc": "Lowest to highest",
+      "search_placeholder": "Search sheet by code (1–22), ISO (GT-HU), or name (e.g., Petén, Quiché)...",
+      "consult_button": "View sheet"
+    },
+    "sort_options": {
+      "population_total": "Total population 2024",
+      "birth_rate": "Crude birth rate (x1,000)",
+      "death_rate": "Crude death rate (x1,000)",
+      "natural_growth": "Natural growth (x1,000)",
+      "dependency_ratio": "Dependency ratio (%)",
+      "male_female_ratio": "Male-to-female ratio (M/100F)",
+      "autopsy_rate": "INACIF autopsy rate (x100k)",
+      "road_victim_rate": "PNC road victim rate (x100k)",
+      "road_mortality_rate": "Road mortality rate (x100k)",
+      "return_migration_rate": "Return migration rate (x10k)",
+      "returned_children": "% returned migrant children",
+      "returned_women": "% returned women",
+      "higher_education_enrollment": "Higher education enrollment (x10k)",
+      "women_higher_education": "% women in higher education",
+      "regional_inflation": "Year-over-year regional inflation (%)",
+      "official_municipal_code": "Official code (department + municipality)"
+    },
+    "domains": {
+      "all": "All domains",
+      "demography": "Demography",
+      "security": "Security & violence",
+      "mobility": "Mobility & transport",
+      "migration": "Migration",
+      "education": "Education",
+      "economy": "Economy"
+    },
+    "kpis": {
+      "filtered_depts": "FILTERED DEPARTMENTS",
+      "projected_pop": "PROJECTED POPULATION",
+      "returned_migrants": "RETURNED MIGRANTS",
+      "university_enrollment": "UNIVERSITY ENROLLMENT"
+    },
+    "matrix": {
+      "title": "Departmental consolidated matrix (2024)",
+      "subtitle": "Click any department to view its 39 variables and cluster/PCA assignment.",
+      "records_badge": "0 RECORDS",
+      "columns": [
+        "Department",
+        "Region",
+        "Population",
+        "CBR (x1k)",
+        "CDR (x1k)",
+        "Dependency",
+        "Autopsies (x100k)",
+        "Road Vict. (x100k)",
+        "Returnees (x10k)",
+        "Higher Ed. (x10k)",
+        "Reg. Inflation",
+        "Action"
+      ]
+    }
+  },
+  "data_science": {
+    "hero_tag": "DATA SCIENCE & STATISTICAL ANALYSIS · PHASE 3",
+    "hero_title": "Data science and territorial modeling.",
+    "hero_subtitle": "Evaluate territorial vulnerability (IVST), outlier detection, bivariate correlations, PCA, K-Means clustering, and projections.",
+    "tabs": {
+      "ivst": "Vulnerability (IVST)",
+      "outliers": "Descriptive & outliers",
+      "correlations": "Correlations",
+      "pca": "PCA & clusters",
+      "projections": "Projections"
+    },
+    "methodology": {
+      "title": "IVST INDEX METHODOLOGY",
+      "description": "Min-Max normalized synthesis of demographic overload, university deficit, inflation, and return migration.",
+      "btn_ivst": "View interactive IVST chart",
+      "hide_ivst": "Hide IVST bar chart",
+      "btn_3d": "3D Map & STL/OBJ download →"
+    },
+    "vulnerability_levels": {
+      "critical": {
+        "label": "CRITICAL VULNERABILITY",
+        "count_suffix": "depts."
+      },
+      "high": {
+        "label": "HIGH VULNERABILITY",
+        "count_suffix": "depts."
+      },
+      "moderate": {
+        "label": "MODERATE VULNERABILITY",
+        "count_suffix": "depts."
+      },
+      "low": {
+        "label": "LOW VULNERABILITY",
+        "count_suffix": "depts."
+      }
+    },
+    "ranking": {
+      "title": "Territorial Socioeconomic Vulnerability Ranking (IVST 2024)",
+      "subtitle": "22 departments ranked from highest to lowest cumulative vulnerability (0–100 scale)",
+      "badge_count": "0 DEPARTMENTS",
+      "columns": [
+        "Rank",
+        "Department",
+        "Region",
+        "IVST Index",
+        "Level",
+        "Cluster",
+        "Returnees (x10k)",
+        "Dependency",
+        "Higher Ed. (x10k)",
+        "Inflation"
+      ]
+    }
+  },
+  "visualizations": {
+    "hero_tag": "VISUALIZATION STUDIO · 20 VISUALIZATIONS",
+    "hero_title": "Interactive & 3D visualizations.",
+    "hero_subtitle": "Explore animated 3D charts, rankings, distributions, Deck.gl relief maps, Blender renders, and download 3D STL or OBJ models.",
+    "badge_lines": [
+      "VISUAL CATALOG",
+      "20 · 3D · BLENDER"
+    ],
+    "tabs": {
+      "viz3d": "3D Charts",
+      "bars": "Bars & rankings",
+      "pie": "Pie & hierarchy",
+      "trends": "Trends & radar",
+      "cartography": "Cartography & 3D models"
+    },
+    "controls": {
+      "viz3d_label": "3D VISUALIZATION",
+      "viz3d_default": "Animated demographic trajectory (2015–2030)",
+      "color_by_label": "COLOR BY",
+      "color_by_default": "SEGEPLAN Region"
+    },
+    "panel": {
+      "title": "INE INTERACTIVE VISUALIZATION",
+      "open_new_tab": "Open in a new tab ↗"
+    }
+  },
+  "team": {
+    "hero_tag": "MEET THE TEAM",
+    "hero_title": "Balam Data System.",
+    "hero_subtitle": "We are a team of four driving a clearer and more accessible way to explore Guatemala's statistical data.",
+    "pills": [
+      "4 members",
+      "Open data",
+      "Guatemala"
+    ],
+    "roles_section": {
+      "tag": "A MULTIDISCIPLINARY TEAM",
+      "title": "Four roles, one shared purpose",
+      "subtitle": "Select a profile to see how each role contributes to the project. Names can be customized.",
+      "badge_example": "SAMPLE PROFILE",
+      "selected_label": "Selected profile",
+      "see_contribution": "View contribution",
+      "roles": [
+        {
+          "id": "01",
+          "title": "Coordination & analysis",
+          "summary": "Frames the project's key questions and organizes the team's workflow.",
+          "contribution_tag": "PROJECT CONTRIBUTION",
+          "bullets": [
+            "Define useful questions for the population",
+            "Organize priorities and deliverables",
+            "Connect findings with decision-making"
+          ]
+        },
+        {
+          "id": "02",
+          "title": "Data management & integration",
+          "summary": "Prepares statistical sources and verifies data consistency.",
+          "contribution_tag": "PROJECT CONTRIBUTION",
+          "bullets": [
+            "Clean and structure datasets",
+            "Validate units, dates, and definitions",
+            "Maintain traceability of official sources"
+          ]
+        },
+        {
+          "id": "03",
+          "title": "Development & user experience",
+          "summary": "Builds a clear, accessible, and mobile-responsive platform.",
+          "contribution_tag": "PROJECT CONTRIBUTION",
+          "bullets": [
+            "Design clean, easy-to-navigate views",
+            "Integrate accessibility and national languages",
+            "Ensure stability during live demonstrations"
+          ]
+        },
+        {
+          "id": "04",
+          "title": "Territorial analysis & visualization",
+          "summary": "Transforms indicators into easy-to-interpret maps and charts.",
+          "contribution_tag": "PROJECT CONTRIBUTION",
+          "bullets": [
+            "Compare patterns across territories",
+            "Detect trends and statistical outliers",
+            "Communicate results visually"
+          ]
+        }
+      ]
+    },
+    "explore_section": {
+      "tag": "EXPLORE THE PLATFORM",
+      "title": "What would you like to discover?",
+      "cards": [
+        {
+          "title": "Explore data",
+          "description": "Search statistical datasets by topic or keyword."
+        },
+        {
+          "title": "Compare territories",
+          "description": "Consult indicators and explore differences across departments."
+        },
+        {
+          "title": "View visualizations",
+          "description": "Explore interactive maps, trends, and charts."
+        }
+      ]
+    }
+  },
+  "pagination": {
+    "showing": "Showing 1–12 of 112",
+    "previous": "← Previous",
+    "current_page": "1/10",
+    "next": "Next →"
+  },
+  "footer": {
+    "organization": "National Institute of Statistics (INE) · Guatemala",
+    "tagline": "Official statistical information",
+    "website_label": "ine.gob.gt ↗",
+    "website_url": "https://www.ine.gob.gt"
+  }
+}

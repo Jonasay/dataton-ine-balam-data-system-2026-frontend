@@ -7,6 +7,7 @@ import {
   type IndicatorCatalogOption,
   type VisualizationMetadataItem,
 } from './api';
+import { useTranslation } from './i18n/LanguageContext';
 
 type VizTab = '3d' | 'bars' | 'pies' | 'trends' | 'maps3d';
 
@@ -26,6 +27,7 @@ const FALLBACK_INDICATORS: IndicatorCatalogOption[] = [
 ];
 
 export function VisualizationsSection({ initialIndicator, onNotify }: VisualizationsSectionProps) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<VizTab>(initialIndicator ? 'maps3d' : '3d');
   const [indicators, setIndicators] = useState<IndicatorCatalogOption[]>(FALLBACK_INDICATORS);
   const [catalogItems, setCatalogItems] = useState<VisualizationMetadataItem[]>([]);
@@ -201,19 +203,19 @@ export function VisualizationsSection({ initialIndicator, onNotify }: Visualizat
     <>
       <section className="page-heading">
         <div>
-          <div className="eyebrow"><span className="eyebrow-line" /> STUDIO VISUALIZACIÓN · {catalogItems.length || 20} VISUALIZACIONES</div>
-          <h1>Visualizaciones<br /><em>interactivas y 3D.</em></h1>
-          <p className="intro">Explora gráficas 3D animadas, rankings, distribuciones, mapas en relieve Deck.gl, renders con Blender y descarga modelos 3D STL u OBJ.</p>
+          <div className="eyebrow"><span className="eyebrow-line" /> {t('visualizations.hero_tag').replace('20', String(catalogItems.length || 20))}</div>
+          <h1>{t('visualizations.hero_title')}</h1>
+          <p className="intro">{t('visualizations.hero_subtitle')}</p>
         </div>
-        <div className="heading-stamp"><img src="/ine.png" alt="INE Guatemala" /><span>CATÁLOGO VISUAL<br />2D · 3D · BLENDER</span></div>
+        <div className="heading-stamp"><img src="/ine.png" alt="INE Guatemala" /><span>{t('visualizations.badge_lines.0')}<br />{t('visualizations.badge_lines.1')}</span></div>
       </section>
 
       <div className="workbench-tabs" role="tablist" aria-label="Categorías de visualización">
-        <button type="button" role="tab" aria-selected={tab === '3d'} className={tab === '3d' ? 'active' : ''} onClick={() => setTab('3d')}>Gráficas 3D</button>
-        <button type="button" role="tab" aria-selected={tab === 'bars'} className={tab === 'bars' ? 'active' : ''} onClick={() => setTab('bars')}>Barras y rankings</button>
-        <button type="button" role="tab" aria-selected={tab === 'pies'} className={tab === 'pies' ? 'active' : ''} onClick={() => setTab('pies')}>Pastel y jerarquía</button>
-        <button type="button" role="tab" aria-selected={tab === 'trends'} className={tab === 'trends' ? 'active' : ''} onClick={() => setTab('trends')}>Tendencias y radar</button>
-        <button type="button" role="tab" aria-selected={tab === 'maps3d'} className={tab === 'maps3d' ? 'active' : ''} onClick={() => setTab('maps3d')}>Cartografía y modelos 3D</button>
+        <button type="button" role="tab" aria-selected={tab === '3d'} className={tab === '3d' ? 'active' : ''} onClick={() => setTab('3d')}>{t('visualizations.tabs.viz3d')}</button>
+        <button type="button" role="tab" aria-selected={tab === 'bars'} className={tab === 'bars' ? 'active' : ''} onClick={() => setTab('bars')}>{t('visualizations.tabs.bars')}</button>
+        <button type="button" role="tab" aria-selected={tab === 'pies'} className={tab === 'pies' ? 'active' : ''} onClick={() => setTab('pies')}>{t('visualizations.tabs.pie')}</button>
+        <button type="button" role="tab" aria-selected={tab === 'trends'} className={tab === 'trends' ? 'active' : ''} onClick={() => setTab('trends')}>{t('visualizations.tabs.trends')}</button>
+        <button type="button" role="tab" aria-selected={tab === 'maps3d'} className={tab === 'maps3d' ? 'active' : ''} onClick={() => setTab('maps3d')}>{t('visualizations.tabs.cartography')}</button>
       </div>
 
       {catalogLoading && indicators.length === 0 ? (
@@ -224,9 +226,9 @@ export function VisualizationsSection({ initialIndicator, onNotify }: Visualizat
             <div className="map-source">
               <div className="map-filters-grid">
                 <label>
-                  <span>VISUALIZACIÓN 3D</span>
+                  <span>{t('visualizations.controls.viz3d_label')}</span>
                   <select value={chart3dKind} onChange={(e) => setChart3dKind(e.target.value as 'traj-demo' | 'clusters-pca' | 'riesgo-cube' | 'traj-cba')}>
-                    <option value="traj-demo">Trayectoria demográfica animada (2015–2030)</option>
+                    <option value="traj-demo">{t('visualizations.controls.viz3d_default')}</option>
                     <option value="clusters-pca">Espacio 3D PCA y clústeres K-Means</option>
                     <option value="riesgo-cube">Cubo 3D personalizable de indicadores</option>
                     <option value="traj-cba">Trayectoria 3D animada Canasta Básica (CBA)</option>
@@ -234,9 +236,9 @@ export function VisualizationsSection({ initialIndicator, onNotify }: Visualizat
                 </label>
                 {chart3dKind === 'traj-demo' && (
                   <label>
-                    <span>COLOREAR POR</span>
+                    <span>{t('visualizations.controls.color_by_label')}</span>
                     <select value={trajColorBy} onChange={(e) => setTrajColorBy(e.target.value as 'region_nombre' | 'cluster_nombre' | 'nivel_vulnerabilidad')}>
-                      <option value="region_nombre">Región SEGEPLAN</option>
+                      <option value="region_nombre">{t('visualizations.controls.color_by_default')}</option>
                       <option value="cluster_nombre">Conglomerado K-Means</option>
                       <option value="nivel_vulnerabilidad">Nivel de vulnerabilidad (IVST)</option>
                     </select>
@@ -502,7 +504,7 @@ export function VisualizationsSection({ initialIndicator, onNotify }: Visualizat
           ) : (
             <div className="map-frame-wrap">
               <div className="frame-toolbar">
-                <span><i className="live-dot" /> VISUALIZACIÓN INTERACTIVA INE</span>
+                <span><i className="live-dot" /> {t('visualizations.panel.title')}</span>
                 <div className="toolbar-links-group">
                   {tab === 'maps3d' && (
                     <>
@@ -510,7 +512,7 @@ export function VisualizationsSection({ initialIndicator, onNotify }: Visualizat
                       <a href={objDownloadUrl} download>Descargar .OBJ ↓</a>
                     </>
                   )}
-                  <a href={activeIframeUrl} target="_blank" rel="noreferrer">Abrir en una pestaña ↗</a>
+                  <a href={activeIframeUrl} target="_blank" rel="noreferrer">{t('visualizations.panel.open_new_tab')}</a>
                 </div>
               </div>
               <iframe title="Visualización interactiva INE" src={activeIframeUrl} />
