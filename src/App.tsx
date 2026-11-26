@@ -25,7 +25,6 @@ import { VisualizationsSection } from './VisualizationsSection';
 type Section = 'catalog' | 'ai-search' | 'workbench' | 'indicators' | 'analytics' | 'visualizations' | 'team';
 type Notice = { kind: 'error' | 'success'; message: string };
 
-<<<<<<< HEAD
 const SECTION_BREADCRUMBS: Record<Section, string> = {
   catalog: 'CATÁLOGO DE DATOS',
   'ai-search': 'CONSULTA INTELIGENTE CON IA',
@@ -34,37 +33,60 @@ const SECTION_BREADCRUMBS: Record<Section, string> = {
   analytics: 'CIENCIA DE DATOS',
   visualizations: 'VISUALIZACIONES Y 3D',
   team: 'BALAM DATA SYSTEM',
-=======
-const SECTION_BREADCRUMB_KEYS: Record<Section, string> = {
-  catalog: 'header.breadcrumb_catalog',
-  workbench: 'header.breadcrumb_processing',
-  indicators: 'header.breadcrumb_indicators',
-  analytics: 'header.breadcrumb_data_science',
-  visualizations: 'header.breadcrumb_visualizations',
-  team: 'header.breadcrumb_team',
->>>>>>> origin/main
 };
 
-const TEAM_PROFILES = [
+type TeamLink = { label: string; href: string };
+type TeamProfile = {
+  name: string;
+  title: string;
+  focus: string;
+  responsibilities: string[];
+  links: TeamLink[];
+};
+
+const TEAM_PROFILES: TeamProfile[] = [
   {
+    name: 'Noe Yonathan Xicara Say',
     title: 'Coordinación y análisis',
     focus: 'Aterriza las preguntas del proyecto y organiza el trabajo del equipo.',
     responsibilities: ['Definir preguntas útiles para la población', 'Organizar prioridades y entregas', 'Conectar los hallazgos con decisiones'],
+    links: [
+      { label: 'GitHub · @Jonasay', href: 'https://github.com/Jonasay' },
+      { label: 'Instagram · @sayyonathan', href: 'https://www.instagram.com/sayyonathan/' },
+    ],
   },
   {
+    name: 'Erikson Denilson Orozco Monterroso',
     title: 'Gestión e integración de datos',
     focus: 'Prepara fuentes estadísticas y verifica que los datos sean consistentes.',
     responsibilities: ['Localizar fuentes estadísticas confiables', 'Integrar y validar conjuntos de datos', 'Documentar indicadores y periodos'],
+    links: [
+      { label: 'GitHub · @EDK367', href: 'https://github.com/EDK367' },
+      { label: 'Portafolio', href: 'https://solairy.app/' },
+    ],
   },
   {
+    name: 'Elison Rodemiro Vail Moreno',
     title: 'Desarrollo y experiencia de usuario',
     focus: 'Construye una plataforma clara, accesible y adaptable a móviles.',
     responsibilities: ['Diseñar recorridos simples de navegación', 'Desarrollar la experiencia web', 'Cuidar accesibilidad y diseño adaptable'],
+    links: [
+      { label: 'GitHub · @Evichs', href: 'https://github.com/Evichs' },
+      { label: 'Instagram · @evichs_04', href: 'https://www.instagram.com/evichs_04/' },
+    ],
   },
   {
+    name: 'Carlos Miguel Garcia Say',
     title: 'Análisis y visualización territorial',
     focus: 'Convierte indicadores en mapas y gráficas fáciles de interpretar.',
     responsibilities: ['Analizar patrones territoriales', 'Crear mapas y visualizaciones', 'Comunicar resultados con contexto'],
+    links: [
+      { label: 'GitHub · @cmgsay', href: 'https://github.com/cmgsay' },
+      {
+        label: 'LinkedIn',
+        href: 'https://www.linkedin.com/in/carlos-garc%C3%ADa-garcia-say-1626a9363?utm_source=share_via&utm_content=profile&utm_medium=member_ios',
+      },
+    ],
   },
 ];
 
@@ -500,16 +522,11 @@ function App() {
           <button title={t('sidebar.explore')} aria-label={t('sidebar.explore')} className={section === 'catalog' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('catalog')}>
             <span className="nav-icon">⌕</span><span>{t('sidebar.explore')}</span>
           </button>
-<<<<<<< HEAD
           <button title="Consulta con IA" aria-label="Consulta con IA" className={section === 'ai-search' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('ai-search')}>
             <span className="nav-icon">✦</span><span>Consulta con IA</span>
           </button>
           <button title="Procesamiento" aria-label="Procesamiento" className={section === 'workbench' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('workbench')}>
             <span className="nav-icon">▥</span><span>Procesamiento</span>
-=======
-          <button title={t('sidebar.processing')} aria-label={t('sidebar.processing')} className={section === 'workbench' ? 'nav-item active' : 'nav-item'} onClick={() => setSection('workbench')}>
-            <span className="nav-icon">▥</span><span>{t('sidebar.processing')}</span>
->>>>>>> origin/main
           </button>
           <div className="nav-group">
             <button
@@ -549,43 +566,22 @@ function App() {
 
       <main className="main-content">
         <header className="topbar">
-<<<<<<< HEAD
           <div className="breadcrumb"><span className="breadcrumb-brand">INE</span><span>/</span> {SECTION_BREADCRUMBS[section]}</div>
-          <button
-            type="button"
-            className={section === 'ai-search' ? 'topbar-ai-btn active' : 'topbar-ai-btn'}
-            onClick={() => setSection('ai-search')}
-          >
-            <span aria-hidden="true">✦</span>
-            <span>Preguntar con IA</span>
-          </button>
-=======
-          <div className="breadcrumb">
-            {t(SECTION_BREADCRUMB_KEYS[section])}
+          <div className="lang-switcher-wrap">
+            <select
+              value={lang}
+              onChange={(event) => {
+                const nextLang = event.target.value;
+                if (nextLang === 'es' || nextLang === 'quc' || nextLang === 'en') setLang(nextLang);
+              }}
+              aria-label={t('header.lang_label')}
+              className="lang-switcher"
+            > 
+              <option value="es">Español</option>
+              <option value="quc">Kiche</option>
+              <option value="en">Ingles</option>
+            </select>
           </div>
-          <select
-            value={lang}
-            onChange={(event) => {
-              const nextLang = event.target.value;
-              if (nextLang === 'es' || nextLang === 'quc' || nextLang === 'en') setLang(nextLang);
-            }}
-            aria-label={t('header.lang_label')}
-            style={{
-              padding: '4px 10px',
-              borderRadius: '6px',
-              border: '1px solid #cbd5e1',
-              backgroundColor: '#ffffff',
-              color: '#1e293b',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            <option value="es">Español (ES)</option>
-            <option value="quc">K'iche' (QUC)</option>
-            <option value="en">English (EN)</option>
-          </select>
->>>>>>> origin/main
         </header>
 
         <div className="page-wrap">
@@ -896,27 +892,68 @@ function App() {
                 <p className="team-note">{t('team.roles_section.subtitle')}</p>
                 <div className="team-grid" role="group" aria-label={t('team.roles_section.tag')}>
                   {TEAM_PROFILES.map((profile, index) => (
-                    <button
-                      type="button"
+                    <article
                       className={activeTeamProfile === index ? 'team-card active' : 'team-card'}
-                      key={profile.title}
-                      aria-pressed={activeTeamProfile === index}
+                      key={profile.name}
                       onClick={() => setActiveTeamProfile(index)}
                     >
                       <span className="team-card-topline"><span className="team-card-number">0{index + 1}</span><span className="team-card-indicator" /></span>
                       <span className="team-card-label">{t('team.roles_section.badge_example')}</span>
-                      <strong className="team-card-title">{t(`team.roles_section.roles.${index}.title`)}</strong>
+                      <strong className="team-card-name">{profile.name}</strong>
+                      <span className="team-card-title">{t(`team.roles_section.roles.${index}.title`)}</span>
                       <span className="team-card-focus">{t(`team.roles_section.roles.${index}.summary`)}</span>
-                      <span className="team-card-action">{activeTeamProfile === index ? t('team.roles_section.selected_label') : t('team.roles_section.see_contribution')} <span aria-hidden="true">→</span></span>
-                    </button>
+                      <div className="team-card-links" onClick={(event) => event.stopPropagation()}>
+                        {profile.links.map((link) => (
+                          <a
+                            key={link.href}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="team-card-link"
+                          >
+                            <span>{link.label}</span>
+                            <span aria-hidden="true">↗</span>
+                          </a>
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        className="team-card-action"
+                        aria-pressed={activeTeamProfile === index}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setActiveTeamProfile(index);
+                        }}
+                      >
+                        {activeTeamProfile === index ? t('team.roles_section.selected_label') : t('team.roles_section.see_contribution')} <span aria-hidden="true">→</span>
+                      </button>
+                    </article>
                   ))}
                 </div>
-                <article className="team-profile-detail" key={TEAM_PROFILES[activeTeamProfile].title} aria-live="polite">
+                <article className="team-profile-detail" key={TEAM_PROFILES[activeTeamProfile].name} aria-live="polite">
                   <div className="team-profile-detail-heading">
                     <span className="team-profile-detail-number">0{activeTeamProfile + 1}</span>
-                    <div><div className="section-kicker">{t(`team.roles_section.roles.${activeTeamProfile}.contribution_tag`)}</div><h3>{t(`team.roles_section.roles.${activeTeamProfile}.title`)}</h3></div>
+                    <div>
+                      <div className="section-kicker">{t(`team.roles_section.roles.${activeTeamProfile}.contribution_tag`)}</div>
+                      <h3>{TEAM_PROFILES[activeTeamProfile].name}</h3>
+                      <div className="team-detail-role">{t(`team.roles_section.roles.${activeTeamProfile}.title`)}</div>
+                    </div>
                   </div>
                   <p>{t(`team.roles_section.roles.${activeTeamProfile}.summary`)}</p>
+                  <div className="team-card-links team-detail-links">
+                    {TEAM_PROFILES[activeTeamProfile].links.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="team-card-link"
+                      >
+                        <span>{link.label}</span>
+                        <span aria-hidden="true">↗</span>
+                      </a>
+                    ))}
+                  </div>
                   <ul>
                     {TEAM_PROFILES[activeTeamProfile].responsibilities.map((responsibility, index) => (
                       <li key={responsibility}><span aria-hidden="true">✓</span>{t(`team.roles_section.roles.${activeTeamProfile}.bullets.${index}`)}</li>

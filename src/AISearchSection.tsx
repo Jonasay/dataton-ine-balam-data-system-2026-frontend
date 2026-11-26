@@ -219,7 +219,7 @@ export function AISearchSection({ onNotify }: AISearchSectionProps) {
       <section className="page-heading">
         <div>
           <div className="eyebrow">
-            <span className="eyebrow-line" /> BÚSQUEDA ESTADÍSTICA INTELIGENTE · TEXT-TO-JSON
+            <span className="eyebrow-line" /> BÚSQUEDA ESTADÍSTICA INTELIGENTE
           </div>
           <h1>
             Pregunta en lenguaje natural<br />

@@ -665,7 +665,7 @@
     }
   },
   "data_science": {
-    "hero_tag": "CIENCIA DE DATOS Y ANÁLISIS ESTADÍSTICO · FASE 3",
+    "hero_tag": "CIENCIA DE DATOS Y ANÁLISIS ESTADÍSTICO",
     "hero_title": "Ciencia de datos y modelado territorial.",
     "hero_subtitle": "Evalúa vulnerabilidad territorial (IVST), detección de atípicos, correlaciones bivariadas, PCA, conglomerados K-Means y proyecciones.",
     "tabs": {
@@ -756,8 +756,8 @@
     "roles_section": {
       "tag": "UN EQUIPO MULTIDISCIPLINARIO",
       "title": "Cuatro roles, un mismo propósito",
-      "subtitle": "Selecciona un perfil para conocer cómo aporta al proyecto. Los nombres se pueden personalizar.",
-      "badge_example": "PERFIL DE EJEMPLO",
+      "subtitle": "Selecciona un integrante para conocer cómo aporta al proyecto y acceder a sus perfiles.",
+      "badge_example": "INTEGRANTE",
       "selected_label": "Perfil seleccionado",
       "see_contribution": "Conocer su aporte",
       "roles": [

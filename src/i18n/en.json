@@ -756,8 +756,8 @@
     "roles_section": {
       "tag": "A MULTIDISCIPLINARY TEAM",
       "title": "Four roles, one shared purpose",
-      "subtitle": "Select a profile to see how each role contributes to the project. Names can be customized.",
-      "badge_example": "SAMPLE PROFILE",
+      "subtitle": "Select a team member to see how each role contributes to the project and open their profiles.",
+      "badge_example": "TEAM MEMBER",
       "selected_label": "Selected profile",
       "see_contribution": "View contribution",
       "roles": [

@@ -1632,15 +1632,53 @@ tr.selected-row {
   letter-spacing: .8px;
 }
 
+.team-card-name {
+  color: #173a5e;
+  font: 700 15px/1.3 'Public Sans', sans-serif;
+}
+
 .team-card-title {
   color: #205987;
-  font: 700 15px/1.35 'Public Sans', sans-serif;
+  font: 600 12px/1.35 'Public Sans', sans-serif;
 }
 
 .team-card-focus {
   color: #657f97;
   font-size: 13px;
   line-height: 1.55;
+}
+
+.team-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.team-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border: 1px solid #d5e7f7;
+  border-radius: 6px;
+  background: #f4f9ff;
+  color: #1672be;
+  font: 600 10px/1.2 'IBM Plex Mono', monospace;
+  text-decoration: none;
+  transition: background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+}
+
+.team-card-link:hover {
+  background: #e2f1ff;
+  border-color: #9dc8ec;
+  color: #0058ad;
+  transform: translateY(-1px);
+}
+
+.team-card-link:focus-visible {
+  outline: 2px solid #80bfff;
+  outline-offset: 2px;
 }
 
 .team-card-action {
@@ -1650,11 +1688,15 @@ tr.selected-row {
   justify-content: space-between;
   gap: 8px;
   margin-top: auto;
-  padding-top: 10px;
+  padding: 10px 0 0;
+  border: 0;
   border-top: 1px solid #e8f0f7;
+  background: transparent;
   color: #1672be;
   font-size: 12px;
   font-weight: 600;
+  text-align: left;
+  cursor: pointer;
 }
 
 .team-card-action span {
@@ -1714,6 +1756,17 @@ tr.selected-row {
   font-size: 17px;
 }
 
+.team-detail-role {
+  margin-top: 2px;
+  color: #205987;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.team-detail-links {
+  grid-column: 1;
+}
+
 .team-profile-detail > p {
   grid-column: 1;
   margin: 0;
@@ -1727,7 +1780,7 @@ tr.selected-row {
   align-content: center;
   gap: 9px;
   grid-column: 2;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -2000,6 +2053,7 @@ tr.selected-row {
 
   .team-profile-detail-heading,
   .team-profile-detail > p,
+  .team-detail-links,
   .team-profile-detail ul {
     grid-column: 1;
     grid-row: auto;
