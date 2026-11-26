@@ -32,6 +32,7 @@ Para mantener esta guía enfocada en la puesta en marcha de la aplicación web, 
 | **Tecnologías y Licencias Open Source** | Stack completo de dependencias de React, TypeScript, Vite, Nginx, tipografías, entorno Antigravity / Gemini y licencias. | [docs/TECNOLOGIAS.md](./docs/TECNOLOGIAS.md) |
 | **Arquitectura y Consumo de Servicios** | Diseño modular de la SPA, cliente API centralizado (`src/api.ts`), flujo de proxy en desarrollo/producción y mapa completo de módulos con endpoints consumidos. | [docs/ARQUITECTURA_Y_SERVICIOS.md](./docs/ARQUITECTURA_Y_SERVICIOS.md) |
 | **Guía de Errores y Soluciones** | Diagnóstico y resolución de problemas frecuentes al levantar Vite, conectar con FastAPI, compilar TypeScript o ejecutar en Docker/Nginx. | [docs/ERRORES_Y_SOLUCIONES.md](./docs/ERRORES_Y_SOLUCIONES.md) |
+| **Manual de Usuario del Sistema** | Guía general para consultar y utilizar las funciones, datos y herramientas disponibles en Balam Data Systems. | [docs/Manual_Usuario_Balam_Data_Systems.pdf](./docs/Manual_Usuario_Balam_Data_Systems.pdf) |
 
 ---
 
