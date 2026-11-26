@@ -24,13 +24,13 @@ import { VisualizationsSection } from './VisualizationsSection';
 type Section = 'catalog' | 'workbench' | 'indicators' | 'analytics' | 'visualizations' | 'team';
 type Notice = { kind: 'error' | 'success'; message: string };
 
-const SECTION_BREADCRUMBS: Record<Section, string> = {
-  catalog: 'CATÁLOGO DE DATOS',
-  workbench: 'PROCESAMIENTO',
-  indicators: 'INDICADORES SOCIOECONÓMICOS',
-  analytics: 'CIENCIA DE DATOS',
-  visualizations: 'VISUALIZACIONES Y 3D',
-  team: 'BALAM DATA SYSTEM',
+const SECTION_BREADCRUMB_KEYS: Record<Section, string> = {
+  catalog: 'header.breadcrumb_catalog',
+  workbench: 'header.breadcrumb_processing',
+  indicators: 'header.breadcrumb_indicators',
+  analytics: 'header.breadcrumb_data_science',
+  visualizations: 'header.breadcrumb_visualizations',
+  team: 'header.breadcrumb_team',
 };
 
 const TEAM_PROFILES = [
@@ -530,13 +530,13 @@ function App() {
       <main className="main-content">
         <header className="topbar">
           <div className="breadcrumb">
-            {section === 'catalog' ? t('header.breadcrumb') : <><span className="breadcrumb-brand">INE</span><span>/</span> {SECTION_BREADCRUMBS[section]}</>}
+            {t(SECTION_BREADCRUMB_KEYS[section])}
           </div>
           <select
             value={lang}
             onChange={(event) => {
               const nextLang = event.target.value;
-              if (nextLang === 'es' || nextLang === 'quc') setLang(nextLang);
+              if (nextLang === 'es' || nextLang === 'quc' || nextLang === 'en') setLang(nextLang);
             }}
             aria-label={t('header.lang_label')}
             style={{
@@ -552,6 +552,7 @@ function App() {
           >
             <option value="es">Español (ES)</option>
             <option value="quc">K'iche' (QUC)</option>
+            <option value="en">English (EN)</option>
           </select>
         </header>
 
@@ -732,28 +733,28 @@ function App() {
           )}
           {section === 'workbench' && (
             <>
-              <section className="page-heading workbench-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> HERRAMIENTAS DE ANÁLISIS</div><h1>De los datos a<br /><em>nuevas perspectivas.</em></h1><p className="intro">Explora mapas y exporta visualizaciones con los datos del INE.</p></div><div className="process-orbit"><div className="orbit-ring"><span>DATOS</span><b>→</b><span>HALLAZGOS</span></div><i>✳</i></div></section>
+              <section className="page-heading workbench-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> {t('processing.hero_tag')}</div><h1>{t('processing.hero_title')}</h1><p className="intro">{t('processing.hero_subtitle')}</p></div><div className="process-orbit"><div className="orbit-ring"><span>DATOS</span><b>→</b><span>HALLAZGOS</span></div><i>✳</i></div></section>
               <div className="workbench-tabs" role="tablist" aria-label="Herramientas de procesamiento">
-                <button id="process-tab-maps" className={processTab === 'maps' ? 'active' : ''} type="button" role="tab" aria-selected={processTab === 'maps'} aria-controls="process-content" onClick={() => { setProcessTab('maps'); setMapUrl(''); }}>Mapas</button>
-                <button id="process-tab-exports" className={processTab === 'exports' ? 'active' : ''} type="button" role="tab" aria-selected={processTab === 'exports'} aria-controls="process-content" onClick={() => { setProcessTab('exports'); setMapUrl(''); }}>Exportaciones</button>
+                <button id="process-tab-maps" className={processTab === 'maps' ? 'active' : ''} type="button" role="tab" aria-selected={processTab === 'maps'} aria-controls="process-content" onClick={() => { setProcessTab('maps'); setMapUrl(''); }}>{t('processing.tabs.maps')}</button>
+                <button id="process-tab-exports" className={processTab === 'exports' ? 'active' : ''} type="button" role="tab" aria-selected={processTab === 'exports'} aria-controls="process-content" onClick={() => { setProcessTab('exports'); setMapUrl(''); }}>{t('processing.tabs.exports')}</button>
               </div>
               <div id="process-content" className="processing-content" role="tabpanel" aria-labelledby={`process-tab-${processTab}`} tabIndex={0}>
                 {processTab === 'maps' && <section className="tool-card maps-card">
-                  <div className="tool-card-head"><span className="tool-number">01</span><div><div className="section-kicker">VISUALIZACIÓN GEOGRÁFICA</div><h2>Mapas de Guatemala</h2></div></div>
-                  <p>Genera mapas interactivos con datos estadísticos por departamento.</p>
+                  <div className="tool-card-head"><span className="tool-number">{t('processing.maps_section.step')}</span><div><div className="section-kicker">{t('processing.maps_section.tag')}</div><h2>{t('processing.maps_section.title')}</h2></div></div>
+                  <p>{t('processing.maps_section.subtitle')}</p>
                   <div className="map-source map-filters">
                     <div className="map-filters-grid">
-                      <label><span>TEMA</span><select aria-label="Tema del mapa" value={selectedMapTheme} onChange={(event) => { const next = mapIndicators.find((indicator) => indicator.tema === event.target.value); setSelectedMapIndicatorId(next?.id || ''); setMapUrl(''); }} disabled={mapIndicatorsLoading || mapThemes.length === 0}><option value="">Selecciona un tema</option>{mapThemes.map((theme) => <option key={theme} value={theme}>{theme}</option>)}</select></label>
-                      <label><span>INDICADOR</span><select aria-label="Indicador del mapa" value={selectedMapMetric} onChange={(event) => { const next = mapIndicatorsForTheme.find((indicator) => indicator.indicador === event.target.value); setSelectedMapIndicatorId(next?.id || ''); setMapUrl(''); }} disabled={mapIndicatorsLoading || mapIndicatorNames.length === 0}><option value="">Selecciona un indicador</option>{mapIndicatorNames.map((indicator) => <option key={indicator} value={indicator}>{indicator}</option>)}</select></label>
-                      <label><span>AÑO</span><select aria-label="Año del mapa" value={selectedMapIndicator ? String(selectedMapIndicator.periodo) : ''} onChange={(event) => { const next = mapIndicatorsForTheme.find((indicator) => indicator.indicador === selectedMapMetric && String(indicator.periodo) === event.target.value); setSelectedMapIndicatorId(next?.id || ''); setMapUrl(''); }} disabled={mapIndicatorsLoading || mapPeriods.length === 0}><option value="">Selecciona un año</option>{mapPeriods.map((period) => <option key={period} value={period}>{period}</option>)}</select></label>
+                      <label><span>{t('processing.maps_section.topic_label')}</span><select aria-label={t('processing.maps_section.topic_label')} value={selectedMapTheme} onChange={(event) => { const next = mapIndicators.find((indicator) => indicator.tema === event.target.value); setSelectedMapIndicatorId(next?.id || ''); setMapUrl(''); }} disabled={mapIndicatorsLoading || mapThemes.length === 0}><option value="">{t('processing.maps_section.topic_placeholder')}</option>{mapThemes.map((theme) => <option key={theme} value={theme}>{theme}</option>)}</select></label>
+                      <label><span>{t('processing.maps_section.indicator_label')}</span><select aria-label={t('processing.maps_section.indicator_label')} value={selectedMapMetric} onChange={(event) => { const next = mapIndicatorsForTheme.find((indicator) => indicator.indicador === event.target.value); setSelectedMapIndicatorId(next?.id || ''); setMapUrl(''); }} disabled={mapIndicatorsLoading || mapIndicatorNames.length === 0}><option value="">{t('processing.maps_section.indicator_placeholder')}</option>{mapIndicatorNames.map((indicator) => <option key={indicator} value={indicator}>{indicator}</option>)}</select></label>
+                      <label><span>{t('processing.maps_section.year_label')}</span><select aria-label={t('processing.maps_section.year_label')} value={selectedMapIndicator ? String(selectedMapIndicator.periodo) : ''} onChange={(event) => { const next = mapIndicatorsForTheme.find((indicator) => indicator.indicador === selectedMapMetric && String(indicator.periodo) === event.target.value); setSelectedMapIndicatorId(next?.id || ''); setMapUrl(''); }} disabled={mapIndicatorsLoading || mapPeriods.length === 0}><option value="">{t('processing.maps_section.year_placeholder')}</option>{mapPeriods.map((period) => <option key={period} value={period}>{period}</option>)}</select></label>
                     </div>
-                    <small>{selectedMapIndicator ? `${selectedMapIndicator.titulo_mapa}${selectedMapIndicator.unidad ? ` · Unidad: ${selectedMapIndicator.unidad}` : ''}` : 'El mapa mostrará los valores por departamento para el año elegido.'}</small>
+                    <small>{selectedMapIndicator ? `${selectedMapIndicator.titulo_mapa}${selectedMapIndicator.unidad ? ` · ${selectedMapIndicator.unidad}` : ''}` : t('processing.maps_section.helper_text')}</small>
                   </div>
                   {mapIndicatorsError && <div className="map-indicator-warning" role="status"><span>{mapIndicatorsError}</span><button type="button" onClick={() => void loadMapIndicators()} disabled={mapIndicatorsLoading}>{mapIndicatorsLoading ? 'Cargando…' : 'Reintentar'}</button></div>}
                   <div className="map-options">
-                    <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-html', { esquema_color: 'YlOrRd', capa_base: 'Esri.WorldGrayCanvas' })}><span className="map-preview warm">▧</span><strong>Mapa coroplético</strong><small>{busy === 'map' ? 'Generando…' : 'Folium · mapa interactivo'}</small><span className="option-arrow">↗</span></button>
-                    <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-plotly', { formato: 'html' })}><span className="map-preview cool">▧</span><strong>Mapa de análisis</strong><small>{busy === 'map' ? 'Generando…' : 'Plotly · panel interactivo'}</small><span className="option-arrow">↗</span></button>
-                    <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-3d-relieve', { estilo_color: map3dStyle, altura_max_m: '60000' })}><span className="map-preview terrain">▧</span><strong>Relieve 3D</strong><small>{busy === 'map' ? 'Generando…' : 'Deck.gl · visualización WebGL'}</small><span className="option-arrow">↗</span></button>
+                    <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-html', { esquema_color: 'YlOrRd', capa_base: 'Esri.WorldGrayCanvas' })}><span className="map-preview warm">▧</span><strong>{t('processing.map_cards.choropleth.title')}</strong><small>{busy === 'map' ? 'Generando…' : t('processing.map_cards.choropleth.meta')}</small><span className="option-arrow">↗</span></button>
+                    <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-plotly', { formato: 'html' })}><span className="map-preview cool">▧</span><strong>{t('processing.map_cards.analysis.title')}</strong><small>{busy === 'map' ? 'Generando…' : t('processing.map_cards.analysis.meta')}</small><span className="option-arrow">↗</span></button>
+                    <button className="map-option" disabled={busy === 'map' || !selectedMapIndicator} onClick={() => void createMap('mapa-3d-relieve', { estilo_color: map3dStyle, altura_max_m: '60000' })}><span className="map-preview terrain">▧</span><strong>{t('processing.map_cards.relief3d.title')}</strong><small>{busy === 'map' ? 'Generando…' : t('processing.map_cards.relief3d.meta')}</small><span className="option-arrow">↗</span></button>
                   </div>
 
                   {selectedMapIndicator && (
@@ -843,11 +844,11 @@ function App() {
             <>
               <section className="page-heading team-page-heading">
                 <div>
-                  <div className="eyebrow"><span className="eyebrow-line" /> CONOCE AL EQUIPO</div>
+                  <div className="eyebrow"><span className="eyebrow-line" /> {t('team.hero_tag')}</div>
                   <h1>Balam Data<br /><em>System.</em></h1>
-                  <p className="intro">Somos un equipo de cuatro personas que impulsa una forma más clara y accesible de explorar los datos estadísticos de Guatemala.</p>
+                  <p className="intro">{t('team.hero_subtitle')}</p>
                   <div className="team-hero-tags" aria-label="Enfoque del equipo">
-                    <span>4 integrantes</span><span>Datos abiertos</span><span>Guatemala</span>
+                    <span>{t('team.pills.0')}</span><span>{t('team.pills.1')}</span><span>{t('team.pills.2')}</span>
                   </div>
                 </div>
                 <div className="team-mark">
@@ -857,10 +858,10 @@ function App() {
 
               <section className="team-section">
                 <div className="section-title-row">
-                  <div><div className="section-kicker">UN EQUIPO MULTIDISCIPLINARIO</div><h2>Cuatro roles, un mismo propósito</h2></div>
+                  <div><div className="section-kicker">{t('team.roles_section.tag')}</div><h2>{t('team.roles_section.title')}</h2></div>
                 </div>
-                <p className="team-note">Selecciona un perfil para conocer cómo aporta al proyecto. Los nombres se pueden personalizar.</p>
-                <div className="team-grid" role="group" aria-label="Perfiles del equipo Balam Data System">
+                <p className="team-note">{t('team.roles_section.subtitle')}</p>
+                <div className="team-grid" role="group" aria-label={t('team.roles_section.tag')}>
                   {TEAM_PROFILES.map((profile, index) => (
                     <button
                       type="button"
@@ -870,22 +871,22 @@ function App() {
                       onClick={() => setActiveTeamProfile(index)}
                     >
                       <span className="team-card-topline"><span className="team-card-number">0{index + 1}</span><span className="team-card-indicator" /></span>
-                      <span className="team-card-label">PERFIL DE EJEMPLO</span>
-                      <strong className="team-card-title">{profile.title}</strong>
-                      <span className="team-card-focus">{profile.focus}</span>
-                      <span className="team-card-action">{activeTeamProfile === index ? 'Perfil seleccionado' : 'Conocer su aporte'} <span aria-hidden="true">→</span></span>
+                      <span className="team-card-label">{t('team.roles_section.badge_example')}</span>
+                      <strong className="team-card-title">{t(`team.roles_section.roles.${index}.title`)}</strong>
+                      <span className="team-card-focus">{t(`team.roles_section.roles.${index}.summary`)}</span>
+                      <span className="team-card-action">{activeTeamProfile === index ? t('team.roles_section.selected_label') : t('team.roles_section.see_contribution')} <span aria-hidden="true">→</span></span>
                     </button>
                   ))}
                 </div>
                 <article className="team-profile-detail" key={TEAM_PROFILES[activeTeamProfile].title} aria-live="polite">
                   <div className="team-profile-detail-heading">
                     <span className="team-profile-detail-number">0{activeTeamProfile + 1}</span>
-                    <div><div className="section-kicker">APORTE AL PROYECTO</div><h3>{TEAM_PROFILES[activeTeamProfile].title}</h3></div>
+                    <div><div className="section-kicker">{t(`team.roles_section.roles.${activeTeamProfile}.contribution_tag`)}</div><h3>{t(`team.roles_section.roles.${activeTeamProfile}.title`)}</h3></div>
                   </div>
-                  <p>{TEAM_PROFILES[activeTeamProfile].focus}</p>
+                  <p>{t(`team.roles_section.roles.${activeTeamProfile}.summary`)}</p>
                   <ul>
-                    {TEAM_PROFILES[activeTeamProfile].responsibilities.map((responsibility) => (
-                      <li key={responsibility}><span aria-hidden="true">✓</span>{responsibility}</li>
+                    {TEAM_PROFILES[activeTeamProfile].responsibilities.map((responsibility, index) => (
+                      <li key={responsibility}><span aria-hidden="true">✓</span>{t(`team.roles_section.roles.${activeTeamProfile}.bullets.${index}`)}</li>
                     ))}
                   </ul>
                 </article>
@@ -893,10 +894,10 @@ function App() {
 
               <section className="team-section">
                 <div className="section-title-row">
-                  <div><div className="section-kicker">EXPLORA LA PLATAFORMA</div><h2>¿Qué quieres descubrir?</h2></div>
+                  <div><div className="section-kicker">{t('team.explore_section.tag')}</div><h2>{t('team.explore_section.title')}</h2></div>
                 </div>
                 <div className="team-examples-grid">
-                  {PLATFORM_EXAMPLES.map((example) => (
+                  {PLATFORM_EXAMPLES.map((example, index) => (
                     <button
                       className="team-example-card"
                       type="button"
@@ -907,7 +908,7 @@ function App() {
                       }}
                     >
                       <span className="team-example-icon" aria-hidden="true">{example.icon}</span>
-                      <span className="team-example-copy"><strong>{example.title}</strong><span>{example.description}</span></span>
+                      <span className="team-example-copy"><strong>{t(`team.explore_section.cards.${index}.title`)}</strong><span>{t(`team.explore_section.cards.${index}.description`)}</span></span>
                       <span className="team-example-arrow" aria-hidden="true">↗</span>
                     </button>
                   ))}
@@ -915,7 +916,7 @@ function App() {
               </section>
             </>
           )}
-          <footer className="page-footer"><span>Instituto Nacional de Estadística · Guatemala</span><span>Información estadística oficial</span><a href="https://www.ine.gob.gt/" target="_blank" rel="noreferrer">ine.gob.gt ↗</a></footer>
+          <footer className="page-footer"><span>{t('footer.organization')}</span><span>{t('footer.tagline')}</span><a href={t('footer.website_url')} target="_blank" rel="noreferrer">{t('footer.website_label')}</a></footer>
         </div>
       </main>
     </div>

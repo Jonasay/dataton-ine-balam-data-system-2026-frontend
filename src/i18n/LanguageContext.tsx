@@ -1,9 +1,10 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import es from './es.json';
 import quc from './quc.json';
+import en from './en.json';
 
-type Language = 'es' | 'quc';
-type TranslationValue = string | number | TranslationTree | TranslationTree[];
+type Language = 'es' | 'quc' | 'en';
+type TranslationValue = string | number | TranslationTree | TranslationValue[];
 type TranslationTree = { [key: string]: TranslationValue };
 type LanguageContextValue = {
   lang: Language;
@@ -11,7 +12,7 @@ type LanguageContextValue = {
   t: (path: string) => string;
 };
 
-const translations: Record<Language, TranslationTree> = { es, quc };
+const translations: Record<Language, TranslationTree> = { es, quc, en };
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -21,7 +22,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const value = path.split('.').reduce<TranslationValue | undefined>(
       (current, key) => {
         if (Array.isArray(current)) {
-          return current.find((entry) => entry.id === key);
+        const index = Number(key);
+        if (Number.isInteger(index) && index >= 0) return current[index];
+        return current.find((entry) => typeof entry === 'object' && entry !== null && 'id' in entry && entry.id === key);
         }
         return typeof current === 'object' && current !== null ? current[key] : undefined;
       },

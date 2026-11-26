@@ -3,15 +3,22 @@
     "section": "CHAKUB'ÄL RE TZIJ",
     "explore": "Rilik taq tzij",
     "processing": "Uchakuxik tzij",
+    "data_and_analysis": "Tzij xuquje' anik'oxik",
     "indicators": "Retal k'aslemal xuquje' pwaqil",
     "data_science": "No'jib'al chi rij tzij",
     "visualizations": "Wachib'äl re tzij",
+    "team_brand": "Balam Data System",
     "card_title": "Tzij rech cha'onik",
     "card_desc": "Qastzij tzij re ri tinamit Paxil Kayala' (Guatemala).",
     "footer": "QASTZIJ TZIJ · GUATEMALA"
   },
   "header": {
-    "breadcrumb": "INE / CHOLAJIL RE TZIJ",
+    "breadcrumb_catalog": "INE / CHOLAJIL RE TZIJ",
+    "breadcrumb_processing": "INE / UCHAKUXIK TZIJ",
+    "breadcrumb_indicators": "INE / RETAL K'ASLEMAL XUQUJE' PWAQIL",
+    "breadcrumb_data_science": "INE / NO'JIB'AL CHI RIJ TZIJ",
+    "breadcrumb_visualizations": "INE / WACHIB'ÄL TZIJ XUQUJE' 3D",
+    "breadcrumb_team": "INE / BALAM DATA SYSTEM",
     "lang_label": "Ch'ab'äl"
   },
   "hero": {
@@ -51,7 +58,7 @@
     },
     {
       "id": "destace-de-ganado",
-      "title": "Ut'oq'ixik awaj (DESTACE DE GANADO)",
+      "title": "Ut'oq'ixik awaj (Destace de ganado)",
       "description": "Ri tzij k'o pa ri k'olb'äl awaj re ri tinamit (rech k'uxb'äl pa ri qa-tinamit) xuquje' ri rech k'ayb'äl pa najtinamit (exportación).",
       "resources": 8,
       "date": "25/11/2026"
@@ -118,8 +125,707 @@
       "description": "Ri tzij re k'aslemal k'o pa ri tz'ib'anik chi rij alaxik, kamik, k'ulaxik xuquje' jachb'äl k'ulaxik, rech kil ri jalajoj b'anow chi rij ri winaq xuquje' ri chak re utzil k'aslemal.",
       "resources": 9,
       "date": "20/11/2026"
+    },
+    {
+      "id": "base-anual-2025-incautaciones-pnc-diprona",
+      "title": "K'AMOWÄK JASTAQ 2025 PNC DIPRONA",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 1,
+      "date": "12/11/2026"
+    },
+    {
+      "id": "educacion-superior-docentes",
+      "title": "NIMA'Q TIJONIK - AJTIJOLÄB' (DOCENTES)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 3,
+      "date": "9/11/2026"
+    },
+    {
+      "id": "costos-ca-urbana-rural-cba-urbana-rural",
+      "title": "Rajil Ch'akab'äl Wa'im (CA xuquje' CBA pa Tinamit xuquje' K'olib'äl)",
+      "description": "Rajil ri jalajoj taq jastaq re ri Canasta Ampliada xuquje' Canasta Básica Alimentaria pa ri tinamit xuquje' pa ri k'olib'äl.",
+      "resources": 6,
+      "date": "9/11/2026"
+    },
+    {
+      "id": "ipc-base-anual-2024-100",
+      "title": "Etal Rajil Jastaq (IPC) Junab' 2024=100.00",
+      "description": "Etal rajil jastaq ri kk'uxik pa junab' 2024=100.00.",
+      "resources": 11,
+      "date": "3/11/2026"
+    },
+    {
+      "id": "establecimientos-educacion-formal",
+      "title": "K'OLB'ÄL TIJONIK (ESTABLECIMIENTOS EDUCACIÓN FORMAL)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 5,
+      "date": "3/11/2026"
+    },
+    {
+      "id": "educacion-formal-2025",
+      "title": "TIJONIK RE JUNAB' 2025",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 23,
+      "date": "3/11/2026"
+    },
+    {
+      "id": "educacion-superior-matriculados",
+      "title": "NIMA'Q TIJONIK - TZ'IB'AM KIB' (MATRICULADOS)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 4,
+      "date": "3/11/2026"
+    },
+    {
+      "id": "educacion-superior-graduados",
+      "title": "NIMA'Q TIJONIK - K'ISNAQ TIJONIK (GRADUADOS)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 5,
+      "date": "28/10/2026"
+    },
+    {
+      "id": "violencia-contra-la-mujer-2025",
+      "title": "K'ÄX CHI KE IXOQIB' 2025",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 23,
+      "date": "22/10/2026"
+    },
+    {
+      "id": "indice-precios-materiales-construccion-ipmc",
+      "title": "ETAL RAJIL JASTAQ RE YAKB'ÄL JA (IPMC)",
+      "description": "Ri Instituto Nacional de Estadística (INE) kuk'ut ri tzij chi rij rajil jastaq rech yakb'äl ja -IPMC-, ri ketzukux pa ik' chi rij 89 jastaq xuquje' chak re yakb'äl ja, rech diciembre 2018 = 100.0.",
+      "resources": 17,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "faltas-judiciales",
+      "title": "MAJ K'ÄX TAQANIK (FALTAS JUDICIALES)",
+      "description": "Pa Guatemala, ri maj k'äx taqanik k'o pa ri Código Penal xuquje' k'o uq'atb'al chi ke rumal ri q'atb'äl tzij.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "bibliotecas-y-centros-de-documentacion",
+      "title": "K'OLB'ÄL WUJ XUQUJE' TZIJ (BIBLIOTECAS Y CENTROS DE DOCUMENTACIÓN)",
+      "description": "Kuk'ut tzij chi rij ri wuj, ri ajchakib' xuquje' ri winaq ri ke'ok pa ri k'olb'äl wuj, mulim pa boleta 199 B rumal ri INE.",
+      "resources": 10,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "accidentes-de-transito-vehiculos-involucrados",
+      "title": "K'ÄX PA B'E - CH'ICH' (VEHÍCULOS INVOLUCRADOS)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "accidentes-de-transito-hechos",
+      "title": "K'ÄX PA B'E - B'ANOWIK (HECHOS)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "accidentes-de-transito-fallecidos-y-lesionados",
+      "title": "K'ÄX PA B'E - KAMINAQ XUQUJE' SOKOMINAQ",
+      "description": "Kuk'ut ri winaq ri kesokotajik xuquje' ri kekamik rumal ri k'äx pa ri b'e.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-agraviados-mp",
+      "title": "B'ANOW K'ÄX TAQANIK - AGRAVIADOS MP",
+      "description": "Kuk'ut tzij chi rij ri b'anow k'äx, winaq ri ke'q'atoxik xuquje' tz'ib'anik re b'anow k'äx pa Guatemala.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-servicio-medico-necropsias-inacif",
+      "title": "B'ANOW K'ÄX TAQANIK - NECROPSIAS INACIF",
+      "description": "Kuk'ut tzij chi rij ri b'anow k'äx xuquje' ri anik'oxik chi rij kamik rumal INACIF.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-servicio-medico-legal-inacif",
+      "title": "B'ANOW K'ÄX TAQANIK - SERVICIO MÉDICO LEGAL INACIF",
+      "description": "Kuk'ut tzij chi rij ri b'anow k'äx xuquje' ri anik'oxik re taqanik rumal INACIF.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-servicio-medico-exhumaciones-inacif",
+      "title": "B'ANOW K'ÄX TAQANIK - EXHUMACIONES INACIF",
+      "description": "Kuk'ut tzij chi rij ri b'anow k'äx xuquje' ri esaxik b'aq/winaq pa ulew rumal INACIF.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-victimas-pnc",
+      "title": "B'ANOW K'ÄX TAQANIK - VÍCTIMAS PNC",
+      "description": "Kuk'ut tzij chi rij ri b'anow k'äx xuquje' ri winaq ri ke'q'atoxik rumal PNC.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-detenidos-pnc",
+      "title": "B'ANOW K'ÄX TAQANIK - CHAPOM WINAQ PNC",
+      "description": "Kuk'ut tzij chi rij ri b'anow k'äx xuquje' ri winaq ri chapom rumal PNC.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-sentencias-oj",
+      "title": "B'ANOW K'ÄX TAQANIK - Q'ATB'AL TZIJ OJ",
+      "description": "Kuk'ut tzij chi rij ri b'anow k'äx xuquje' ri q'atb'al tzij ri ya'om rumal ri Organismo Judicial.",
+      "resources": 9,
+      "date": "2/10/2026"
+    },
+    {
+      "id": "hechos-delictivos-sindicados-mp",
+      "title": "B'ANOW K'ÄX TAQANIK - SINDICADOS MP",
+      "description": "Kuk'ut tzij chi rij ri b'anow k'äx xuquje' ri winaq ri tz'ib'am ub'i' pa ri Ministerio Público.",
+      "resources": 9,
+      "date": "12/03/2026"
+    },
+    {
+      "id": "enigh-2021-2022",
+      "title": "ENIGH 2021 - 2022 (PWÄQ OKINAQ XUQUJE' ELINAQ PA JA)",
+      "description": "Molaj tzij re ri Encuesta Nacional de Ingresos y Gastos en los Hogares.",
+      "resources": 15,
+      "date": "12/03/2026"
+    },
+    {
+      "id": "hoja-balance-alimentos-hba-2024",
+      "title": "WUJ RE JIKIB'AL WA'IM (HBA) 2024",
+      "description": "Kuk'ut tzij chi rij ri wa'im ri kk'ux rumal ri winaq pa Guatemala, pa junab' 2024.",
+      "resources": 6,
+      "date": "2/03/2026"
+    },
+    {
+      "id": "directorio-nacional-estadistico-empresas-dinese",
+      "title": "CHOLAJIL NIMA'Q TAQ CHAK (DINESE)",
+      "description": "Kuk'ut tzij chi rij ri nima'q taq chak k'o pa ri tinamit xuquje' ri uwach ri pwaqil.",
+      "resources": 4,
+      "date": "8/01/2026"
+    },
+    {
+      "id": "ecosistemas-2024",
+      "title": "3. K'aslemal pa Uwach Ulew (Ecosistemas) 2024",
+      "description": "Chak ri kb'an rech utzilaxik ri k'ache'laj pa Guatemala.",
+      "resources": 9,
+      "date": "7/01/2026"
+    },
+    {
+      "id": "acceso-a-la-tierra-2024",
+      "title": "8. Rik'ik Ulew (Acceso a la Tierra) 2024",
+      "description": "Kuk'ut ri chak rech majb'äl, loq'b'äl xuquje' ya'b'äl ulew pa junab' 2024.",
+      "resources": 2,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "gestion-de-riesgo-y-atencion-a-desastres-2024",
+      "title": "6. Uchaxik K'äx xuquje' B'anow K'äx 2024",
+      "description": "Kuk'ut ri uq'atb'al ri k'äx pa pwaqil xuquje' k'aslemal rumal k'ulmatajik pa junab' 2024.",
+      "resources": 3,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "recurso-energetico-y-minero-2024",
+      "title": "7. Chuq'ab' xuquje' Jastaq pa Ulew (Energético y Minero) 2024",
+      "description": "Kuk'ut ri chuq'ab' xuquje' jastaq re ulew pa ri tinamit pa junab' 2024.",
+      "resources": 8,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "desechos-solidos-2024",
+      "title": "5. K'isib'äl Jastaq / Mes (Desechos Sólidos) 2024",
+      "description": "Kuk'ut ri uq'atb'al ri mes pa ri uwach ulew pa junab' 2024.",
+      "resources": 3,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "gestion-ambiental-2024",
+      "title": "4. Uchaxik Uwach Ulew (Gestión Ambiental) 2024",
+      "description": "Kuk'ut ri chak re pwaqil xuquje' taqanik rech utzil re ri uwach ulew pa junab' 2024.",
+      "resources": 8,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "clima-y-atmosfera-2024",
+      "title": "2. Kaj xuquje' Ujalajoj K'at (Clima y Atmósfera) 2024",
+      "description": "Kuk'ut ri uq'atb'al ri jalajoj kaj pa ri uwach ulew pa junab' 2024.",
+      "resources": 4,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "recursos-hidricos-2024",
+      "title": "1. Jä' re ri Tinamit (Recursos Hídricos) 2024",
+      "description": "Kuk'ut ri rilik xuquje' utzil re ri jä' pa junab' 2024.",
+      "resources": 11,
+      "date": "12/12/2025"
+    },
+    {
+      "id": "gestion-de-riesgo-y-atencion-a-desastres-2023",
+      "title": "6. Uchaxik K'äx xuquje' B'anow K'äx 2023",
+      "description": "Kuk'ut ri uq'atb'al ri k'äx pa pwaqil xuquje' k'aslemal rumal k'ulmatajik pa junab' 2023.",
+      "resources": 6,
+      "date": "7/11/2025"
+    },
+    {
+      "id": "construcciones-particulares",
+      "title": "Yakb'äl Ja re Winaq (Construcciones Particulares)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 5,
+      "date": "7/11/2025"
+    },
+    {
+      "id": "educacion-formal-2024",
+      "title": "TIJONIK RE JUNAB' 2024",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 23,
+      "date": "30/10/2025"
+    },
+    {
+      "id": "educacion-formal-2023",
+      "title": "TIJONIK RE JUNAB' 2023",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 23,
+      "date": "6/10/2025"
+    },
+    {
+      "id": "estadisticas-vitales-defunciones-fetales",
+      "title": "TZIJ RE K'ASLEMAL - KAMIK PA PAM (DEFUNCIONES FETALES)",
+      "description": "Tzij re k'aslemal rech alaxik, kamik, k'ulaxik xuquje' jachb'äl k'ulaxik rech ri chak re utzil k'aslemal.",
+      "resources": 8,
+      "date": "6/10/2025"
+    },
+    {
+      "id": "estadisticas-hospitalarias-servicios-internos",
+      "title": "TZIJ RE K'OLB'ÄL KUNAB'ÄL - CHUPAM (SERVICIOS INTERNOS)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 8,
+      "date": "6/10/2025"
+    },
+    {
+      "id": "estadisticas-hospitalarias-servicios-externos",
+      "title": "TZIJ RE K'OLB'ÄL KUNAB'ÄL - PA RIJ (SERVICIOS EXTERNOS)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 11,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "extranjeros-atendidos",
+      "title": "Winaq Najtinamit ri To'om (Extranjeros Atendidos)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "extranjeros-inadmitidos",
+      "title": "Winaq Najtinamit ri Ma Ya'om Ta Kib' (Extranjeros Inadmitidos)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "extranjeros-expulsados",
+      "title": "Winaq Najtinamit ri Esam B'ik (Extranjeros Expulsados)",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "flujo-migratorio-ano-2024",
+      "title": "B'inik pa Najtinamit Junab' 2024",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "retornados-ano-2024",
+      "title": "Winaq ri Tzolininaq Uloq Junab' 2024",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 2,
+      "date": "29/08/2025"
+    },
+    {
+      "id": "retornados-ano-2023",
+      "title": "Winaq ri Tzolininaq Uloq Junab' 2023",
+      "description": "Molaj tzij re ajilab'äl esam rumal ri Instituto Nacional de Estadística.",
+      "resources": 4,
+      "date": "26/08/2025"
+    },
+    {
+      "id": "estadisticas-vitales-matrimonios",
+      "title": "TZIJ RE K'ASLEMAL - K'ULAXIK (MATRIMONIOS)",
+      "description": "Tzij re k'aslemal rech alaxik, kamik, k'ulaxik xuquje' jachb'äl k'ulaxik rech ri chak re utzil k'aslemal.",
+      "resources": 8,
+      "date": "26/08/2025"
+    },
+    {
+      "id": "estadisticas-vitales-divorcios",
+      "title": "TZIJ RE K'ASLEMAL - JACHB'ÄL K'ULAXIK (DIVORCIOS)",
+      "description": "Tzij re k'aslemal rech alaxik, kamik, k'ulaxik xuquje' jachb'äl k'ulaxik rech ri chak re utzil k'aslemal.",
+      "resources": 8,
+      "date": "26/08/2025"
+    },
+    {
+      "id": "diccionario-de-datos-vcm",
+      "title": "Choltzij re Tzij VCM (Violencia contra la Mujer)",
+      "description": "Choltzij rech ri molaj tzij chi rij k'äx chi ke ixoqib'.",
+      "resources": 23,
+      "date": "26/08/2025"
+    },
+    {
+      "id": "violencia-contra-la-mujer-2024",
+      "title": "K'ÄX CHI KE IXOQIB' 2024",
+      "description": "Choltzij re tzij k'o waral: https://datos.ine.gob.gt/dataset/diccionario-de-datos-vcm. Kuk'ut ri uwach k'äx chi ke ixoqib' pa junab' 2024.",
+      "resources": 24,
+      "date": "2/07/2025"
+    },
+    {
+      "id": "violencia-intrafamiliar",
+      "title": "K'ÄX PA JA (VIOLENCIA INTRAFAMILIAR)",
+      "description": "Pa Guatemala, pa ri Decreto 97-96, kuk'ut ri k'äx ri kb'an chi ke ri winaq k'o pa ri ja.",
+      "resources": 7,
+      "date": "11/06/2025"
+    },
+    {
+      "id": "censo-2018-lugares-poblados",
+      "title": "AJILAB'ÄL WINAQ 2018 - K'OLIB'ÄL WINAQ (LUGARES POBLADOS)",
+      "description": "Tzij re ri censo pa taq k'olib'äl winaq.",
+      "resources": 29,
+      "date": "7/05/2025"
+    },
+    {
+      "id": "indicadores-ipc-base-diciembre-2010-100",
+      "title": "Retal IPC Base Diciembre 2010=100.00",
+      "description": "Retal re ri Índice de Precios al Consumidor Base Diciembre 2010=100.0.",
+      "resources": 7,
+      "date": "7/05/2025"
+    },
+    {
+      "id": "ipc-por-producto-base-diciembre-2023-100",
+      "title": "IPC pa Jastaq Base Diciembre 2023 = 100.00",
+      "description": "Índice de Precios al Consumidor pa jastaq.",
+      "resources": 1,
+      "date": "7/05/2025"
+    },
+    {
+      "id": "ipc-por-gasto-basico-base-diciembre-2010-100",
+      "title": "IPC pa Chakub'äl Pwaq Base Diciembre 2010=100.00",
+      "description": "Índice de precios al consumidor pa chakub'äl pwaq.",
+      "resources": 13,
+      "date": "7/05/2025"
+    },
+    {
+      "id": "indicadores-ipc-base-diciembre-2023-100",
+      "title": "Retal IPC Base Diciembre 2023=100.00",
+      "description": "Retal re ri Índice de Precios al Consumidor Base Diciembre 2023=100.0.",
+      "resources": 7,
+      "date": "5/02/2025"
+    },
+    {
+      "id": "acceso-a-la-tierra-2023",
+      "title": "9. Rik'ik Ulew (Acceso a la Tierra) 2023",
+      "description": "Kuk'ut ri chak rech majb'äl, loq'b'äl xuquje' ya'b'äl ulew pa junab' 2023.",
+      "resources": 6,
+      "date": "3/02/2025"
+    },
+    {
+      "id": "recursos-hidricos-2023",
+      "title": "1. Jä' re ri Tinamit (Recursos Hídricos) 2023",
+      "description": "Kuk'ut ri rilik xuquje' utzil re ri jä' pa junab' 2023.",
+      "resources": 14,
+      "date": "4/12/2024"
+    },
+    {
+      "id": "desechos-solidos-2023",
+      "title": "5. K'isib'äl Jastaq / Mes (Desechos Sólidos) 2023",
+      "description": "Kuk'ut ri uq'atb'al ri mes pa ri uwach ulew pa junab' 2023.",
+      "resources": 4,
+      "date": "2/10/2026"
     }
   ],
+  "processing": {
+    "error_banner": "Ma xqariq ta ri molaj tzij. Ri chakub'äl tzij ma xtzalij ta ub'ixik; chatojtob'ej chik jumul.",
+    "hero_tag": "CHAKUB'ÄL RE ANIK'OXIK",
+    "hero_title": "Pa ri tzij chi ri k'ak' ilb'äl.",
+    "hero_subtitle": "Chawila' mapa xuquje' tawesaj wachib'äl ruk' ri tzij re ri INE.",
+    "tabs": {
+      "maps": "Mapa (Mapas)",
+      "exports": "Esaxik (Exportaciones)"
+    },
+    "maps_section": {
+      "step": "01",
+      "tag": "ILB'ÄL RE ULEW",
+      "title": "Mapa re Guatemala",
+      "subtitle": "Chab'ana' mapa ri kk'ut tzij re ajilab'äl pa taq tinamit/departamento.",
+      "topic_label": "NA'OJ / TEMA",
+      "topic_placeholder": "Chacha' jun na'oj",
+      "indicator_label": "RETAL / INDICADOR",
+      "indicator_placeholder": "Chacha' jun retal",
+      "year_label": "JUNAB'",
+      "year_placeholder": "Chacha' jun junab'",
+      "helper_text": "Ri mapa kuk'ut ri rajil pa taq departamento chi rij ri junab' cha'om."
+    },
+    "map_cards": {
+      "choropleth": {
+        "title": "Mapa rech jachb'äl (Coroplético)",
+        "meta": "Folium · mapa k'aslik"
+      },
+      "analysis": {
+        "title": "Mapa rech anik'oxik",
+        "meta": "Plotly · ch'ab'äl wachib'äl"
+      },
+      "relief3d": {
+        "title": "Wachib'äl 3D re ulew",
+        "meta": "Deck.gl · wachib'äl WebGL"
+      }
+    }
+  },
+  "indicators": {
+    "error_banner": "Ma xeqariq ta ri retal departamento. Matriz departamental ma xriqitaj ta; chatikirisaj ri pipeline.",
+    "loading": "Tajin kanuk'ux…",
+    "loading_departments": "Tajin nuk'utux ri retal re ri departamento…",
+    "view_3d_map": "Rilik pa mapa 3D →",
+    "view_sheet": "Rilik wuj",
+    "hero_tag": "QASTZIJ CHAKUB'ÄL · RETAL K'ASLEMAL XUQUJE' PWAQIL",
+    "hero_title": "Retal k'aslemal xuquje' pwaqil.",
+    "hero_subtitle": "Chawila' ri retal pa 22 departamentos, pa 340 municipios xuquje' ri wuj re b'anik.",
+    "badge_title": "TZIJ MULIM",
+    "badge_subtitle": "2024 · GUATEMALA",
+    "tabs": {
+      "departmental": "Departamentales (22)",
+      "municipal": "Municipales (340)",
+      "methodological": "Wuj re b'anik"
+    },
+    "filters": {
+      "segeplan_label": "K'OLB'ÄL SEGEPLAN",
+      "segeplan_all": "Konojel ri k'olb'äl (8)",
+      "order_label": "CHOLAJ PA RETAL",
+      "order_official": "Qastzij ajilab'äl (01–22)",
+      "direction_label": "B'INIK",
+      "direction_desc": "Nimaläj chi ch'uti'n",
+      "direction_asc": "Ch'uti'n chi nimaläj",
+      "search_placeholder": "Chatzukuj wuj pa ajilab'äl (1–22), ISO (GT-HU) o b'i'aj (ej. Petén, Quiché)...",
+      "consult_button": "Rilik wuj"
+    },
+    "sort_options": {
+      "population_total": "Ronojel winaq 2024",
+      "birth_rate": "Retal alaxik (x1,000)",
+      "death_rate": "Retal kamik (x1,000)",
+      "natural_growth": "K'iyem natural (x1,000)",
+      "dependency_ratio": "Retal tob'anik (%)",
+      "male_female_ratio": "Retal achi / ixoq (H/100M)",
+      "autopsy_rate": "Retal necropsias INACIF (x100k)",
+      "road_victim_rate": "Retal k'äx pa b'e PNC (x100k)",
+      "road_mortality_rate": "Retal kamik pa b'e (x100k)",
+      "return_migration_rate": "Retal winaq tzolininaq (x10k)",
+      "returned_children": "% ak'ala' tzolininaq",
+      "returned_women": "% ixoqib' tzolininaq",
+      "higher_education_enrollment": "Tz'ib'anik pa nima'q tijonik (x10k)",
+      "women_higher_education": "% ixoqib' pa nima'q tijonik",
+      "regional_inflation": "Jaloj rajil pa k'olb'äl (%)",
+      "official_municipal_code": "Qastzij ajilab'äl (departamento + municipio)"
+    },
+    "domains": {
+      "all": "Konojel ri uwach",
+      "demography": "Winaqil",
+      "security": "K'uxajil xuquje' k'äx",
+      "mobility": "B'inik xuquje' eqa'n",
+      "migration": "Jalajik",
+      "education": "Tijonik",
+      "economy": "Pwaqil"
+    },
+    "kpis": {
+      "filtered_depts": "DEPARTAMENTOS CHA'OM",
+      "projected_pop": "WINAQ TZUKUM",
+      "returned_migrants": "WINAQ TZOLININAQ",
+      "university_enrollment": "TZ'IB'AM KIB' PA NIMA'Q TIJONIK"
+    },
+    "matrix": {
+      "title": "Matriz mulim re departamento (2024)",
+      "subtitle": "Chachap jun departamento rech kawil ri 39 jastaq xuquje' ri clúster/PCA.",
+      "records_badge": "0 TZ'IB'ANIK",
+      "columns": [
+        "Departamento",
+        "K'olb'äl",
+        "Winaq",
+        "TBN (x1k)",
+        "TBM (x1k)",
+        "Dependencia",
+        "Necropsias (x100k)",
+        "Víct. Viales (x100k)",
+        "Retorno (x10k)",
+        "Ed. Sup. (x10k)",
+        "Inflación Reg.",
+        "B'anik"
+      ]
+    }
+  },
+  "data_science": {
+    "hero_tag": "NO'JIB'AL CHI RIJ TZIJ XUQUJE' ANIK'OXIK · FASE 3",
+    "hero_title": "No'jib'al chi rij tzij xuquje' modelo re ulew.",
+    "hero_subtitle": "Chawila' ri k'äx pa ulew (IVST), jastaq ri k'o jalajoj, correlaciones, PCA, K-Means xuquje' ri k'ulmatajik.",
+    "tabs": {
+      "ivst": "K'äx pa ulew (IVST)",
+      "outliers": "Tz'ib'anik xuquje' jalajoj",
+      "correlations": "Correlaciones",
+      "pca": "PCA xuquje' molaj",
+      "projections": "Proyecciones"
+    },
+    "methodology": {
+      "title": "UB'ANIK RI RETAL IVST",
+      "description": "Moloj tzij Min-Max chi rij winaq, nima'q tijonik, rajil jastaq xuquje' winaq ri ketzolin uloq.",
+      "btn_ivst": "Rilik wachib'äl IVST",
+      "hide_ivst": "Ewaxik wachib'äl IVST",
+      "btn_3d": "Mapa 3D xuquje' esaxik STL/OBJ →"
+    },
+    "vulnerability_levels": {
+      "critical": {
+        "label": "NIMALÄJ K'ÄX PA ULEW",
+        "count_suffix": "deptos."
+      },
+      "high": {
+        "label": "K'ÄX PA ULEW",
+        "count_suffix": "deptos."
+      },
+      "moderate": {
+        "label": "NIK'AJ K'ÄX PA ULEW",
+        "count_suffix": "deptos."
+      },
+      "low": {
+        "label": "CH'UTI'N K'ÄX PA ULEW",
+        "count_suffix": "deptos."
+      }
+    },
+    "ranking": {
+      "title": "Cholajil K'äx pa K'aslemal xuquje' Pwaqil (IVST 2024)",
+      "subtitle": "22 departamentos cholom pa nimaläj chi ch'uti'n k'äx (0–100)",
+      "badge_count": "0 DEPARTAMENTOS",
+      "columns": [
+        "Rnk",
+        "Departamento",
+        "K'olb'äl",
+        "Índice IVST",
+        "Nivel",
+        "Clúster",
+        "Retorno (x10k)",
+        "Dependencia",
+        "Ed. Sup. (x10k)",
+        "Inflación"
+      ]
+    }
+  },
+  "visualizations": {
+    "hero_tag": "CHAKUB'ÄL WACHIB'ÄL · 20 WACHIB'ÄL",
+    "hero_title": "Wachib'äl k'aslik xuquje' 3D.",
+    "hero_subtitle": "Chawila' wachib'äl 3D, cholajil, mapa rech Deck.gl, Blender xuquje' esaxik modelo 3D STL o OBJ.",
+    "badge_lines": [
+      "CHOLAJIL WACHIB'ÄL",
+      "20 · 3D · BLENDER"
+    ],
+    "tabs": {
+      "viz3d": "Wachib'äl 3D",
+      "bars": "Bars xuquje' cholajil",
+      "pie": "Pastel xuquje' cholajil",
+      "trends": "B'inik xuquje' radar",
+      "cartography": "Mapa xuquje' modelo 3D"
+    },
+    "controls": {
+      "viz3d_label": "WACHIB'ÄL 3D",
+      "viz3d_default": "B'inik re winaq (2015–2030)",
+      "color_by_label": "TZ'IB'AXIK PA B'ONIL",
+      "color_by_default": "K'olb'äl SEGEPLAN"
+    },
+    "panel": {
+      "title": "WACHIB'ÄL K'ASLIK INE",
+      "open_new_tab": "Jaqom pa jun chik peraj ↗"
+    }
+  },
+  "team": {
+    "hero_tag": "CHAWETA'MAJ RI MOLAJ AJCHAKIB'",
+    "hero_title": "Balam Data System.",
+    "hero_subtitle": "Uj jun molaj rech kajib' winaq ri kqak'ut ri tzij re Guatemala rech ch'ob'otajik xuquje' utz rilik.",
+    "pills": [
+      "4 winaq",
+      "Jaqalik tzij",
+      "Guatemala"
+    ],
+    "roles_section": {
+      "tag": "JUN MOLAJ JALAJJ KINA'OJ",
+      "title": "Kajib' chak, jun ri rayib'äl",
+      "subtitle": "Chacha' jun perfil rech kawilo jas kuya' chi ke ri chak. Ri b'i'aj kk'exik.",
+      "badge_example": "K'UTB'ÄL PERFIL",
+      "selected_label": "Perfil cha'om",
+      "see_contribution": "Rilik utob'anik",
+      "roles": [
+        {
+          "id": "01",
+          "title": "Ch'ob'onik xuquje' anik'oxik",
+          "summary": "Kuk'am uloq ri k'otob'äl chi ke ri winaq xuquje' kutz'uk ri chak re ri molaj.",
+          "contribution_tag": "UTOB'ANIK PA RI CHAK",
+          "bullets": [
+            "Ch'ob'onik k'otob'äl ri utz chi ke ri winaq",
+            "Ch'ob'onik ri b'e xuquje' ri ya'b'äl tzij",
+            "K'amik ri tzij chi ri cha'onik"
+          ]
+        },
+        {
+          "id": "02",
+          "title": "Chakuxik xuquje' mulik tzij",
+          "summary": "Kutz'uk ri tzij re ajilab'äl xuquje' kril we qastzij konojel.",
+          "contribution_tag": "UTOB'ANIK PA RI CHAK",
+          "bullets": [
+            "Ch'ajch'ob'isaxik xuquje' tz'ukik molaj tzij",
+            "Rilik rajil, q'ij xuquje' ub'anik",
+            "K'olik ri qastzij tzij ri esam uloq"
+          ]
+        },
+        {
+          "id": "03",
+          "title": "B'anik chakub'äl xuquje' rilik rumal winaq",
+          "summary": "Kub'an jun chakub'äl ch'ob'otajik, utz rilik xuquje' kk'oji' pa teléfono.",
+          "contribution_tag": "UTOB'ANIK PA RI CHAK",
+          "bullets": [
+            "B'anik wachb'äl ch'ob'otajik xuquje' man k'äx ta rilik",
+            "K'amik rilik winaq xuquje' ch'ab'äl re ri tinamit",
+            "K'olik utz b'inik pa ri k'utb'äl"
+          ]
+        },
+        {
+          "id": "04",
+          "title": "Anik'oxik xuquje' wachib'äl re ulew",
+          "summary": "Kuk'ex ri retal pa mapa xuquje' wachib'äl ri utz kilik.",
+          "contribution_tag": "UTOB'ANIK PA RI CHAK",
+          "bullets": [
+            "Junaxik b'anowik pa taq ulew",
+            "Rilik jastaq ri jalajoj kik'ulmatajik",
+            "K'utb'äl tzij pa wachib'äl"
+          ]
+        }
+      ]
+    },
+    "explore_section": {
+      "tag": "CHAWILA' RI CHAKUB'ÄL",
+      "title": "¿Jas kawaj kariqo?",
+      "cards": [
+        {
+          "title": "Rilik taq tzij",
+          "description": "Chatzukuj molaj tzij chi rij na'oj o tzij."
+        },
+        {
+          "title": "Junaxik taq ulew",
+          "description": "Chawila' retal xuquje' chaweta'maj ri jalajoj pa taq departamento."
+        },
+        {
+          "title": "Rilik wachib'äl",
+          "description": "Chawila' mapa, b'inik xuquje' wachib'äl k'aslik."
+        }
+      ]
+    }
+  },
   "pagination": {
     "showing": "K'utb'äl 1–12 rech 112",
     "previous": "← Chi'nab'e",

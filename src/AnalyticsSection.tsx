@@ -12,6 +12,7 @@ import {
   type PcaResponse,
   type VulnerabilityIndexItem,
 } from './api';
+import { useTranslation } from './i18n/LanguageContext';
 
 type AnalyticsTab = 'vuln' | 'stats' | 'corr' | 'pca' | 'forecast';
 
@@ -29,6 +30,7 @@ function vulnChipClass(level: string): string {
 }
 
 export function AnalyticsSection({ onNotify, onOpenVizForIndicator }: AnalyticsSectionProps) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<AnalyticsTab>('vuln');
   const [busyTab, setBusyTab] = useState('');
 
@@ -156,43 +158,43 @@ export function AnalyticsSection({ onNotify, onOpenVizForIndicator }: AnalyticsS
     <>
       <section className="page-heading">
         <div>
-          <div className="eyebrow"><span className="eyebrow-line" /> CIENCIA DE DATOS Y ANÁLISIS ESTADÍSTICO · FASE 3</div>
-          <h1>Ciencia de datos<br /><em>y modelado territorial.</em></h1>
-          <p className="intro">Evalúa vulnerabilidad territorial (IVST), detección de atípicos, correlaciones bivariadas, PCA, conglomerados K-Means y proyecciones.</p>
+          <div className="eyebrow"><span className="eyebrow-line" /> {t('data_science.hero_tag')}</div>
+          <h1>{t('data_science.hero_title')}</h1>
+          <p className="intro">{t('data_science.hero_subtitle')}</p>
         </div>
         <div className="process-orbit"><div className="orbit-ring"><span>MODELOS</span><b>→</b><span>EVIDENCIA</span></div><i>✳</i></div>
       </section>
 
       <div className="workbench-tabs" role="tablist" aria-label="Módulos de ciencia de datos">
-        <button type="button" role="tab" aria-selected={tab === 'vuln'} className={tab === 'vuln' ? 'active' : ''} onClick={() => setTab('vuln')}>Vulnerabilidad (IVST)</button>
-        <button type="button" role="tab" aria-selected={tab === 'stats'} className={tab === 'stats' ? 'active' : ''} onClick={() => setTab('stats')}>Descriptivo y atípicos</button>
-        <button type="button" role="tab" aria-selected={tab === 'corr'} className={tab === 'corr' ? 'active' : ''} onClick={() => setTab('corr')}>Correlaciones</button>
-        <button type="button" role="tab" aria-selected={tab === 'pca'} className={tab === 'pca' ? 'active' : ''} onClick={() => setTab('pca')}>PCA y conglomerados</button>
-        <button type="button" role="tab" aria-selected={tab === 'forecast'} className={tab === 'forecast' ? 'active' : ''} onClick={() => setTab('forecast')}>Proyecciones</button>
+        <button type="button" role="tab" aria-selected={tab === 'vuln'} className={tab === 'vuln' ? 'active' : ''} onClick={() => setTab('vuln')}>{t('data_science.tabs.ivst')}</button>
+        <button type="button" role="tab" aria-selected={tab === 'stats'} className={tab === 'stats' ? 'active' : ''} onClick={() => setTab('stats')}>{t('data_science.tabs.outliers')}</button>
+        <button type="button" role="tab" aria-selected={tab === 'corr'} className={tab === 'corr' ? 'active' : ''} onClick={() => setTab('corr')}>{t('data_science.tabs.correlations')}</button>
+        <button type="button" role="tab" aria-selected={tab === 'pca'} className={tab === 'pca' ? 'active' : ''} onClick={() => setTab('pca')}>{t('data_science.tabs.pca')}</button>
+        <button type="button" role="tab" aria-selected={tab === 'forecast'} className={tab === 'forecast' ? 'active' : ''} onClick={() => setTab('forecast')}>{t('data_science.tabs.projections')}</button>
       </div>
 
       {tab === 'vuln' && (
         <div className="module-stack">
           <div className="map-source">
-            <span>METODOLOGÍA DEL ÍNDICE IVST</span>
-            <p className="inline-method-note">{vulnMethod || 'Síntesis normalizada Min-Max de sobrecarga demográfica, déficit universitario, inflación y retorno migratorio.'}</p>
+            <span>{t('data_science.methodology.title')}</span>
+            <p className="inline-method-note">{vulnMethod || t('data_science.methodology.description')}</p>
             <div className="curated-links">
               <button type="button" className={showVulnChart ? 'button button-dark' : 'button button-outline'} onClick={() => setShowVulnChart((p) => !p)}>
-                {showVulnChart ? 'Ocultar gráfica de barras IVST' : 'Ver gráfica interactiva IVST'}
+                {showVulnChart ? t('data_science.methodology.hide_ivst') : t('data_science.methodology.btn_ivst')}
               </button>
               {onOpenVizForIndicator && (
                 <button type="button" className="button button-outline" onClick={() => onOpenVizForIndicator('indice_vulnerabilidad_ivst')}>
-                  Mapa 3D y descarga STL/OBJ →
+                  {t('data_science.methodology.btn_3d')}
                 </button>
               )}
             </div>
           </div>
 
           <div className="analysis-kpis">
-            <div className="kpi-card"><span>VULNERABILIDAD CRÍTICA</span><strong>{vulnCounts.critica} deptos.</strong></div>
-            <div className="kpi-card"><span>VULNERABILIDAD ALTA</span><strong>{vulnCounts.alta} deptos.</strong></div>
-            <div className="kpi-card"><span>VULNERABILIDAD MODERADA</span><strong>{vulnCounts.moderada} deptos.</strong></div>
-            <div className="kpi-card"><span>VULNERABILIDAD BAJA</span><strong>{vulnCounts.baja} deptos.</strong></div>
+            <div className="kpi-card"><span>{t('data_science.vulnerability_levels.critical.label')}</span><strong>{vulnCounts.critica} {t('data_science.vulnerability_levels.critical.count_suffix')}</strong></div>
+            <div className="kpi-card"><span>{t('data_science.vulnerability_levels.high.label')}</span><strong>{vulnCounts.alta} {t('data_science.vulnerability_levels.high.count_suffix')}</strong></div>
+            <div className="kpi-card"><span>{t('data_science.vulnerability_levels.moderate.label')}</span><strong>{vulnCounts.moderada} {t('data_science.vulnerability_levels.moderate.count_suffix')}</strong></div>
+            <div className="kpi-card"><span>{t('data_science.vulnerability_levels.low.label')}</span><strong>{vulnCounts.baja} {t('data_science.vulnerability_levels.low.count_suffix')}</strong></div>
           </div>
 
           {showVulnChart && (
@@ -211,25 +213,25 @@ export function AnalyticsSection({ onNotify, onOpenVizForIndicator }: AnalyticsS
             <div className="preview-wrap">
               <div className="preview-title">
                 <div>
-                  <strong>Ranking de Vulnerabilidad Socioeconómica Territorial (IVST 2024)</strong>
-                  <span>22 departamentos ordenados de mayor a menor vulnerabilidad acumulada (escala 0–100)</span>
+                  <strong>{t('data_science.ranking.title')}</strong>
+                  <span>{t('data_science.ranking.subtitle')}</span>
                 </div>
-                <span className="format-badge">{vulnRows.length} DEPARTAMENTOS</span>
+                <span className="format-badge">{t('data_science.ranking.badge_count').replace('0', String(vulnRows.length))}</span>
               </div>
               <div className="table-scroll table-scroll-tall">
                 <table>
                   <thead>
                     <tr>
-                      <th>Rnk</th>
-                      <th>Departamento</th>
-                      <th>Región</th>
-                      <th>Índice IVST</th>
-                      <th>Nivel</th>
-                      <th>Clúster</th>
-                      <th>Retorno (x10k)</th>
-                      <th>Dependencia</th>
-                      <th>Ed. Sup. (x10k)</th>
-                      <th>Inflación</th>
+                      <th>{t('data_science.ranking.columns.0')}</th>
+                      <th>{t('data_science.ranking.columns.1')}</th>
+                      <th>{t('data_science.ranking.columns.2')}</th>
+                      <th>{t('data_science.ranking.columns.3')}</th>
+                      <th>{t('data_science.ranking.columns.4')}</th>
+                      <th>{t('data_science.ranking.columns.5')}</th>
+                      <th>{t('data_science.ranking.columns.6')}</th>
+                      <th>{t('data_science.ranking.columns.7')}</th>
+                      <th>{t('data_science.ranking.columns.8')}</th>
+                      <th>{t('data_science.ranking.columns.9')}</th>
                     </tr>
                   </thead>
                   <tbody>

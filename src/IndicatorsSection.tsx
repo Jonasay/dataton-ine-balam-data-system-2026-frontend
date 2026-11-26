@@ -10,48 +10,49 @@ import {
   type IndicatorMethodologyCard,
   type MunicipalIndicatorItem,
 } from './api';
+import { useTranslation } from './i18n/LanguageContext';
 
 type IndicatorTab = 'dept' | 'muni' | 'cards';
 
 const DEPT_SORT_OPTIONS = [
-  { value: 'depto_codigo', label: 'Código oficial (01–22)' },
-  { value: 'poblacion_total', label: 'Población total 2024' },
-  { value: 'tasa_natalidad_por_1000', label: 'Tasa Bruta de Natalidad (x1,000)' },
-  { value: 'tasa_mortalidad_por_1000', label: 'Tasa Bruta de Mortalidad (x1,000)' },
-  { value: 'tasa_crecimiento_natural_por_1000', label: 'Crecimiento natural (x1,000)' },
-  { value: 'razon_dependencia_demografica', label: 'Razón de dependencia (%)' },
-  { value: 'indice_masculinidad', label: 'Índice de masculinidad (H/100M)' },
-  { value: 'tasa_necropsias_por_100k', label: 'Tasa de necropsias INACIF (x100k)' },
-  { value: 'tasa_victimas_viales_por_100k', label: 'Tasa de víctimas viales PNC (x100k)' },
-  { value: 'tasa_mortalidad_vial_por_100k', label: 'Tasa de mortalidad vial (x100k)' },
-  { value: 'tasa_retorno_migratorio_por_10k', label: 'Tasa de retorno migratorio (x10k)' },
-  { value: 'pct_retornados_menores', label: '% Niñez migrante retornada' },
-  { value: 'pct_retornadas_mujeres', label: '% Mujeres retornadas' },
-  { value: 'tasa_matricula_superior_por_10k', label: 'Matrícula educación superior (x10k)' },
-  { value: 'pct_mujeres_superior', label: '% Mujeres en educación superior' },
-  { value: 'inflacion_regional_interanual', label: 'Inflación regional interanual (%)' },
+  { value: 'depto_codigo', labelKey: 'indicators.filters.order_official' },
+  { value: 'poblacion_total', labelKey: 'indicators.sort_options.population_total' },
+  { value: 'tasa_natalidad_por_1000', labelKey: 'indicators.sort_options.birth_rate' },
+  { value: 'tasa_mortalidad_por_1000', labelKey: 'indicators.sort_options.death_rate' },
+  { value: 'tasa_crecimiento_natural_por_1000', labelKey: 'indicators.sort_options.natural_growth' },
+  { value: 'razon_dependencia_demografica', labelKey: 'indicators.sort_options.dependency_ratio' },
+  { value: 'indice_masculinidad', labelKey: 'indicators.sort_options.male_female_ratio' },
+  { value: 'tasa_necropsias_por_100k', labelKey: 'indicators.sort_options.autopsy_rate' },
+  { value: 'tasa_victimas_viales_por_100k', labelKey: 'indicators.sort_options.road_victim_rate' },
+  { value: 'tasa_mortalidad_vial_por_100k', labelKey: 'indicators.sort_options.road_mortality_rate' },
+  { value: 'tasa_retorno_migratorio_por_10k', labelKey: 'indicators.sort_options.return_migration_rate' },
+  { value: 'pct_retornados_menores', labelKey: 'indicators.sort_options.returned_children' },
+  { value: 'pct_retornadas_mujeres', labelKey: 'indicators.sort_options.returned_women' },
+  { value: 'tasa_matricula_superior_por_10k', labelKey: 'indicators.sort_options.higher_education_enrollment' },
+  { value: 'pct_mujeres_superior', labelKey: 'indicators.sort_options.women_higher_education' },
+  { value: 'inflacion_regional_interanual', labelKey: 'indicators.sort_options.regional_inflation' },
 ];
 
 const MUNI_SORT_OPTIONS = [
-  { value: '', label: 'Código oficial (depto + municipio)' },
-  { value: 'poblacion_total', label: 'Población total 2024' },
-  { value: 'tasa_natalidad_por_1000', label: 'Tasa Bruta de Natalidad (x1,000)' },
-  { value: 'tasa_mortalidad_por_1000', label: 'Tasa Bruta de Mortalidad (x1,000)' },
-  { value: 'tasa_necropsias_por_100k', label: 'Tasa de necropsias INACIF (x100k)' },
-  { value: 'tasa_victimas_viales_por_100k', label: 'Tasa de víctimas viales (x100k)' },
-  { value: 'tasa_mortalidad_vial_por_100k', label: 'Tasa de mortalidad vial (x100k)' },
-  { value: 'tasa_matricula_superior_por_10k', label: 'Matrícula superior (x10k)' },
-  { value: 'pct_mujeres_superior', label: '% Mujeres en educación superior' },
+  { value: '', labelKey: 'indicators.sort_options.official_municipal_code' },
+  { value: 'poblacion_total', labelKey: 'indicators.sort_options.population_total' },
+  { value: 'tasa_natalidad_por_1000', labelKey: 'indicators.sort_options.birth_rate' },
+  { value: 'tasa_mortalidad_por_1000', labelKey: 'indicators.sort_options.death_rate' },
+  { value: 'tasa_necropsias_por_100k', labelKey: 'indicators.sort_options.autopsy_rate' },
+  { value: 'tasa_victimas_viales_por_100k', labelKey: 'indicators.sort_options.road_victim_rate' },
+  { value: 'tasa_mortalidad_vial_por_100k', labelKey: 'indicators.sort_options.road_mortality_rate' },
+  { value: 'tasa_matricula_superior_por_10k', labelKey: 'indicators.sort_options.higher_education_enrollment' },
+  { value: 'pct_mujeres_superior', labelKey: 'indicators.sort_options.women_higher_education' },
 ];
 
 const CARD_DOMAINS = [
-  { value: '', label: 'Todos los dominios' },
-  { value: 'Demografía', label: 'Demografía' },
-  { value: 'Seguridad', label: 'Seguridad y Violencia' },
-  { value: 'Movilidad', label: 'Movilidad y Transporte' },
-  { value: 'Migración', label: 'Migración' },
-  { value: 'Educación', label: 'Educación' },
-  { value: 'Economía', label: 'Economía' },
+  { value: '', labelKey: 'indicators.domains.all' },
+  { value: 'Demografía', labelKey: 'indicators.domains.demography' },
+  { value: 'Seguridad', labelKey: 'indicators.domains.security' },
+  { value: 'Movilidad', labelKey: 'indicators.domains.mobility' },
+  { value: 'Migración', labelKey: 'indicators.domains.migration' },
+  { value: 'Educación', labelKey: 'indicators.domains.education' },
+  { value: 'Economía', labelKey: 'indicators.domains.economy' },
 ];
 
 interface IndicatorsSectionProps {
@@ -60,6 +61,7 @@ interface IndicatorsSectionProps {
 }
 
 export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: IndicatorsSectionProps) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<IndicatorTab>('dept');
 
   // Estado para indicadores departamentales
@@ -212,17 +214,17 @@ export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: Indicator
     <>
       <section className="page-heading">
         <div>
-          <div className="eyebrow"><span className="eyebrow-line" /> SISTEMA OFICIAL · INDICADORES SOCIOECONÓMICOS</div>
-          <h1>Indicadores<br /><em>socioeconómicos.</em></h1>
-          <p className="intro">Consulta las tasas estandarizadas de los 22 departamentos, el desglose de los 340 municipios y el catálogo de fichas metodológicas.</p>
+          <div className="eyebrow"><span className="eyebrow-line" /> {t('indicators.hero_tag')}</div>
+          <h1>{t('indicators.hero_title')}</h1>
+          <p className="intro">{t('indicators.hero_subtitle')}</p>
         </div>
-        <div className="heading-stamp"><img src="/ine.png" alt="INE Guatemala" /><span>BASE CONSOLIDADA<br />2024 · GUATEMALA</span></div>
+        <div className="heading-stamp"><img src="/ine.png" alt="INE Guatemala" /><span>{t('indicators.badge_title')}<br />{t('indicators.badge_subtitle')}</span></div>
       </section>
 
       <div className="workbench-tabs" role="tablist" aria-label="Vistas de indicadores socioeconómicos">
-        <button id="ind-tab-dept" type="button" role="tab" aria-selected={tab === 'dept'} className={tab === 'dept' ? 'active' : ''} onClick={() => setTab('dept')}>Departamentales (22)</button>
-        <button id="ind-tab-muni" type="button" role="tab" aria-selected={tab === 'muni'} className={tab === 'muni' ? 'active' : ''} onClick={() => setTab('muni')}>Municipales (340)</button>
-        <button id="ind-tab-cards" type="button" role="tab" aria-selected={tab === 'cards'} className={tab === 'cards' ? 'active' : ''} onClick={() => setTab('cards')}>Fichas metodológicas</button>
+        <button id="ind-tab-dept" type="button" role="tab" aria-selected={tab === 'dept'} className={tab === 'dept' ? 'active' : ''} onClick={() => setTab('dept')}>{t('indicators.tabs.departmental')}</button>
+        <button id="ind-tab-muni" type="button" role="tab" aria-selected={tab === 'muni'} className={tab === 'muni' ? 'active' : ''} onClick={() => setTab('muni')}>{t('indicators.tabs.municipal')}</button>
+        <button id="ind-tab-cards" type="button" role="tab" aria-selected={tab === 'cards'} className={tab === 'cards' ? 'active' : ''} onClick={() => setTab('cards')}>{t('indicators.tabs.methodological')}</button>
       </div>
 
       {tab === 'dept' && (
@@ -230,23 +232,23 @@ export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: Indicator
           <div className="map-source">
             <div className="map-filters-grid">
               <label>
-                <span>REGIÓN SEGEPLAN</span>
+                <span>{t('indicators.filters.segeplan_label')}</span>
                 <select value={regionId} onChange={(e) => setRegionId(e.target.value)}>
-                  <option value="">Todas las regiones (8)</option>
+                  <option value="">{t('indicators.filters.segeplan_all')}</option>
                   {SEGEPLAN_REGIONS.map((reg) => <option key={reg.id} value={reg.id}>{reg.nombre}</option>)}
                 </select>
               </label>
               <label>
-                <span>ORDENAR POR INDICADOR</span>
+                <span>{t('indicators.filters.order_label')}</span>
                 <select value={deptSortBy} onChange={(e) => setDeptSortBy(e.target.value)}>
-                  {DEPT_SORT_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                  {DEPT_SORT_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{t(opt.labelKey)}</option>)}
                 </select>
               </label>
               <label>
-                <span>DIRECCIÓN</span>
+                <span>{t('indicators.filters.direction_label')}</span>
                 <select value={deptOrder} onChange={(e) => setDeptOrder(e.target.value as 'asc' | 'desc')}>
-                  <option value="desc">Mayor a menor</option>
-                  <option value="asc">Menor a mayor</option>
+                  <option value="desc">{t('indicators.filters.direction_desc')}</option>
+                  <option value="asc">{t('indicators.filters.direction_asc')}</option>
                 </select>
               </label>
             </div>
@@ -255,15 +257,15 @@ export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: Indicator
               <input
                 value={deptSearch}
                 onChange={(e) => setDeptSearch(e.target.value)}
-                placeholder="Buscar ficha por código (1–22), ISO (GT-HU) o nombre (ej. Petén, Quiché)..."
-                aria-label="Consultar departamento específico"
+                placeholder={t('indicators.filters.search_placeholder')}
+                aria-label={t('indicators.filters.search_placeholder')}
               />
               <button type="submit" className="button button-outline" disabled={deptDetailLoading || !deptSearch.trim()}>
-                {deptDetailLoading ? 'Buscando…' : 'Consultar ficha'}
+                {deptDetailLoading ? t('indicators.loading') : t('indicators.filters.consult_button')}
               </button>
               {deptSortBy !== 'depto_codigo' && onOpenVizForIndicator && (
                 <button type="button" className="button button-dark" onClick={() => onOpenVizForIndicator(deptSortBy)}>
-                  Ver en mapa 3D →
+                  {t('indicators.view_3d_map')}
                 </button>
               )}
             </form>
@@ -271,50 +273,50 @@ export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: Indicator
 
           <div className="analysis-kpis">
             <div className="kpi-card">
-              <span>DEPARTAMENTOS FILTRADOS</span>
+              <span>{t('indicators.kpis.filtered_depts')}</span>
               <strong>{deptTotal}</strong>
             </div>
             <div className="kpi-card">
-              <span>POBLACIÓN PROYECTADA</span>
+              <span>{t('indicators.kpis.projected_pop')}</span>
               <strong>{deptPopTotal.toLocaleString('es-GT')}</strong>
             </div>
             <div className="kpi-card">
-              <span>MIGRANTES RETORNADOS</span>
+              <span>{t('indicators.kpis.returned_migrants')}</span>
               <strong>{deptReturneesTotal.toLocaleString('es-GT')}</strong>
             </div>
             <div className="kpi-card">
-              <span>MATRÍCULA UNIVERSITARIA</span>
+              <span>{t('indicators.kpis.university_enrollment')}</span>
               <strong>{deptUniTotal.toLocaleString('es-GT')}</strong>
             </div>
           </div>
 
           {deptLoading ? (
-            <div className="loading-state"><span className="spinner" />Cargando indicadores departamentales…</div>
+            <div className="loading-state"><span className="spinner" />{t('indicators.loading_departments')}</div>
           ) : (
             <div className="preview-wrap">
               <div className="preview-title">
                 <div>
-                  <strong>Matriz consolidada departamental (2024)</strong>
-                  <span>Haz clic en cualquier departamento para ver sus 39 variables y su asignación de clúster/PCA.</span>
+                  <strong>{t('indicators.matrix.title')}</strong>
+                  <span>{t('indicators.matrix.subtitle')}</span>
                 </div>
-                <span className="format-badge">{deptRows.length} REGISTROS</span>
+                <span className="format-badge">{t('indicators.matrix.records_badge').replace('0', String(deptRows.length))}</span>
               </div>
               <div className="table-scroll table-scroll-tall">
                 <table>
                   <thead>
                     <tr>
-                      <th>Departamento</th>
-                      <th>Región</th>
-                      <th>Población</th>
-                      <th>TBN (x1k)</th>
-                      <th>TBM (x1k)</th>
-                      <th>Dependencia</th>
-                      <th>Necropsias (x100k)</th>
-                      <th>Víct. Viales (x100k)</th>
-                      <th>Retorno (x10k)</th>
-                      <th>Ed. Sup. (x10k)</th>
-                      <th>Inflación Reg.</th>
-                      <th>Acción</th>
+                      <th>{t('indicators.matrix.columns.0')}</th>
+                      <th>{t('indicators.matrix.columns.1')}</th>
+                      <th>{t('indicators.matrix.columns.2')}</th>
+                      <th>{t('indicators.matrix.columns.3')}</th>
+                      <th>{t('indicators.matrix.columns.4')}</th>
+                      <th>{t('indicators.matrix.columns.5')}</th>
+                      <th>{t('indicators.matrix.columns.6')}</th>
+                      <th>{t('indicators.matrix.columns.7')}</th>
+                      <th>{t('indicators.matrix.columns.8')}</th>
+                      <th>{t('indicators.matrix.columns.9')}</th>
+                      <th>{t('indicators.matrix.columns.10')}</th>
+                      <th>{t('indicators.matrix.columns.11')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -341,7 +343,7 @@ export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: Indicator
                             className="table-link-btn"
                             onClick={(e) => { e.stopPropagation(); void loadDepartmentDetail(row.depto_codigo); }}
                           >
-                            Ver ficha
+                            {t('indicators.view_sheet')}
                           </button>
                         </td>
                       </tr>
@@ -491,7 +493,7 @@ export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: Indicator
               <label>
                 <span>ORDENAR POR</span>
                 <select value={muniSortBy} onChange={(e) => setMuniSortBy(e.target.value)}>
-                  {MUNI_SORT_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                  {MUNI_SORT_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{t(opt.labelKey)}</option>)}
                 </select>
               </label>
               <label>
@@ -614,7 +616,7 @@ export function IndicatorsSection({ onNotify, onOpenVizForIndicator }: Indicator
             <label className="select-wrap">
               <span>DOMINIO TEMÁTICO</span>
               <select value={cardDomain} onChange={(e) => setCardDomain(e.target.value)}>
-                {CARD_DOMAINS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+                {CARD_DOMAINS.map((item) => <option key={item.value} value={item.value}>{t(item.labelKey)}</option>)}
               </select>
               <b>⌄</b>
             </label>
